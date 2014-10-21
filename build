@@ -159,7 +159,7 @@ def __get_name_spaces(modules):
 
 
 def __get_roots():
-    return ['--root=%s' % SRC_PATH, '--root=%s' % CLOSURE_LIBRARY_PATH, '--root=%s' % GRAPHICS_SRC_PATH]
+    return ['--root=%s' % SRC_PATH, '--root=%s' % CLOSURE_LIBRARY_PATH]
 
 
 def __get_not_optimized_compiler_args():
@@ -228,8 +228,6 @@ def __compile_project():
     global arguments
 
     modules = ['anytest']
-    if not __is_allowed_modules(modules):
-        raise Exception("Wrong modules: %s" % ', '.join(modules))
 
     __create_dir_if_not_exists(OUT_PATH)
 
@@ -242,10 +240,9 @@ def __compile_project():
 
 def __build_project_sources(modules):
     output_file = os.path.join(OUT_PATH, 'anychart.js')
-    print "Compile source file for modules modules: %s\nOutput: %s\nVersion: %s\nDevelopers edition: %s" % (', '.join(modules), output_file, __get_version(True), str(arguments['develop']))
+    print "Compile source file for modules modules: %s\nOutput: %s\nVersion: %s" % (', '.join(modules), output_file, __get_version(True))
     commands = __get_default_compiler_args() + \
                __get_not_optimized_compiler_args() + \
-               __get_developers_edition_compiler_args() + \
                __get_name_spaces(modules) + \
                __get_roots() + \
                __get_output_file_arg(output_file)
@@ -257,10 +254,9 @@ def __build_project(modules):
     file_name = "%s%s%s" % ('_'.join(modules), dev_postfix, '.min.js')
     output_file = os.path.join(OUT_PATH, file_name)
     print output_file
-    print "Compile binary file for modules: %s\nOutput: %s\nVersion: %s\nDevelopers edition: %s" % (', '.join(modules), output_file, __get_version(True), str(arguments['develop']))
+    print "Compile binary file for modules: %s\nOutput: %s\nVersion: %s" % (', '.join(modules), output_file, __get_version(True))
     commands = __get_default_compiler_args() + \
                __get_optimized_compiler_args() + \
-               __get_developers_edition_compiler_args() + \
                __get_name_spaces(modules) + \
                __get_roots() + \
                __get_output_file_arg(output_file) + \
@@ -277,22 +273,6 @@ def __call_compiler(commands):
     (output, err) = p.communicate()
     retcode = p.poll()
     print output
-
-
-def __is_allowed_modules(modules):
-    l = __get_modules_list()
-    for module in modules:
-        if not module in l:
-            return False
-    return True
-
-
-def __get_modules_list():
-    result = []
-    for f in os.listdir(MODULES_PATH):
-        if f.endswith('.js'):
-            result.append(f[:-3])
-    return result
 
 
 #=======================================================================================================================
@@ -489,7 +469,6 @@ def __build_js_doc():
     t = time.time()
     subprocess.call([os.path.join(API_REFERENCE_ENGINE_PATH, 'jsdoc'),
                      SRC_PATH,
-                     GRAPHICS_SRC_PATH,
                      '-r',
                      '-t',
                      os.path.join(API_REFERENCE_ENGINE_PATH, 'templates', 'main'),
@@ -535,15 +514,6 @@ def __get_exports_sting(target=SRC_PATH):
                     found = True
 
     return result
-
-def __get_graphics_export_string():
-    export_file_path = os.path.join(GRAPHICS_SRC_PATH, 'export.js')
-    export_file = open(export_file_path, 'r')
-    text = export_file.read()
-    export_file.close()
-
-    text = ''.join(text.split('\n'))
-    return text.strip()
 
 
 def __print_exports(target=SRC_PATH):
@@ -613,9 +583,6 @@ def __exec_main_script():
 
     # create the parser for the "compile" command
     compile_parser = subparsers.add_parser('compile', help='Compile project or project modules')
-    compile_parser.add_argument('-m', '--module', dest='modules', action='append',
-                                help="Specify modules to compile, can be specified multiple times. Possible modules values: %s" % ', '.join(
-                                    __get_modules_list()))
     compile_parser.add_argument('-s', '--sources', action='store_true',
                                 help='Build project sources file (not minimized)')
 
