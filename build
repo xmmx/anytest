@@ -154,7 +154,7 @@ def __get_output_file_arg(output_file):
 def __get_name_spaces(modules):
     result = []
     for module in modules:
-        result.append("--namespace=anytest.%s" % module)
+        result.append("--namespace=anytest")
     return result
 
 
@@ -318,39 +318,6 @@ def __lint_project():
             file_with_errors += path + ' '
     print file_with_errors.replace(' ', '\n') + 'RUN AUTOFIX to fix this\n' if (len(file_with_errors) > 0) else 'ok'
 
-
-#=======================================================================================================================
-#                            JSDoc auto fix.
-#=======================================================================================================================
-@sync_required
-def __autofix_project():
-    print 'Trying to autofix lint errors\n'
-    subprocess.call([
-        'python',
-        os.path.join(CLOSURE_LINTER_WRAPPER_PATH, 'fixjsstyle.py'),
-        '--flagfile',
-        'gjslint.cfg',
-        '-r',
-        SRC_PATH
-    ])
-
-    print 'Trying to autofix JSDoc continuation errors\n'
-    source = []
-    for dir_name, dir_names, file_names in os.walk(SRC_PATH):
-        for filename in file_names:
-            source.append(os.path.join(dir_name, filename))
-    files_with_errors = ''
-    for filename in source:
-        path = os.path.join(PROJECT_PATH, filename)
-        data = open(path).read()
-        if re.search('\*\/\n\/\*\*', data):
-            files_with_errors += path + ' '
-            o = open(path, 'w')
-            o.write(re.sub('\*\/\n\/\*\*', '*//**', data))
-            o.close()
-            print 'fixed ' + path
-
-
 #=======================================================================================================================
 #                            JSDoc build.
 #=======================================================================================================================
@@ -358,142 +325,21 @@ def __autofix_project():
 def __build_js_doc():
     global arguments
 
-    generate_tree = ''
-    custom_src = ''
-    profiler = ''
-    dry_run = ''
-    generate_playground_samples = ''
-    is_release = ''
-    log_string = ''
-    js_version = 'local'
-
-    if arguments['release']:
-        is_release = '1'
-        generate_tree = '1'
-        generate_playground_samples = '1'
-        log_string += '\tRELEASE build\n'
-        js_version = __get_version()
-    else:
-        if arguments['dry_run']:
-            dry_run = '1'
-            log_string += '\n\tdry-run'
-        if arguments['compile']:
-            arguments['develop'] = False
-            __build_project(['anychart'])
-        if arguments['tree']:
-            generate_tree = '1'
-            log_string += '\n\tgenerate tree of classes'
-        if arguments['profile']:
-            profiler = '1'
-            log_string += '\n\tJS profiler on'
-        if arguments['examples']:
-            generate_playground_samples = '1'
-            log_string += '\n\tgenerate playground samples'
-        if arguments['source']:
-            custom_src = arguments['source']
-        if arguments['js_version']:
-            js_version = arguments['js_version']
-
     docs_out_path = os.path.join(OUT_PATH, 'docs')
     __create_dir_if_not_exists(OUT_PATH)
     __create_dir_if_not_exists(docs_out_path)
 
-    print 'Build JSDoc with settings:' + log_string
-    if not dry_run:
-        print '\tjs version is: ' + js_version
-
-        if custom_src:
-            print '\tonly package: ' + custom_src
-        if is_release:
-            docs_out_path = os.path.join(docs_out_path, __get_version())
-        else:
-            docs_out_path = os.path.join(docs_out_path, 'develop')
-        __create_dir_if_not_exists(docs_out_path)
-        shutil.rmtree(docs_out_path)
-        os.mkdir(docs_out_path)
-        os.mkdir(os.path.join(docs_out_path, 'scripts'))
-        prodJS = 'anychart.min.js';
-        devJS = 'anychart.dev.min.js';
-        if not os.path.exists(os.path.join(OUT_PATH, prodJS)):
-            shutil.copy(os.path.join(OUT_PATH, devJS),  os.path.join(docs_out_path, 'scripts', prodJS))
-        else:
-            shutil.copy(os.path.join(OUT_PATH, prodJS),  os.path.join(docs_out_path, 'scripts', prodJS))
-
-    p = subprocess.Popen(
-        ['git', 'tag'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        cwd=PROJECT_PATH)
-    (output, err) = p.communicate()
-    tag_list = output.strip()
-
-    # write command line parameters
-    # !!! order strictly required !!!
-    f = open(os.path.join(docs_out_path, 'commandLine.opts'), 'w')
-    f.write('\n'.join([
-        generate_tree,
-        custom_src,
-        profiler,
-        dry_run,
-        '","'.join(tag_list.split('\n')),
-        generate_playground_samples,
-        ''.join(__get_exports_sting()) + __get_graphics_export_string(),
-        js_version
-    ]))
-    f.close()
-
-    playground_samples_dir = os.path.join(CONTRIB_PATH, 'docs-playground-samples')
-    if generate_playground_samples:
-        print 'GIT: update contrib with samples'
-        p = subprocess.Popen(
-            'git checkout develop && git pull origin develop',
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=True,
-            cwd=playground_samples_dir)
-        (output, err) = p.communicate()
-        if not (p.returncode == 0):
-            print "exit-code: %d\n  err: %s\n output: %s" % (p.returncode, err, output)
-
-        # clear directory
-        for tmp_list_item in os.listdir(playground_samples_dir):
-            if not tmp_list_item == '.git' and not tmp_list_item == '.gitignore':
-                tmp_list_item_path = os.path.join(playground_samples_dir, tmp_list_item)
-                if os.path.isdir(tmp_list_item_path):
-                    shutil.rmtree(tmp_list_item_path)
-                else:
-                    os.remove(tmp_list_item_path)
-
     # running JSDoc engine
     print 'Generate documentation'
     t = time.time()
-    subprocess.call([os.path.join(API_REFERENCE_ENGINE_PATH, 'jsdoc'),
+    subprocess.call([os.path.join(JS_DOC_PATH, 'jsdoc'),
                      SRC_PATH,
                      '-r',
                      '-t',
-                     os.path.join(API_REFERENCE_ENGINE_PATH, 'templates', 'main'),
-                     '-c',
-                     os.path.join(API_REFERENCE_ENGINE_PATH, 'conf.json'),
+                     os.path.join(JS_DOC_PATH, 'templates', 'default'),
                      '-d', docs_out_path,
                      '-l'],
                     shell=(platform.system() == 'Windows'))
-    os.remove(os.path.join(docs_out_path, 'commandLine.opts'))
-    print "[PY] build docs time: {:.3f} sec".format(time.time() - t)
-
-    if generate_playground_samples:
-        print 'GIT: trying push samples'
-        p = subprocess.Popen(
-            "git add -A && git commit -am 'autobuild samples' && git push origin develop",
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=True,
-            cwd=playground_samples_dir)
-        (output, err) = p.communicate()
-        if not (p.returncode == 0):
-            print "exit-code: %d\n  err: %s\n output: %s" % (p.returncode, err, output)
-
-    print '\nAll done! Bye-bye! :)'
-
 
 def __get_exports_sting(target=SRC_PATH):
     result = []
