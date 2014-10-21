@@ -1,0 +1,687 @@
+#!/usr/bin/env python
+#coding=utf-8
+
+import os
+import sys
+import subprocess
+import urllib
+import zipfile
+import platform
+import shutil
+import time
+import re
+import argparse
+#=======================================================================================================================
+#           Project paths
+#=======================================================================================================================
+#project
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+CONTRIB_PATH = os.path.join(PROJECT_PATH, 'contrib')
+SRC_PATH = os.path.join(PROJECT_PATH, 'src')
+OUT_PATH = os.path.join(PROJECT_PATH, 'out')
+
+#documentation
+JS_DOC_PATH = os.path.join(CONTRIB_PATH, 'jsdoc')
+
+#closure tools
+COMPILER_PATH = os.path.join(CONTRIB_PATH, 'compiler', 'compiler.jar')
+CLOSURE_LIBRARY_PATH = os.path.join(CONTRIB_PATH, 'closure-library')
+CLOSURE_SOURCE_PATH = os.path.join(CLOSURE_LIBRARY_PATH, 'closure', 'goog')
+CLOSURE_LINTER_WRAPPER_PATH = os.path.join(CONTRIB_PATH, 'closure-linter-wrapper')
+CLOSURE_BIN_PATH = os.path.join(CLOSURE_LIBRARY_PATH, 'closure', 'bin')
+DEPS_WRITER_PATH = os.path.join(CLOSURE_BIN_PATH, 'build', 'depswriter.py')
+CLOSURE_BUILDER_PATH = os.path.join(CLOSURE_BIN_PATH, 'build', 'closurebuilder.py')
+
+
+#=======================================================================================================================
+#                            Utils
+#=======================================================================================================================
+def __create_dir_if_not_exists(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+
+#=======================================================================================================================
+#                            Synchronize contributions.
+#=======================================================================================================================
+def __has_closure_compiler():
+    return os.path.exists(COMPILER_PATH)
+
+
+def __has_closure_linter():
+    pass
+
+
+def __need_sync_contrib():
+    return __has_closure_compiler() and \
+           __has_closure_linter() and \
+           os.path.exists(CLOSURE_LIBRARY_PATH) and \
+           os.path.exists(GRAPHICS_PATH) and \
+           os.path.exists(JS_DOC_PATH) and \
+           os.path.exists(API_REFERENCE_ENGINE_PATH)
+
+
+def __sync_contrib():
+    __create_dir_if_not_exists(CONTRIB_PATH)
+
+    subprocess.call(['git', 'submodule', 'init'])
+    subprocess.call(['git', 'submodule', 'update'])
+
+    #Download closure compiler
+    if not __has_closure_compiler():
+        print 'Download closure compiler'
+        __download_and_unzip_from_http(
+            'http://dl.google.com/closure-compiler/compiler-20131014.zip',
+            'compiler'
+        )
+
+    #Install closure linter
+    if not __has_closure_linter():
+        print 'Install closure linter'
+        commands = [] if platform.system() == 'Windows' else ['sudo']
+        commands.append('easy_install')
+        commands.append('https://closure-linter.googlecode.com/files/closure_linter-2.3.9.tar.gz')
+        try:
+            subprocess.call(commands)
+        except StandardError:
+            raise StandardError('Sync contribution failed: you should install easy_install module for python')
+
+    print 'All contributions installed'
+
+
+def __download_and_unzip_from_http(from_url, dri_name):
+    z_obj_path = os.path.join(CONTRIB_PATH, dri_name + '.zip')
+
+    # download zip archive from url
+    if not os.path.exists(z_obj_path):
+        urllib.urlretrieve(
+            from_url,
+            z_obj_path
+        )
+
+    # extract zip archive
+    target_path = os.path.join(CONTRIB_PATH, dri_name)
+    __create_dir_if_not_exists(target_path)
+    z_obj = zipfile.ZipFile(z_obj_path)
+    z_obj.extractall(path=target_path)
+    z_obj.close()
+
+    # remove archive file
+    os.remove(z_obj_path)
+    print 'Download successful'
+
+
+def sync_required(func):
+    def wrapper():
+        if __need_sync_contrib():
+            __sync_contrib()
+        func()
+
+    return wrapper
+
+
+#=======================================================================================================================
+#                            Compiler flags generation.
+#=======================================================================================================================
+class OptimizationLevel:
+    NONE = 0
+    SIMPLE = 1
+    ADVANCED = 2
+
+
+def __add_option(flags, flag_name, flag_value):
+    flags.append('--compiler_flags=--' + flag_name + '=' + flag_value)
+
+
+def __set_pretty_print(flags):
+    __add_option(flags, 'formatting', 'PRETTY_PRINT')
+
+
+def __set_optimization_level(flags, level):
+    #set compiler level
+    if level == OptimizationLevel.NONE:
+        __add_option(flags, 'compilation_level', 'WHITESPACE_ONLY')
+    elif level == OptimizationLevel.SIMPLE:
+        __add_option(flags, 'compilation_level', 'SIMPLE_OPTIMIZATIONS')
+    elif level == OptimizationLevel.ADVANCED:
+        __add_option(flags, 'compilation_level', 'ADVANCED_OPTIMIZATIONS')
+
+
+def __get_output_file_arg(output_file):
+    return ['--output_file=' + output_file]
+
+
+def __get_name_spaces(modules):
+    result = []
+    for module in modules:
+        result.append("--namespace=anytest.%s" % module)
+    return result
+
+
+def __get_roots():
+    return ['--root=%s' % SRC_PATH, '--root=%s' % CLOSURE_LIBRARY_PATH, '--root=%s' % GRAPHICS_SRC_PATH]
+
+
+def __get_not_optimized_compiler_args():
+    compiler_args = []
+    __set_optimization_level(compiler_args, OptimizationLevel.NONE)
+    __set_pretty_print(compiler_args)
+    return compiler_args
+
+
+def __get_developers_edition_compiler_args():
+    flag = 'true' if __is_develop() else 'false'
+    return [
+        '--compiler_flags=--define="goog.DEBUG=%s"' % flag,
+        '--compiler_flags=--define="anychart.DEVELOP=%s"' % flag,
+    ]
+
+
+def __get_optimized_compiler_args():
+    compiler_args = [
+        '--compiler_flags=--warning_level=VERBOSE',
+        '--compiler_flags=--generate_exports',
+        '--compiler_flags=--jscomp_warning=deprecated',
+        '--compiler_flags=--jscomp_warning=checkTypes',
+        '--compiler_flags=--jscomp_warning=nonStandardJsDocs',
+        '--compiler_flags=--jscomp_warning=checkRegExp',
+        '--compiler_flags=--jscomp_warning=checkVars',
+        '--compiler_flags=--jscomp_warning=invalidCasts',
+        '--compiler_flags=--jscomp_warning=missingProperties',
+        '--compiler_flags=--jscomp_warning=undefinedVars',
+        '--compiler_flags=--jscomp_warning=duplicateMessage',
+        '--compiler_flags=--jscomp_warning=globalThis',
+        '--compiler_flags=--jscomp_warning=internetExplorerChecks',
+        '--compiler_flags=--jscomp_warning=misplacedTypeAnnotation',
+        '--compiler_flags=--jscomp_warning=suspiciousCode',
+        '--compiler_flags=--jscomp_warning=strictModuleDepCheck',
+        '--compiler_flags=--jscomp_warning=typeInvalidation',
+        '--compiler_flags=--jscomp_warning=undefinedNames',
+        '--compiler_flags=--jscomp_warning=unknownDefines',
+        '--compiler_flags=--jscomp_warning=uselessCode',
+        '--compiler_flags=--jscomp_warning=visibility',
+        # uncomment to have some fun ;)
+        #'--compiler_flags=--jscomp_warning=reportUnknownTypes',
+    ]
+    __set_optimization_level(compiler_args, OptimizationLevel.ADVANCED)
+    return compiler_args
+
+
+def __get_default_compiler_args():
+    result = [
+        'python',
+        CLOSURE_BUILDER_PATH,
+        '--output_mode=compiled',
+        '--compiler_jar=' + COMPILER_PATH,
+        '--compiler_flags=--charset=UTF-8'
+    ]
+
+    return result
+
+
+#=======================================================================================================================
+#           Build project
+#=======================================================================================================================
+@sync_required
+def __compile_project():
+    t = time.time()
+    global arguments
+
+    modules = ['anytest']
+    if not __is_allowed_modules(modules):
+        raise Exception("Wrong modules: %s" % ', '.join(modules))
+
+    __create_dir_if_not_exists(OUT_PATH)
+
+    if arguments['sources']:
+        __build_project_sources(modules)
+    __build_project(modules)
+
+    print "[PY] compile time: {:.3f} sec".format(time.time() - t)
+
+
+def __build_project_sources(modules):
+    output_file = os.path.join(OUT_PATH, 'anychart.js')
+    print "Compile source file for modules modules: %s\nOutput: %s\nVersion: %s\nDevelopers edition: %s" % (', '.join(modules), output_file, __get_version(True), str(arguments['develop']))
+    commands = __get_default_compiler_args() + \
+               __get_not_optimized_compiler_args() + \
+               __get_developers_edition_compiler_args() + \
+               __get_name_spaces(modules) + \
+               __get_roots() + \
+               __get_output_file_arg(output_file)
+    __call_compiler(commands)
+
+
+def __build_project(modules):
+    dev_postfix = '.dev' if __is_develop() else ''
+    file_name = "%s%s%s" % ('_'.join(modules), dev_postfix, '.min.js')
+    output_file = os.path.join(OUT_PATH, file_name)
+    print output_file
+    print "Compile binary file for modules: %s\nOutput: %s\nVersion: %s\nDevelopers edition: %s" % (', '.join(modules), output_file, __get_version(True), str(arguments['develop']))
+    commands = __get_default_compiler_args() + \
+               __get_optimized_compiler_args() + \
+               __get_developers_edition_compiler_args() + \
+               __get_name_spaces(modules) + \
+               __get_roots() + \
+               __get_output_file_arg(output_file) + \
+               ['--compiler_flags=--output_wrapper=(function(){%output%})()',
+               '--compiler_flags=--property_map_output_file=%s' % output_file + '_prop_out.txt',
+               '--compiler_flags=--variable_map_output_file=%s' % output_file + '_var_out.txt']
+
+
+    __call_compiler(commands)
+
+
+def __call_compiler(commands):
+    p = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    (output, err) = p.communicate()
+    retcode = p.poll()
+    print output
+
+
+def __is_allowed_modules(modules):
+    l = __get_modules_list()
+    for module in modules:
+        if not module in l:
+            return False
+    return True
+
+
+def __get_modules_list():
+    result = []
+    for f in os.listdir(MODULES_PATH):
+        if f.endswith('.js'):
+            result.append(f[:-3])
+    return result
+
+
+#=======================================================================================================================
+#           Build deps
+#=======================================================================================================================
+@sync_required
+def __build_deps():
+    output_file = os.path.join(SRC_PATH, 'deps.js')
+    print "Writing deps to %s" % output_file
+    subprocess.call([
+        'python',
+        DEPS_WRITER_PATH,
+        '--root_with_prefix=%s %s' % (SRC_PATH, os.path.relpath(SRC_PATH, CLOSURE_SOURCE_PATH)),
+        '--output_file=' + output_file
+    ])
+
+
+#=======================================================================================================================
+#                            Linter.
+#=======================================================================================================================
+@sync_required
+def __lint_project():
+    print 'Search for lint errors\n'
+    subprocess.call([
+        'python',
+        os.path.join(CLOSURE_LINTER_WRAPPER_PATH, 'gjslint.py'),
+        '--flagfile',
+        'gjslint.cfg',
+        '-r',
+        SRC_PATH
+    ])
+
+    print 'Search for JSDoc continuation \n'
+    source = []
+    for dir_name, dir_names, file_names in os.walk(SRC_PATH):
+        for filename in file_names:
+            source.append(os.path.join(dir_name, filename))
+    file_with_errors = ''
+    for filename in source:
+        path = os.path.join(PROJECT_PATH, filename)
+        data = open(path).read()
+        if re.search('\*\/\n\/\*\*', data):
+            file_with_errors += path + ' '
+    print file_with_errors.replace(' ', '\n') + 'RUN AUTOFIX to fix this\n' if (len(file_with_errors) > 0) else 'ok'
+
+
+#=======================================================================================================================
+#                            JSDoc auto fix.
+#=======================================================================================================================
+@sync_required
+def __autofix_project():
+    print 'Trying to autofix lint errors\n'
+    subprocess.call([
+        'python',
+        os.path.join(CLOSURE_LINTER_WRAPPER_PATH, 'fixjsstyle.py'),
+        '--flagfile',
+        'gjslint.cfg',
+        '-r',
+        SRC_PATH
+    ])
+
+    print 'Trying to autofix JSDoc continuation errors\n'
+    source = []
+    for dir_name, dir_names, file_names in os.walk(SRC_PATH):
+        for filename in file_names:
+            source.append(os.path.join(dir_name, filename))
+    files_with_errors = ''
+    for filename in source:
+        path = os.path.join(PROJECT_PATH, filename)
+        data = open(path).read()
+        if re.search('\*\/\n\/\*\*', data):
+            files_with_errors += path + ' '
+            o = open(path, 'w')
+            o.write(re.sub('\*\/\n\/\*\*', '*//**', data))
+            o.close()
+            print 'fixed ' + path
+
+
+#=======================================================================================================================
+#                            JSDoc build.
+#=======================================================================================================================
+@sync_required
+def __build_js_doc():
+    global arguments
+
+    generate_tree = ''
+    custom_src = ''
+    profiler = ''
+    dry_run = ''
+    generate_playground_samples = ''
+    is_release = ''
+    log_string = ''
+    js_version = 'local'
+
+    if arguments['release']:
+        is_release = '1'
+        generate_tree = '1'
+        generate_playground_samples = '1'
+        log_string += '\tRELEASE build\n'
+        js_version = __get_version()
+    else:
+        if arguments['dry_run']:
+            dry_run = '1'
+            log_string += '\n\tdry-run'
+        if arguments['compile']:
+            arguments['develop'] = False
+            __build_project(['anychart'])
+        if arguments['tree']:
+            generate_tree = '1'
+            log_string += '\n\tgenerate tree of classes'
+        if arguments['profile']:
+            profiler = '1'
+            log_string += '\n\tJS profiler on'
+        if arguments['examples']:
+            generate_playground_samples = '1'
+            log_string += '\n\tgenerate playground samples'
+        if arguments['source']:
+            custom_src = arguments['source']
+        if arguments['js_version']:
+            js_version = arguments['js_version']
+
+    docs_out_path = os.path.join(OUT_PATH, 'docs')
+    __create_dir_if_not_exists(OUT_PATH)
+    __create_dir_if_not_exists(docs_out_path)
+
+    print 'Build JSDoc with settings:' + log_string
+    if not dry_run:
+        print '\tjs version is: ' + js_version
+
+        if custom_src:
+            print '\tonly package: ' + custom_src
+        if is_release:
+            docs_out_path = os.path.join(docs_out_path, __get_version())
+        else:
+            docs_out_path = os.path.join(docs_out_path, 'develop')
+        __create_dir_if_not_exists(docs_out_path)
+        shutil.rmtree(docs_out_path)
+        os.mkdir(docs_out_path)
+        os.mkdir(os.path.join(docs_out_path, 'scripts'))
+        prodJS = 'anychart.min.js';
+        devJS = 'anychart.dev.min.js';
+        if not os.path.exists(os.path.join(OUT_PATH, prodJS)):
+            shutil.copy(os.path.join(OUT_PATH, devJS),  os.path.join(docs_out_path, 'scripts', prodJS))
+        else:
+            shutil.copy(os.path.join(OUT_PATH, prodJS),  os.path.join(docs_out_path, 'scripts', prodJS))
+
+    p = subprocess.Popen(
+        ['git', 'tag'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        cwd=PROJECT_PATH)
+    (output, err) = p.communicate()
+    tag_list = output.strip()
+
+    # write command line parameters
+    # !!! order strictly required !!!
+    f = open(os.path.join(docs_out_path, 'commandLine.opts'), 'w')
+    f.write('\n'.join([
+        generate_tree,
+        custom_src,
+        profiler,
+        dry_run,
+        '","'.join(tag_list.split('\n')),
+        generate_playground_samples,
+        ''.join(__get_exports_sting()) + __get_graphics_export_string(),
+        js_version
+    ]))
+    f.close()
+
+    playground_samples_dir = os.path.join(CONTRIB_PATH, 'docs-playground-samples')
+    if generate_playground_samples:
+        print 'GIT: update contrib with samples'
+        p = subprocess.Popen(
+            'git checkout develop && git pull origin develop',
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True,
+            cwd=playground_samples_dir)
+        (output, err) = p.communicate()
+        if not (p.returncode == 0):
+            print "exit-code: %d\n  err: %s\n output: %s" % (p.returncode, err, output)
+
+        # clear directory
+        for tmp_list_item in os.listdir(playground_samples_dir):
+            if not tmp_list_item == '.git' and not tmp_list_item == '.gitignore':
+                tmp_list_item_path = os.path.join(playground_samples_dir, tmp_list_item)
+                if os.path.isdir(tmp_list_item_path):
+                    shutil.rmtree(tmp_list_item_path)
+                else:
+                    os.remove(tmp_list_item_path)
+
+    # running JSDoc engine
+    print 'Generate documentation'
+    t = time.time()
+    subprocess.call([os.path.join(API_REFERENCE_ENGINE_PATH, 'jsdoc'),
+                     SRC_PATH,
+                     GRAPHICS_SRC_PATH,
+                     '-r',
+                     '-t',
+                     os.path.join(API_REFERENCE_ENGINE_PATH, 'templates', 'main'),
+                     '-c',
+                     os.path.join(API_REFERENCE_ENGINE_PATH, 'conf.json'),
+                     '-d', docs_out_path,
+                     '-l'],
+                    shell=(platform.system() == 'Windows'))
+    os.remove(os.path.join(docs_out_path, 'commandLine.opts'))
+    print "[PY] build docs time: {:.3f} sec".format(time.time() - t)
+
+    if generate_playground_samples:
+        print 'GIT: trying push samples'
+        p = subprocess.Popen(
+            "git add -A && git commit -am 'autobuild samples' && git push origin develop",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True,
+            cwd=playground_samples_dir)
+        (output, err) = p.communicate()
+        if not (p.returncode == 0):
+            print "exit-code: %d\n  err: %s\n output: %s" % (p.returncode, err, output)
+
+    print '\nAll done! Bye-bye! :)'
+
+
+def __get_exports_sting(target=SRC_PATH):
+    result = []
+
+    if os.path.isdir(target):
+        for dir_name, dir_names, file_names in os.walk(target):
+            for file_name in file_names:
+                if file_name.endswith('.js'):
+                    result = result + __get_exports_sting(os.path.join(dir_name, file_name))
+    elif os.path.isfile(target):
+        found = False
+        for line in open(target).readlines():
+            if found:
+                if not line == '\n':
+                    result.append(line.strip())
+            else:
+                if line == '//exports\n':
+                    found = True
+
+    return result
+
+def __get_graphics_export_string():
+    export_file_path = os.path.join(GRAPHICS_SRC_PATH, 'export.js')
+    export_file = open(export_file_path, 'r')
+    text = export_file.read()
+    export_file.close()
+
+    text = ''.join(text.split('\n'))
+    return text.strip()
+
+
+def __print_exports(target=SRC_PATH):
+    print '\n'.join(__get_exports_sting(target))
+
+def __print_non_doc_exports(target=SRC_PATH):
+    print '\n'.join([i for i in __get_exports_sting(target) if not re.search('.+//.+', i)])
+#=======================================================================================================================
+#                            Logging.
+#=======================================================================================================================
+warnings_list = []
+
+
+def __print_no_bundles():
+    print 'No bundles found, see help for more info. (python build --help)'
+
+
+def __print_warnings_list():
+    for msg in warnings_list:
+        print '\nWarning:'
+        print msg
+
+
+#=======================================================================================================================
+#                            Version.
+#=======================================================================================================================
+def __get_version(opt_commits_count=False):
+    #get global, major, minor versions from version.ini
+    version_file = os.path.join(PROJECT_PATH, 'version.ini')
+    f = open(version_file, 'r')
+    lines = f.readlines()
+    f.close()
+
+    major = lines[0].split('=')[1].strip()
+    minor = lines[1].split('=')[1].strip()
+    patch = lines[2].split('=')[1].strip()
+
+    if opt_commits_count:
+        #get commits count from git repo
+        p = subprocess.Popen(
+            ['git', 'rev-list', 'HEAD', '--count'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            cwd=PROJECT_PATH)
+        (output, err) = p.communicate()
+        commit_count = output.strip()
+
+        return "%s.%s.%s.%s" % (major, minor, patch, commit_count)
+    else:
+        return "%s.%s.%s" % (major, minor, patch)
+
+def __is_develop():
+    global arguments
+    return 'develop' in arguments and str(arguments['develop']) == 'True'
+
+
+#=======================================================================================================================
+#           Main
+#=======================================================================================================================
+arguments = {}
+
+
+def __exec_main_script():
+    #root parser
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help='AnyChart framework build script commands:')
+
+    # create the parser for the "compile" command
+    compile_parser = subparsers.add_parser('compile', help='Compile project or project modules')
+    compile_parser.add_argument('-m', '--module', dest='modules', action='append',
+                                help="Specify modules to compile, can be specified multiple times. Possible modules values: %s" % ', '.join(
+                                    __get_modules_list()))
+    compile_parser.add_argument('-s', '--sources', action='store_true',
+                                help='Build project sources file (not minimized)')
+
+    compile_parser.add_argument('-d', '--develop', action='store_true',
+                                help='Include developers tools into build.')
+
+    # create the parser for the "contrib" command
+    subparsers.add_parser('contrib', help='Synchronize project dependencies')
+
+    # create the parser for the "deps" command
+    subparsers.add_parser('deps', help='Generate deps.js file')
+
+    # create the parser for the "lint" command
+    subparsers.add_parser('lint', help='Exec linter check for whole project')
+
+    # create the parser for the "contrib" command
+    subparsers.add_parser('autofix', help='Try to autofix linter warnings and errors')
+
+    # create the parser for the "exports" command
+    subparsers.add_parser('exports', help='Print exports list in console')
+
+    # create the parser for the "non-doc-exports" command
+    subparsers.add_parser('non-doc-exports', help='Print non document exports list in console')
+
+    # create the parser for the "contrib" command
+    docs_parser = subparsers.add_parser('docs', help='Generate project documentation')
+    docs_parser.add_argument('-c', '--compile', action='store_true', help='Compile project before docs generation')
+    docs_parser.add_argument('-t', '--tree', action='store_true',
+                             help='Generate project classes tree, output is tree.js file')
+    docs_parser.add_argument('-p', '--profile', action='store_true', help='Use docs profiler during generation')
+    docs_parser.add_argument('-dr', '--dry-run', action='store_true',
+                             help='Process project sources without docs generation')
+    docs_parser.add_argument('-e', '--examples', action='store_true',
+                             help='Generate playground samples into specified dir')
+    docs_parser.add_argument('-r', '--release', action='store_true', help='Generate docs with release settings')
+    docs_parser.add_argument('-s', '--source', action='store',
+                             help='Specify target package, can be specified multiple times', default=False)
+    docs_parser.add_argument('-jv', '--js-version', action='store',
+                             help='Define where take js from local or CDN (for example "develop" or "7.0.0"). By default "local".', default=False)
+
+    global arguments
+    arguments = vars(parser.parse_args())
+
+    command = sys.argv[1]
+
+    if command == 'contrib':
+        __sync_contrib()
+    elif command == 'compile':
+        __compile_project()
+    elif command == 'deps':
+        __build_deps()
+    elif command == 'lint':
+        __lint_project()
+    elif command == 'autofix':
+        __autofix_project()
+    elif command == 'docs':
+        __build_js_doc()
+    elif command == 'exports':
+        __print_exports()
+
+    __print_warnings_list()
+
+
+if __name__ == '__main__':
+    try:
+        __exec_main_script()
+    except StandardError as e:
+        print e
+        sys.exit(1)
