@@ -172,8 +172,7 @@ def __get_not_optimized_compiler_args():
 def __get_developers_edition_compiler_args():
     flag = 'true' if __is_develop() else 'false'
     return [
-        '--compiler_flags=--define="goog.DEBUG=%s"' % flag,
-        '--compiler_flags=--define="anychart.DEVELOP=%s"' % flag,
+        '--compiler_flags=--define="goog.DEBUG=%s"' % flag
     ]
 
 
