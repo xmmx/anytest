@@ -4,6 +4,7 @@ goog.require('goog.dom');
 
 /**
  @namespace
+ @ignore
  @name anytest.modes
  */
 
@@ -18,7 +19,7 @@ goog.require('goog.dom');
  * @param {...string} var_args Аргументов может быть много.
  * @return {*}
  */
-anytest.modes = function(var_args) {
+anytest.modes.set = function(var_args) {
   for (var i in arguments) {
     var mod = arguments[i];
     var flag = true;
@@ -32,7 +33,8 @@ anytest.modes = function(var_args) {
       anytest.settings_.modes[mod] = flag;
     }
   }
-  return anytest;
+
+  return window['anytest'];
 };
 
 
@@ -193,4 +195,15 @@ anytest.modes.hiddenContainer_ = function() {
   anytest.turnOffDelay('hiddenContainer');
 };
 
-goog.exportSymbol('anytest.modes', anytest.modes);
+/**
+ * Включает/выключает режимы тестирования.<br/>
+ * anytest.modes('!all') - выключает все.<br/>
+ * anytest.modes('schemas') - включает экспорт.<br/>
+ * anytest.modes('all', '!resize') - включает все режимы, кроме ресайза.<br/>
+ * и тд<br/>
+ * <b>!!! Использовать до setUp() !!!</b>
+ * @type {Function}
+ */
+anytest.setModes = anytest.modes.set;
+
+goog.exportSymbol('anytest.setModes', anytest.modes.set);

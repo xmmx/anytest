@@ -15,12 +15,16 @@ goog.provide('anytest.utils');
 anytest.utils.statusDiv = null;
 
 
-/** @type {Console} */
+/**
+ * @type {Console}
+ * @ignore
+ */
 var console = window['console'];
 
 
 /**
  * Выводит сообщение в консоль браузера (если она есть, иначе в спе див).
+ * @return {*}
  */
 anytest.utils.log = function() {
   if (console && console.log && typeof console.log != 'object')
@@ -38,6 +42,7 @@ anytest.utils.log = function() {
       args.push(arguments[a]);
     anytest.utils.statusDiv.innerHTML += args.join('\n') + '\n';
   }
+  return window['anytest'];
 };
 
 

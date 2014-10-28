@@ -1,7 +1,9 @@
 goog.provide('anytest.panel');
-
+goog.require('anytest.panel.interactive');
+goog.require('anytest.panel.resize');
 /**
  @namespace
+ @ignore
  @name anytest.panel
  */
 
@@ -17,13 +19,14 @@ goog.provide('anytest.panel');
  *
  *  - ('interactive')
  * @param {string} type
+ * @return {*}
  */
-anytest.panel = function(type) {
+anytest.panel.create = function(type) {
   var _div = anytest.utils.createDiv('sidePanel', true);
   var content = '';
   switch (type) {
     case 'resize':
-      content = anytest.panel.resize.HTMLContent.apply(anytest, arguments);
+      content = anytest.panel.resize.getHTMLContent.apply(anytest, arguments);
       break;
     case 'interactive':
       content = '<b>Interactive Panel</b><hr/>' +
@@ -48,7 +51,21 @@ anytest.panel = function(type) {
     _div.innerHTML = content;
     _div.style.display = 'block';
   }
+
+  return window['anytest'];
 };
 
+/**
+ * Включает панель слева от теста.<br/>
+ * Использованние:<br/>
+ *  - ('resize', 'chart')<br/>
+ *  если нужна ресайз панель, то указываем первым параметром очевидное. в качестве второго параметра принимается
+ *  строка(!) переменной объекта ресайза. Эта переменная должна быть глобальной(!) (спросить если не понимаешь).
+ *  по дефолту второй параметр 'chart'.<br/>
+ * <br/>
+ *  - ('interactive')<br/>
+ * @type {Function}
+ */
+anytest.createPanel = anytest.panel.create;
 
-goog.exportSymbol('anytest.panel', anytest.panel);
+goog.exportSymbol('anytest.createPanel', anytest.panel.create);

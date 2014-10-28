@@ -2,8 +2,7 @@ goog.provide('anytest');
 goog.require('anytest.CAT');
 goog.require('anytest.enums');
 goog.require('anytest.modes');
-goog.require('anytest.panel.interactive');
-goog.require('anytest.panel.resize');
+goog.require('anytest.panel');
 goog.require('anytest.settings_');
 goog.require('anytest.styles');
 goog.require('anytest.utils');
@@ -55,7 +54,8 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   }
   anytest.stage['suspend']();
   window['stage'] = anytest.stage;
-  return anytest;
+
+  return window['anytest'];
 };
 
 
@@ -102,7 +102,7 @@ anytest.setCheckMsg = function(txt, opt_isIgnored) {
  */
 anytest.description = function(txt) {
   anytest.utils.createDiv('description').innerHTML = txt;
-  return anytest;
+  return window['anytest'];
 };
 
 
@@ -135,7 +135,7 @@ anytest.chartListen = function(chart, opt_callbackFunction, opt_isListenOnce) {
     if (opt_isListenOnce) chart['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
-  return anytest;
+  return window['anytest'];
 };
 
 
@@ -151,7 +151,7 @@ anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
     if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
-  return anytest;
+  return window['anytest'];
 };
 
 
@@ -178,7 +178,7 @@ anytest.drawInStage = function(opt_chart) {
   opt_chart = opt_chart || anytest.chart;
   opt_chart['container'](anytest.stage)['draw']();
   // _chart.container(stage.layer()).draw();
-  return anytest;
+  return window['anytest'];
 };
 
 

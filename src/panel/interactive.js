@@ -1,5 +1,4 @@
 goog.provide('anytest.panel.interactive');
-goog.require('anytest.panel');
 
 /**
  @namespace

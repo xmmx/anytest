@@ -1,5 +1,4 @@
 goog.provide('anytest.panel.resize');
-goog.require('anytest.panel');
 
 /**
  @namespace
@@ -71,7 +70,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
  * @return {string}
  * @ignore
  */
-anytest.panel.resize.HTMLContent = function() {
+anytest.panel.resize.getHTMLContent = function() {
   var content;
   var obj_ = arguments[1] || 'chart';
   var types_ = anytest.enums.resizeTypes;

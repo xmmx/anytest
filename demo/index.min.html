@@ -11,8 +11,8 @@
 </body>
 <script>
     anychart.onDocumentLoad(function () {
-        var test = anytest.setUp();
-        test.log('test log');
+        var test = anytest;
+        test.setModes('all').setUp().log('test log').createPanel('resize');
     });
 </script>
 </html>
