@@ -213,7 +213,7 @@ anytest.turnOffDelay = function(target) {
 
 
 /**
- * alias.
+ * Выводит в консоль (или специально обученный див (если нет консоли)) сообщение или значение переданных аргументов.
  * @type {Function}
  */
 anytest.log = anytest.utils.log;

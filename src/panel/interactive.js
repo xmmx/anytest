@@ -3,6 +3,7 @@ goog.require('anytest.panel');
 
 /**
  @namespace
+ @ignore
  @name anytest.panels.interactive
  */
 

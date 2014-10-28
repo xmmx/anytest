@@ -1,6 +1,7 @@
 goog.provide('anytest.styles');
 /**
  @namespace
+ @ignore
  @name anytest.styles
  */
 

@@ -3,6 +3,7 @@ goog.provide('anytest.utils');
 
 /**
  @namespace
+ @ignore
  @name anytest.utils
  */
 
