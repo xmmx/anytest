@@ -25,8 +25,13 @@ anytest.utils.log = function() {
   if (console && console.log && typeof console.log != 'object')
     console.log.apply(console, arguments);
   else {
-    if (!anytest.utils.statusDiv)
-      anytest.utils.statusDiv = anytest.utils.createDiv('status');
+    if (!anytest.utils.statusDiv) {
+      // создаем текстареа вместо консоли.
+      anytest.utils.statusDiv = document.createElement('textarea');
+      anytest.utils.statusDiv.id = 'status';
+      anytest.utils.statusDiv.style.visibility = 'hidden';
+      document.body.appendChild(anytest.utils.statusDiv);
+    }
     var args = [];
     for (var a in arguments)
       args.push(arguments[a]);
@@ -52,26 +57,6 @@ anytest.utils.createDiv = function(opt_id, opt_isFirstChild) {
     document.body.appendChild(_div);
   return _div;
 };
-
-// IE < 8 fix
-if (!Array.prototype.indexOf) {
-  /**
-   * @this {Array}
-   * @param {*} what
-   * @param {number=} opt_i
-   * @return {number}
-   * @suppress {duplicate}
-   */
-  Array.prototype.indexOf = function(what, opt_i) {
-    opt_i = opt_i || 0;
-    var L = this.length;
-    while (opt_i < L) {
-      if (this[opt_i] === what) return opt_i;
-      ++opt_i;
-    }
-    return -1;
-  };
-}
 
 
 /**

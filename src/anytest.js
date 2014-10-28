@@ -2,18 +2,32 @@ goog.provide('anytest');
 goog.require('anytest.CAT');
 goog.require('anytest.enums');
 goog.require('anytest.modes');
-goog.require('anytest.panel');
+goog.require('anytest.panel.interactive');
+goog.require('anytest.panel.resize');
 goog.require('anytest.settings_');
 goog.require('anytest.styles');
 goog.require('anytest.utils');
+goog.require('goog.array');
+
+/**
+ * Core space for all anytest components.
+ * @namespace
+ * @name anytest
+ */
 
 
 /**
- * Stage.
- * @type {Object}
- * @private
+ * Stage on window.
+ * @ignore
  */
-anytest.stage_ = null;
+anytest.stage = {};
+
+
+/**
+ * Chart instance.
+ * @ignore
+ */
+anytest.chart = {};
 
 
 /**
@@ -32,41 +46,39 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   var _types = anytest.enums.resizeTypes;
 
   if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
-    anytest.stage_ = window['acgraph'].create('container', anytest.settings_.width, anytest.settings_.height);
+    anytest.stage = window['acgraph'].create('container', anytest.settings_.width, anytest.settings_.height);
   else
-    anytest.stage_ = window['acgraph'].create('container');
+    anytest.stage = window['acgraph'].create('container');
   if (anytest.settings_.sizeTarget != _types.STAGE) {
     document.getElementById('container').style.width = anytest.settings_.width;
     document.getElementById('container').style.height = anytest.settings_.height;
   }
-  anytest.stage_.suspend();
-  window['stage'] = anytest.stage_;
+  anytest.stage['suspend']();
+  window['stage'] = anytest.stage;
   return anytest;
 };
 
 
 /**
  * @type {boolean}
- * @private
+ * @ignore
  */
-anytest.exit_ = false;
+anytest.exitState = false;
 
 
 /**
- * Core space for all anytest components.
- * @namespace
- * @name anytest
+ * Метод завершения теста.
  */
 anytest.exit = function() {
-  anytest.exit_ = true;
+  anytest.exitState = true;
 };
 
 
 /**
  * @type {boolean}
- * @private
+ * @ignore
  */
-anytest.CAT.needCheckConsoleMsg_ = false;
+anytest.CAT.needCheckConsoleMsg = false;
 
 
 /**
@@ -79,7 +91,7 @@ anytest.setCheckMsg = function(txt, opt_isIgnored) {
   _div.className = 'consoleMsg';
   if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
   _div.innerHTML = txt;
-  anytest.CAT.needCheckConsoleMsg_ = true;
+  anytest.CAT.needCheckConsoleMsg = true;
 };
 
 
@@ -96,90 +108,107 @@ anytest.description = function(txt) {
 
 /**
  * Процедура очистки и завершения теста.
- * @private
+ * @ignore
  */
-test.utils.tearDown_ = function () {
+anytest.tearDown = function() {
   // если кто-то откладывал конец, то выходим.
-  if (test.exit_ && test.utils.delayTarget_.length == 0) {
-    if (this.CAT.needCheckConsoleMsg_)
-      this.CAT.checkMsg_();
-    this.CAT.exit_();
+  if (anytest.exitState && anytest.delayTarget_.length == 0) {
+    if (anytest.CAT.needCheckConsoleMsg)
+      anytest.CAT.checkMsg();
+    anytest.CAT.exit();
   }
 };
 
+
 /**
  * Вешает листенер на чарт.
- * @param _chart {object} chart instance.
- * @param callbackFunction {function=} По дефолту - выход из деста.
- * @param isListenOnce {boolean=}
- * @returns {test.utils}
+ * @param {Object} chart chart instance.
+ * @param {?Function=} opt_callbackFunction По дефолту - выход из деста.
+ * @param {boolean=} opt_isListenOnce
+ * @return {*}
  */
-test.utils.chartListen = function (_chart, callbackFunction, isListenOnce) {
-  _chart = _chart || chart;
-  callbackFunction = callbackFunction || test.exit;
-  var key = _chart.listen(anychart.enums.EventType.CHART_DRAW, function (e) {
-    if (isListenOnce) _chart.unlistenByKey(key);
-    test.utils.listenerFuncMain_(callbackFunction, e);
+anytest.chartListen = function(chart, opt_callbackFunction, opt_isListenOnce) {
+  anytest.chart = window['chart'];
+  chart = chart || anytest.chart;
+  opt_callbackFunction = opt_callbackFunction || anytest.exit;
+  var key = chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+    if (opt_isListenOnce) chart['unlistenByKey'](key);
+    anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
-  return this;
+  return anytest;
 };
+
 
 /**
  * Вешает листенер на весь стейдж.
- * @param callbackFunction {function=} По дефолту - выход из деста.
- * @param isListenOnce {boolean=}
- * @returns {test.utils}
+ * @param {?Function=} opt_callbackFunction По дефолту - выход из деста.
+ * @param {boolean=} opt_isListenOnce
+ * @return {*}
  */
-test.utils.stageListen = function (callbackFunction, isListenOnce) {
-  callbackFunction = callbackFunction || test.exit;
-  var key = acgraph.events.listen(stage, acgraph.events.EventType.RENDER_FINISH, function (e) {
-    if (isListenOnce) acgraph.events.unlistenByKey(key);
-    test.utils.listenerFuncMain_(callbackFunction, e);
+anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
+  opt_callbackFunction = opt_callbackFunction || anytest.exit;
+  var key = window['acgraph']['events']['listen'](anytest.stage, window['acgraph']['events']['EventType']['RENDER_FINISH'], function(e) {
+    if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
+    anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
-  return this;
+  return anytest;
 };
 
-test.utils.listenerFuncMain_ = function (callbackFunction, e) {
-  if (anychart.DEVELOP) test.utils.CAT.isDevelop_();
-  callbackFunction.apply(this, [e]);
-  test.utils.modes.checkModes_();
-  test.utils.turnOffDelay_('main');
-};
 
 /**
- * Рисует чарт в слой стейджа.
- * @param _chart {Object=} chart or Element.
- * @returns {test.utils}
+ * @param {Function|null|undefined} callbackFunction
+ * @param {Event} e
+ * @private
+ * @ignore
  */
-test.utils.drawInStage = function (_chart) {
-  _chart = _chart || chart;
-  _chart.container(stage).draw();
-//  _chart.container(stage.layer()).draw();
-  return this;
+anytest.listenerFuncMain_ = function(callbackFunction, e) {
+  if (window['anychart'].DEVELOP) anytest.CAT.isDevelop();
+  callbackFunction.apply(callbackFunction, [e]);
+  anytest.modes.checkModes();
+  anytest.turnOffDelay('main');
 };
+
+
+/**
+ * Рисует чарт или элемент в слой стейджа.
+ * @param {Object=} opt_chart chart or Element.
+ * @return {*}
+ */
+anytest.drawInStage = function(opt_chart) {
+  opt_chart = opt_chart || anytest.chart;
+  opt_chart['container'](anytest.stage)['draw']();
+  // _chart.container(stage.layer()).draw();
+  return anytest;
+};
+
 
 /**
  * Список тех, кто отложил конец теста.
  * @type {Array}
  * @private
  */
-test.utils.delayTarget_ = ['main'];
+anytest.delayTarget_ = ['main'];
+
+
 /**
  * Откладывает завершение теста.
- * @param target {string}
- * @private
+ * @param {string} target
+ * @ignore
  */
-test.utils.needDelay_ = function (target) {
-  this.delayTarget_.push(target);
+anytest.needDelay = function(target) {
+  anytest.delayTarget_.push(target);
 };
+
+
 /**
  * Снимает отложенность завершения теста.
- * @param target {string}
- * @private
+ * @param {string} target
+ * @ignore
  */
-test.utils.turnOffDelay_ = function (target) {
-  this.delayTarget_.splice(this.delayTarget_.indexOf(target), 1);
-  this.tearDown_();
+anytest.turnOffDelay = function(target) {
+  var index = goog.array.indexOf(anytest.delayTarget_, target);
+  anytest.delayTarget_.splice(index, 1);
+  anytest.tearDown();
 };
 
 
@@ -191,5 +220,8 @@ anytest.log = anytest.utils.log;
 
 goog.exportSymbol('anytest.log', anytest.log);
 goog.exportSymbol('anytest.setUp', anytest.setUp);
+goog.exportSymbol('anytest.stage', anytest.stage);
 goog.exportSymbol('anytest.description', anytest.description);
 goog.exportSymbol('anytest.setCheckMsg', anytest.setCheckMsg);
+
+goog.exportSymbol('anytest.getScreenShot', anytest.setCheckMsg);

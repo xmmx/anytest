@@ -1,5 +1,5 @@
 goog.provide('anytest.modes');
-
+goog.require('goog.dom');
 
 
 /**
@@ -9,16 +9,16 @@ goog.provide('anytest.modes');
 
 
 /**
- * Включает/выключает режимы тестирования.
- * test.utils.modes('!all') - выключает все.
- * test.utils.modes('schemas') - включает экспорт.
- * test.utils.modes('all', '!resize') - включает все режимы, кроме ресайза.
- * и тд
- *  !!! Использовать до setUp() !!!
- * @param var_args {...} Аргументов может быть много.
- * @returns {test.utils}
+ * Включает/выключает режимы тестирования.<br/>
+ * anytest.modes('!all') - выключает все.<br/>
+ * anytest.modes('schemas') - включает экспорт.<br/>
+ * anytest.modes('all', '!resize') - включает все режимы, кроме ресайза.<br/>
+ * и тд<br/>
+ * <b>!!! Использовать до setUp() !!!</b>
+ * @param {...string} var_args Аргументов может быть много.
+ * @return {*}
  */
-test.utils.modes = function (var_args) {
+anytest.modes = function(var_args) {
   for (var i in arguments) {
     var mod = arguments[i];
     var flag = true;
@@ -27,152 +27,170 @@ test.utils.modes = function (var_args) {
       mod = mod.substr(1);
     }
     if (mod == 'all') {
-      this.settings_.modes.all(flag);
+      anytest.settings_.modes.all(flag);
     } else {
-      this.settings_.modes[mod] = flag;
+      anytest.settings_.modes[mod] = flag;
     }
   }
-  return this;
+  return anytest;
 };
 
-test.utils.modes.checkFlag_ = true;
+
+/**
+ * @type {boolean}
+ * @private
+ * @ignore
+ */
+anytest.modes.checkFlag_ = true;
+
+
 /**
  * Автоматически запускает режимы тестирования заданные в настройках.
- * @returns {null}
- * @private
+ * @return {null}
+ * @ignore
  */
-test.utils.modes.checkModes_ = function () {
-  if (!this.checkFlag_) return null;
-  var _modes = test.utils.settings_.modes;
+anytest.modes.checkModes = function() {
+  if (!anytest.modes.checkFlag_) return null;
+  var _modes = anytest.settings_.modes;
   if (_modes.hiddenContainer) {
-    if (!chart) {
+    if (!anytest.chart) {
       alert('Ошибка: Нет инстанса чарта!');
       return null;
     }
-    test.utils.needDelay_('hiddenContainer');
-    this.hiddenContainer_();
+    anytest.needDelay('hiddenContainer');
+    anytest.modes.hiddenContainer_();
   }
   if (_modes.resize) {
-    test.utils.needDelay_('resize');
-    this.resize_();
+    anytest.needDelay('resize');
+    anytest.modes.resize();
   }
   // самый "тяжелый" тест в конце.
   // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
   if (_modes.schemas && false) {
-    if (!chart) {
+    if (!anytest.chart) {
       alert('Ошибка: Нет инстанса чарта!');
       return null;
     }
-    test.utils.needDelay_('exportXML');
-    test.utils.needDelay_('exportJSON');
-    this.exportXMLJSON_();
+    anytest.needDelay('exportXML');
+    anytest.needDelay('exportJSON');
+    anytest.modes.exportXMLJSON_();
   }
-  this.checkFlag_ = false;
+  anytest.modes.checkFlag_ = false;
+  return null;
 };
+
 
 /**
  * Включает режим тестирования на Ресайз
- * @private
+ * @ignore
  */
-test.utils.modes.resize_ = function () {
-  var _type = test.enums.resizeTypes;
+anytest.modes.resize = function() {
+  var _type = anytest.enums.resizeTypes;
 
-  test.utils.sidePanels.resize.resizeTarget(chart, 1, _type.BOTH, 50, true);
-  test.utils.sidePanels.resize.resizeTarget(chart, -1, _type.BOTH, 50, true);
-  test.utils.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
+  anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.BOTH, 50, true);
+  anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
+  anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
 
 
-  if (chart) {
-    test.utils.sidePanels.resize.resizeTarget(chart, 1, _type.CHART, 50, true);
-    test.utils.sidePanels.resize.resizeTarget(chart, -1, _type.CHART, 50, true);
-    test.utils.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
+  if (anytest.chart) {
+    anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
+    anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
+    anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
   }
 
-  test.utils.sidePanels.resize.resizeTarget(chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
-  test.utils.sidePanels.resize.resizeTarget(chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
-  test.utils.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
+  anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
+  anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
+  anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
 
-  test.utils.sidePanels.resize.resizeTarget(chart, 1, _type.CONTAINER_ONLY, 50, true);
-  test.utils.sidePanels.resize.resizeTarget(chart, -1, _type.CONTAINER_ONLY, 50, true);
-  test.utils.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
+  anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_ONLY, 50, true);
+  anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_ONLY, 50, true);
+  anytest.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
 
-  test.utils.turnOffDelay_('resize');
+  anytest.turnOffDelay('resize');
 };
+
 
 /**
  * Включает режим тестирования на экспорт.
  * @private
+ * @return {null}
+ * @ignore
  */
-test.utils.modes.exportXMLJSON_ = function () {
-  if (anychart.DEVELOP) {
-//    alert('На DEVELOP версии проверять жопа!');
+anytest.modes.exportXMLJSON_ = function() {
+  if (window['anychart'].DEVELOP) {
+    // alert('На DEVELOP версии проверять жопа!');
     return null;
   }
 
   var _messageXML = 'XML schema is valid';
   var _messageJSON = 'JSON schema is valid';
-  test.utils.setCheckMsg(_messageXML);
-  test.utils.setCheckMsg(_messageJSON);
+  anytest.setCheckMsg(_messageXML);
+  anytest.setCheckMsg(_messageJSON);
 
-  var configXML = chart.toXml();
-  var configJSON = chart.toJson();
+  var configXML = anytest.chart['toXml']();
+  var configJSON = anytest.chart['toJson']();
 
   if (configJSON) {
-    acgraph.validate(configJSON, function (data) {
+    window['acgraph']['validate'](configJSON, function(data) {
       if (data == 'success') {
-        log(_messageJSON);
+        anytest.log(_messageJSON);
       }
-      var _saveChart = chart;
+      var _saveChart = anytest.chart;
       try {
-        chart.container().parent(null);
-        chart = null;
-        chart = anychart.fromJson(configJSON);
-        chart.container(stage).draw();
-        test.utils.chartListen(chart, function (e) {
-          test.utils.CAT.getScreen('restoreFromXML', 1);
-          test.utils.turnOffDelay_('exportJSON');
+        anytest.chart['container']()['parent'](null);
+        anytest.chart = null;
+        anytest.chart = window['anychart']['fromJson'](configJSON);
+        anytest.chart['container'](anytest.stage)['draw']();
+        anytest.chartListen(anytest.chart, function(e) {
+          anytest.CAT.getScreen('restoreFromXML', 1);
+          anytest.turnOffDelay('exportJSON');
           _step2();
         });
       } catch (e) {
-        chart = _saveChart;
-        chart.draw();
-        log(e.message, e.stack);
-        test.utils.turnOffDelay_('exportJSON');
+        anytest.chart = _saveChart;
+        anytest.chart['draw']();
+        //log(e.message, e.stack);
+        anytest.turnOffDelay('exportJSON');
         _step2();
       }
     });
   }
   // для того, чтоб тестировалось последовательно.
-  var _step2 = function () {
+  var _step2 = function() {
     if (configXML) {
-      var _saveChart = chart;
+      var _saveChart = anytest.chart;
       try {
-        chart.container().parent(null);
-        chart = null;
-        chart = anychart.fromXml(configXML);
-        chart.container(stage).draw();
-        test.utils.chartListen(chart, function (e) {
-          test.utils.CAT.getScreen('restoreFromXML', 1);
-          test.utils.turnOffDelay_('exportXML');
+        anytest.chart['container']()['parent'](null);
+        anytest.chart = null;
+        anytest.chart = window['anychart']['fromXml'](configXML);
+        anytest.chart['container'](anytest.stage)['draw']();
+        anytest.chartListen(anytest.chart, function(e) {
+          anytest.CAT.getScreen('restoreFromXML', 1);
+          anytest.turnOffDelay('exportXML');
         });
       } catch (e) {
-        chart = _saveChart;
-        chart.draw();
-        log(e.message, e.stack);
-        test.utils.turnOffDelay_('exportXML');
+        anytest.chart = _saveChart;
+        anytest.chart['draw']();
+        // log(e.message, e.stack);
+        anytest.turnOffDelay('exportXML');
       }
     }
-  }
+  };
+  return null;
 };
+
 
 /**
  * Включает режим тестирования на скрытый контейнер.
  * @private
+ * @ignore
  */
-test.utils.modes.hiddenContainer_ = function () {
+anytest.modes.hiddenContainer_ = function() {
   document.getElementById('container').style.display = 'none';
   document.getElementById('container').style.display = 'block';
-  test.utils.CAT.getScreen('hiddenContainer', 1);
+  anytest.CAT.getScreen('hiddenContainer', 1);
 
-  test.utils.turnOffDelay_('hiddenContainer');
+  anytest.turnOffDelay('hiddenContainer');
 };
+
+goog.exportSymbol('anytest.modes', anytest.modes);

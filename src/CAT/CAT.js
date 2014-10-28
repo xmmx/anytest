@@ -9,9 +9,9 @@ goog.provide('anytest.CAT');
 
 /**
  * Завершающая команда для САТ.
- * @private
+ * @ignore
  */
-anytest.CAT.exit_ = function() {
+anytest.CAT.exit = function() {
   anytest.log('CAT: exit');
 };
 
@@ -72,18 +72,18 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
 
 /**
  * Проверка, что девелоп персия js.
- * @private
+ * @ignore
  */
-anytest.CAT.isDevelop_ = function() {
+anytest.CAT.isDevelop = function() {
   anytest.log('CAT: develop_edition');
 };
 
 
 /**
  * Посылает команду сравнить сообщения из консоли.
- * @private
+ * @ignore
  */
-anytest.CAT.checkMsg_ = function() {
+anytest.CAT.checkMsg = function() {
   anytest.log('CAT: check_messages');
 };
 
@@ -98,5 +98,9 @@ anytest.CAT.action = function(x, y, opt_type) {
   opt_type = opt_type || 'click';
   anytest.log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
   // add point to base layer;
-  anytest.panels.interactive.initPoint(x, y, true);
+  anytest.panel.interactive.initPoint(x, y, true);
 };
+
+goog.exportSymbol('anytest.CAT', anytest.CAT);
+goog.exportSymbol('anytest.CAT.getScreen', anytest.CAT.getScreen);
+goog.exportSymbol('anytest.CAT.action', anytest.CAT.action);
