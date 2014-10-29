@@ -14,11 +14,18 @@
 <div id="container"></div>
 </body>
 <script>
+    var chart, stage;
     anychart.onDocumentLoad(function () {
         var test = anytest.setUp();
         test.log('test log');
 
-        test.createPanel('resize');
+        chart = anychart.lineChart([1,2,3]);
+
+        test.drawInStage(chart);
+
+        stage.resume();
+
+        test.createPanel('interactive');
     });
 </script>
 </html>

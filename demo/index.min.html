@@ -10,9 +10,16 @@
     <div id="container"></div>
 </body>
 <script>
+    var chart, stage;
     anychart.onDocumentLoad(function () {
         var test = anytest;
         test.setModes('all').setUp().log('test log').createPanel('resize');
+
+        chart = anychart.lineChart([1,2,3]);
+        test.drawInStage(chart);
+        stage.resume();
+
+        test.createPanel('interactive');
     });
 </script>
 </html>

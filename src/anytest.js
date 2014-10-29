@@ -26,7 +26,7 @@ anytest.stage = {};
  * Chart instance.
  * @ignore
  */
-anytest.chart = {};
+anytest.chart = [];
 
 
 /**
@@ -223,5 +223,4 @@ goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.stage', anytest.stage);
 goog.exportSymbol('anytest.description', anytest.description);
 goog.exportSymbol('anytest.setCheckMsg', anytest.setCheckMsg);
-
-goog.exportSymbol('anytest.getScreenShot', anytest.setCheckMsg);
+goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);

@@ -21,7 +21,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   var _resizeTarget = opt_resizeTarget || anytest.utils.getCheckedRadioByName('resizeTarget');
   var _types = anytest.enums.resizeTypes;
 
-  if (anytest.chart && _resizeTarget == _types.CHART) {
+  if (((anytest.chart && anytest.chart.length) || chartInstance) && _resizeTarget == _types.CHART) {
     _width = chartInstance['width']() || anytest.settings_.width;
     _height = chartInstance['height']() || anytest.settings_.height;
   } else if (_resizeTarget == _types.STAGE) {
@@ -41,7 +41,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   if (!opt_logOff)
     anytest.log('resize ' + _resizeTarget + ' from (', _width - _step, _height - _step, ') to (', _width, _height, ')');
 
-  if (anytest.chart && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
+  if (((anytest.chart && anytest.chart.length) || chartInstance) && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
     chartInstance['width'](_width);
     chartInstance['height'](_height);
   }
@@ -55,7 +55,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     document.getElementById('container').style.width = _width;
     document.getElementById('container').style.height = _height;
     if (_resizeTarget == _types.CONTAINER_FULL_PERCENT) {
-      if (anytest.chart) {
+      if (((anytest.chart && anytest.chart.length) || chartInstance)) {
         chartInstance['width']('100%');
         chartInstance['height']('100%');
       }
@@ -75,8 +75,8 @@ anytest.panel.resize.getHTMLContent = function() {
   var obj_ = arguments[1] || 'chart';
   var types_ = anytest.enums.resizeTypes;
   content = '<b>Resize panel</b><hr/>' +
-      '<input type="button" value="Inc(++)" onclick="anytest.sidePanels.resize.resizeTarget(' + obj_ + ', 1)">&nbsp;' +
-      '<input type="button" value="Dec(--)" onclick="anytest.sidePanels.resize.resizeTarget(' + obj_ + ', -1)">&nbsp;' +
+      '<input type="button" value="Inc(++)" onclick="anytest.panel.resize.resizeTarget(window[\'' + obj_ + '\'], 1)">&nbsp;' +
+      '<input type="button" value="Dec(--)" onclick="anytest.panel.resize.resizeTarget(window[\'' + obj_ + '\'], -1)">&nbsp;' +
       '<input type="text" id="resizeStep" value="10" style="width: 50px; text-align: right;">' +
       '<br/><br/><b>Target:</b><br/>' +
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.BOTH + '" CHECKED>Both<br/>';
@@ -87,3 +87,6 @@ anytest.panel.resize.getHTMLContent = function() {
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.CONTAINER_FULL_PERCENT + '">Container (chart 100%)';
   return content;
 };
+
+
+goog.exportSymbol('anytest.panel.resize.resizeTarget', anytest.panel.resize.resizeTarget);

@@ -137,3 +137,31 @@ anytest.panel.interactive.basicLayer = null;
  * @ignore
  */
 anytest.panel.interactive.additionalLayer = null;
+
+
+/**
+ * @ignore
+ * @return {string}
+ */
+anytest.panel.interactive.getHTMLContent = function() {
+  var content = '<b>Interactive Panel</b><hr/>' +
+      '<input type="button" value="Reset Layer" onclick="anytest.panel.interactive.reset()"><br/>' +
+      '<input type="button" value="Toggle basic layer" onclick="anytest.panel.interactive.toggleBasicLayer()">' +
+      '<input type="button" value="Remove last point" onclick="anytest.panel.interactive.removeLastPoint()">' +
+      '<br/><br/><b>Coordinates log:</b><br/>' +
+      '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
+
+  anytest.panel.interactive.basicLayer = anytest.stage['layer']();
+  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
+      .fill('blue .05')
+      .stroke('none')
+      .parent(anytest.panel.interactive.basicLayer);
+  anytest.panel.interactive.reset();
+
+  return content;
+};
+
+
+goog.exportSymbol('anytest.panel.interactive.reset', anytest.panel.interactive.reset);
+goog.exportSymbol('anytest.panel.interactive.toggleBasicLayer', anytest.panel.interactive.toggleBasicLayer);
+goog.exportSymbol('anytest.panel.interactive.removeLastPoint', anytest.panel.interactive.removeLastPoint);
