@@ -224,3 +224,6 @@ goog.exportSymbol('anytest.stage', anytest.stage);
 goog.exportSymbol('anytest.description', anytest.description);
 goog.exportSymbol('anytest.setCheckMsg', anytest.setCheckMsg);
 goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);
+goog.exportSymbol('anytest.stageListen', anytest.stageListen);
+goog.exportSymbol('anytest.chartListen', anytest.chartListen);
+goog.exportSymbol('anytest.exit', anytest.exit);
