@@ -52,8 +52,8 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   }
 
   if (_resizeTarget != _types.CHART && _resizeTarget != _types.STAGE) {
-    document.getElementById('container').style.width = _width;
-    document.getElementById('container').style.height = _height;
+    document.getElementById('container').style.width = _width + 'px';
+    document.getElementById('container').style.height = _height+ 'px';
     if (_resizeTarget == _types.CONTAINER_FULL_PERCENT) {
       if (((anytest.chart && anytest.chart.length) || chartInstance)) {
         chartInstance['width']('100%');
@@ -80,7 +80,7 @@ anytest.panel.resize.getHTMLContent = function() {
       '<input type="text" id="resizeStep" value="10" style="width: 50px; text-align: right;">' +
       '<br/><br/><b>Target:</b><br/>' +
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.BOTH + '" CHECKED>Both<br/>';
-  if (anytest.chart)
+  if (anytest.chart && anytest.chart.length)
     content += '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.CHART + '">Chart Only<br/>';
   content += '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.STAGE + '">Stage Only<br/>' +
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.CONTAINER_ONLY + '">Container Only<br/>' +

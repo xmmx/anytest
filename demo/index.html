@@ -19,13 +19,14 @@
         var test = anytest.setUp();
         test.log('test log');
 
-        chart = anychart.lineChart([1,2,3]);
-
-        test.drawInStage(chart);
+//        chart = anychart.lineChart([1,2,3]);
+        var table = anychart.elements.table();
+        table.contents([[1,2,3]]);
+        test.drawInStage(table);
 
         stage.resume();
 
-        test.createPanel('interactive');
+        test.createPanel('resize');
     });
 </script>
 </html>
