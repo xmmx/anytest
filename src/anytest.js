@@ -30,13 +30,23 @@ anytest.chart = [];
 
 
 /**
- * Выполняет подготовительные работы.
+ * Вызывается, если не нужен setUp().
+ */
+anytest.init = function() {
+  if (window['anychart'].DEVELOP) anytest.CAT.isDevelop();
+};
+
+
+/**
+ * Выполняет подготовительные работы. Создает stage и замораживает его.
  * @param {number|string=} opt_width
  * @param {number|string=} opt_height
  * @param {string=} opt_sizeTarget Enum: both, container, stage.
  * @return {*}
  */
 anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
+  anytest.init();
+
   anytest.utils.appendMyStyles(anytest.styles.rules);
 
   if (opt_width) anytest.settings_.width = opt_width;
@@ -71,6 +81,7 @@ anytest.exitState = false;
  */
 anytest.exit = function() {
   anytest.exitState = true;
+  anytest.tearDown();
 };
 
 
@@ -162,7 +173,7 @@ anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
  * @ignore
  */
 anytest.listenerFuncMain_ = function(callbackFunction, e) {
-  if (window['anychart'].DEVELOP) anytest.CAT.isDevelop();
+  anytest.needDelay('main');
   callbackFunction.apply(callbackFunction, [e]);
   anytest.modes.checkModes();
   anytest.turnOffDelay('main');
@@ -187,7 +198,7 @@ anytest.drawInStage = function(opt_chart) {
  * @type {Array}
  * @private
  */
-anytest.delayTarget_ = ['main'];
+anytest.delayTarget_ = [];
 
 
 /**
@@ -218,6 +229,16 @@ anytest.turnOffDelay = function(target) {
  */
 anytest.log = anytest.utils.log;
 
+
+/**
+ * Внутренняя хня для быстрого дебага.
+ * @ignore
+ * @type {Function}
+ */
+var log = anytest.log;
+
+
+goog.exportSymbol('anytest.init', anytest.init);
 goog.exportSymbol('anytest.log', anytest.log);
 goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.stage', anytest.stage);

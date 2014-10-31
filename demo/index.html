@@ -19,6 +19,10 @@
         var test = anytest.setUp();
         test.log('test log');
 
+        test.setCheckMsg('qqq');
+        test.CAT.getScreen('huriin');
+        test.setCheckMsg('qqq2');
+        test.setCheckMsg('qq32');
 //        chart = anychart.lineChart([1,2,3]);
         var table = anychart.elements.table();
         table.contents([[1,2,3]]);
@@ -27,6 +31,7 @@
         stage.resume();
 
         test.createPanel('resize');
+        test.exit();
     });
 </script>
 </html>
