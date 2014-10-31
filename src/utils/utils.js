@@ -29,19 +29,19 @@ var console = window['console'];
 anytest.utils.log = function() {
   if (console && console.log && typeof console.log != 'object')
     console.log.apply(console, arguments);
-  else {
-    if (!anytest.utils.statusDiv) {
-      // создаем текстареа вместо консоли.
-      anytest.utils.statusDiv = document.createElement('textarea');
-      anytest.utils.statusDiv.id = 'status';
-      anytest.utils.statusDiv.style.visibility = 'hidden';
-      document.body.appendChild(anytest.utils.statusDiv);
-    }
-    var args = [];
-    for (var a in arguments)
-      args.push(arguments[a]);
-    anytest.utils.statusDiv.innerHTML += args.join('\n') + '\n';
+  //  else {
+  if (!anytest.utils.statusDiv) {
+    // создаем текстареа вместо консоли.
+    anytest.utils.statusDiv = document.createElement('textarea');
+    anytest.utils.statusDiv.id = 'status';
+    anytest.utils.statusDiv.style.visibility = 'hidden';
+    document.body.appendChild(anytest.utils.statusDiv);
   }
+  var args = [];
+  for (var a in arguments)
+    args.push(arguments[a]);
+  anytest.utils.statusDiv.innerHTML += args.join('\n') + '\n';
+  //  }
   return window['anytest'];
 };
 

@@ -16,22 +16,13 @@
 <script>
     var chart, stage;
     anychart.onDocumentLoad(function () {
-        var test = anytest.setUp();
-        test.log('test log');
-
-        test.setCheckMsg('qqq');
-        test.CAT.getScreen('huriin');
-        test.setCheckMsg('qqq2');
-        test.setCheckMsg('qq32');
-//        chart = anychart.lineChart([1,2,3]);
-        var table = anychart.elements.table();
-        table.contents([[1,2,3]]);
-        test.drawInStage(table);
-
+        anytest.setUp();
+        anytest.setCheckMsg('Error: 4 Description: Feature "Bar chart" is not supported in this module.' +
+                ' See modules list for details.');
+        chart = anychart.barChart([4, 3, 8]);
+        anytest.drawInStage(chart);
+        anytest.chartListen();
         stage.resume();
-
-        test.createPanel('resize');
-        test.exit();
     });
 </script>
 </html>

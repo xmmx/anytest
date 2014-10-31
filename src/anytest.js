@@ -133,17 +133,18 @@ anytest.tearDown = function() {
 
 /**
  * Вешает листенер на чарт.
- * @param {Object} chart chart instance.
+ * @param {Object=} opt_chart chart instance.
  * @param {?Function=} opt_callbackFunction По дефолту - выход из деста.
  * @param {boolean=} opt_isListenOnce
  * @return {*}
  */
-anytest.chartListen = function(chart, opt_callbackFunction, opt_isListenOnce) {
+anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
   anytest.chart = window['chart'];
-  chart = chart || anytest.chart;
+  opt_chart = opt_chart || anytest.chart;
+  if (!opt_chart || !opt_chart['listen']) return null;
   opt_callbackFunction = opt_callbackFunction || anytest.exit;
-  var key = chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-    if (opt_isListenOnce) chart['unlistenByKey'](key);
+  var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+    if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
   return window['anytest'];
@@ -187,6 +188,7 @@ anytest.listenerFuncMain_ = function(callbackFunction, e) {
  */
 anytest.drawInStage = function(opt_chart) {
   opt_chart = opt_chart || anytest.chart;
+  if (!opt_chart['container']) return null;
   opt_chart['container'](anytest.stage)['draw']();
   // _chart.container(stage.layer()).draw();
   return window['anytest'];
