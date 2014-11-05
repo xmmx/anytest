@@ -33,7 +33,7 @@ anytest.chart = [];
  * Вызывается, если не нужен setUp().
  */
 anytest.init = function() {
-  if (window['anychart'].DEVELOP) anytest.CAT.isDevelop();
+  if (window['anychart']['DEVELOP']) anytest.CAT.isDevelop();
 };
 
 
