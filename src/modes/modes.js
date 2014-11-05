@@ -20,7 +20,7 @@ goog.require('goog.dom');
  * @return {*}
  */
 anytest.modes.set = function(var_args) {
-  for (var i in arguments) {
+  for (var i=0; i<arguments.length; i++) {
     var mod = arguments[i];
     var flag = true;
     if ('!' == mod.substr(0, 1)) {
