@@ -95,10 +95,10 @@ anytest.CAT.needCheckConsoleMsg = false;
 /**
  * Создает <div> с сообщением, которое мы ожидаем/неожидаем.
  * @param {string} txt Текст ожидаемого сообщения.
- * @param {boolean=} opt_isIgnored По дефолту не игнорить сообщения.
  * @param {number=} opt_count Количество сообщений. По умолчанию 1.
+ * @param {boolean=} opt_isIgnored По дефолту не игнорить сообщения.
  */
-anytest.setCheckMsg = function(txt, opt_isIgnored, opt_count) {
+anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
   opt_count = opt_count || 1;
   while (opt_count) {
     var _div = anytest.utils.createDiv();
