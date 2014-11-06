@@ -34,13 +34,13 @@ anytest.utils.log = function() {
     // создаем текстареа вместо консоли.
     anytest.utils.statusDiv = document.createElement('textarea');
     anytest.utils.statusDiv.id = 'status';
-    anytest.utils.statusDiv.style.visibility = 'hidden';
     document.body.appendChild(anytest.utils.statusDiv);
   }
   var args = [];
-  for (var a in arguments)
+  for (var a = 0; a < arguments.length; a++)
     args.push(arguments[a]);
-  anytest.utils.statusDiv.innerHTML += args.join('\n') + '\n';
+
+  document.getElementById('status').value += args.join('\n') + '\n';
   //  }
   return window['anytest'];
 };
