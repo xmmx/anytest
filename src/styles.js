@@ -13,9 +13,11 @@ anytest.styles.rules =
     '  width: 400px;' +
     '  height: 300px;' +
     '}' +
+
     '#status{' +
     '  display: none;' +
     '}' +
+
     'body {' +
     '  margin: 0;' +
     '}' +

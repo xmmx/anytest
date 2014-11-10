@@ -40,10 +40,28 @@ anytest.utils.log = function() {
   for (var a = 0; a < arguments.length; a++)
     args.push(arguments[a]);
 
-  document.getElementById('status').value += args.join('\n') + '\n';
+  document.getElementById('status').value = args.join('\n');
+
+  if (args[0].indexOf('CAT') == 0) {
+    anytest.utils.sleep(1000);
+  }
   //  }
   return window['anytest'];
 };
+
+
+/**
+ * Sleeper.
+ * @param {number} milliseconds .
+ */
+anytest.utils.sleep = function(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break;
+    }
+  }
+}
 
 
 /**

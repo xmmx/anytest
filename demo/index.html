@@ -14,14 +14,30 @@
 <div id="container"></div>
 </body>
 <script>
-    var chart, stage;
-    anychart.onDocumentLoad(function () {
+    var chart, series1, series2, series3;
+    anychart.onDocumentLoad(function() {
         anytest.setUp();
-        anytest.setCheckMsg('Error: 4 Description: Feature "Bar chart" is not supported in this module.' +
-                ' See modules list for details.');
-        chart = anychart.barChart([4, 3, 8]);
+        chart = anychart.lineChart();
+        var dataSet = anychart.data.set([
+            ['P1' , '322', '242', '162'],
+            ['P2' , '324', '254', '90'],
+            ['P3' , '329', '226', '50'],
+            ['P9' , '318', '288', '-156']
+        ]);
+        var seriesData_1 = dataSet.mapAs({x: [0], value: [1]});
+        var seriesData_2 = dataSet.mapAs({x: [0], value: [2]});
+        var seriesData_3 = dataSet.mapAs({x: [0], value: [3]});
+
+        series1 = chart.line(seriesData_1).fill('orange').markers(null);
+        series2 = chart.spline(seriesData_2).fill('red').markers(null);
+        series3 = chart.line(seriesData_3).fill('green').markers(null);
+
+        chart.legend().enabled(true);
         anytest.drawInStage(chart);
-        anytest.chartListen();
+        anytest.chartListen(chart, function() {
+            anytest.CAT.getScreen();
+            anytest.exit();
+        });
         stage.resume();
     });
 </script>

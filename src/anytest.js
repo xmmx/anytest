@@ -33,7 +33,10 @@ anytest.chart = [];
  * Вызывается, если не нужен setUp().
  */
 anytest.init = function() {
-  if (window['anychart']['DEVELOP']) anytest.CAT.isDevelop();
+  if (window['anychart']['DEVELOP'])
+    anytest.CAT.isDevelop();
+
+  anytest.utils.appendMyStyles(anytest.styles.rules);
 };
 
 
@@ -46,8 +49,6 @@ anytest.init = function() {
  */
 anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   anytest.init();
-
-  anytest.utils.appendMyStyles(anytest.styles.rules);
 
   if (opt_width) anytest.settings_.width = opt_width;
   if (opt_height) anytest.settings_.height = opt_height;
@@ -146,6 +147,7 @@ anytest.tearDown = function() {
 anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
   anytest.chart = window['chart'];
   opt_chart = opt_chart || anytest.chart;
+  opt_isListenOnce = opt_isListenOnce || true;
   if (!opt_chart || !opt_chart['listen']) return null;
   opt_callbackFunction = opt_callbackFunction || anytest.exit;
   var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
