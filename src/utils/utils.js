@@ -42,9 +42,6 @@ anytest.utils.log = function() {
 
   document.getElementById('status').value = args.join('\n');
 
-  if (args[0].indexOf('CAT') == 0) {
-    anytest.utils.sleep(1000);
-  }
   //  }
   return window['anytest'];
 };
