@@ -245,7 +245,7 @@ anytest.log = anytest.utils.log;
  * @type {Function}
  */
 var log = anytest.log;
-
+window['log'] = anytest.log;
 
 goog.exportSymbol('anytest.init', anytest.init);
 goog.exportSymbol('anytest.log', anytest.log);
