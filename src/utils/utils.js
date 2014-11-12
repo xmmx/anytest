@@ -48,15 +48,24 @@ anytest.utils.log = function() {
 
 
 /**
+ * @ignore
+ * @type {string}
+ */
+anytest.utils.statistic = '';
+
+
+/**
  * Sleeper.
  * @param {number} milliseconds .
  */
 anytest.utils.sleep = function(milliseconds) {
   var start = new Date().getTime();
-  while((new Date().getTime() - start) < milliseconds){
-
+  var cnt = 0;
+  while ((new Date().getTime() - start) < milliseconds) {
+    cnt++;
   }
-}
+  window['anytest']['utils']['statistic'] += 'sleep:' + cnt + '\n';
+};
 
 
 /**
@@ -107,3 +116,5 @@ anytest.utils.appendMyStyles = function(css) {
 
   head.appendChild(style);
 };
+
+goog.exportSymbol('anytest.utils.statistic', anytest.utils.statistic);

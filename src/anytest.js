@@ -37,6 +37,8 @@ anytest.init = function() {
     anytest.CAT.isDevelop();
 
   anytest.utils.appendMyStyles(anytest.styles.rules);
+
+  window['anychart']['licenseKey']('anychart-CAT-64a5f14c-5d66a546');
 };
 
 
@@ -113,12 +115,21 @@ anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
 
 
 /**
+ * @type {null}
+ * @ignore
+ */
+anytest.utils.descriptionDiv = null;
+
+
+/**
  * Добавляет описание теста.
  * @param {string} txt
  * @return {*}
  */
 anytest.description = function(txt) {
-  anytest.utils.createDiv('description').innerHTML = txt;
+  if (!anytest.utils.descriptionDiv)
+    anytest.utils.descriptionDiv = anytest.utils.createDiv('description');
+  anytest.utils.descriptionDiv.innerHTML += txt;
   return window['anytest'];
 };
 
@@ -146,16 +157,28 @@ anytest.tearDown = function() {
  */
 anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
   anytest.chart = window['chart'];
-  anytest.utils.sleep(1000);
   opt_chart = opt_chart || anytest.chart;
+  // вырубаем кредитс, по нашему ключу.
+  if (window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+    opt_chart['credits'](null);
+
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   if (!opt_chart || !opt_chart['listen']) return null;
-  opt_callbackFunction = opt_callbackFunction || anytest.exit;
+  opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
     if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
   return window['anytest'];
+};
+
+
+/**
+ * @ignore
+ */
+anytest.defaultCallbackFunction = function() {
+  anytest.CAT.getScreen();
+  anytest.exit();
 };
 
 
@@ -166,7 +189,7 @@ anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce
  * @return {*}
  */
 anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
-  opt_callbackFunction = opt_callbackFunction || anytest.exit;
+  opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   var key = window['acgraph']['events']['listen'](anytest.stage, window['acgraph']['events']['EventType']['RENDER_FINISH'], function(e) {
     if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);

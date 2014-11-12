@@ -13,27 +13,5 @@
 <body>
 <div id="container"></div>
 </body>
-<script>
-    anychart.onDocumentLoad(function() {
-        anytest.init();
-        var chart = anychart.columnChart();
-        var flag = true;
-        anytest.chartListen(chart, function() {
-            flag = !flag;
-            log(flag);
-            if (flag) {
-                anytest.CAT.getScreen();
-                anytest.exit();
-            }else{
-                // переопределяем контейнер
-                chart.container('container');
-                chart.draw();
-            }
-        });
-        chart.column([1,2,3,4]);
-        chart.title().text('Changing container');
-        chart.container('container');
-        chart.draw();
-    });
-</script>
+<script src="data.js"></script>
 </html>
