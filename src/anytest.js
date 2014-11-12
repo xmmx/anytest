@@ -146,6 +146,7 @@ anytest.tearDown = function() {
  */
 anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
   anytest.chart = window['chart'];
+  anytest.utils.sleep(1000);
   opt_chart = opt_chart || anytest.chart;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   if (!opt_chart || !opt_chart['listen']) return null;
