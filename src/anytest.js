@@ -158,12 +158,11 @@ anytest.tearDown = function() {
 anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
   anytest.chart = window['chart'];
   opt_chart = opt_chart || anytest.chart;
+  if (!opt_chart || !opt_chart['listen']) return null;
   // вырубаем кредитс, по нашему ключу.
   if (window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
     opt_chart['credits'](null);
-
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
-  if (!opt_chart || !opt_chart['listen']) return null;
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
     if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
