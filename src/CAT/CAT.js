@@ -49,7 +49,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
       opt_imgName = anytest.CAT.defaultScreenshotName_;
       anytest.CAT.duplicateBasic_ = true;
       if (window['anychart']['licenseKey']() != 'anychart-CAT-64a5f14c-5d66a546') {
-        anytest.utils.sleep(10000);
+        anytest.utils.sleep(10);
         anytest.description('<br/>Тест ждет 10 секунд, пока загрузится картинка.');
       }
     } else {

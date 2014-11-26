@@ -190,7 +190,7 @@ anytest.defaultCallbackFunction = function() {
 anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
-  var key = window['acgraph']['events']['listen'](anytest.stage, window['acgraph']['events']['EventType']['RENDER_FINISH'], function(e) {
+  var key = window['acgraph']['events']['listen'](anytest.stage, window['acgraph']['events']['EventType']['STAGE_RENDERED'], function(e) {
     if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
