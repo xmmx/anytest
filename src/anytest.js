@@ -52,8 +52,16 @@ anytest.init = function() {
 anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   anytest.init();
 
-  if (opt_width) anytest.settings_.width = opt_width;
-  if (opt_height) anytest.settings_.height = opt_height;
+  if (opt_width) {
+    anytest.settings_.width = opt_width.toString();
+    if (anytest.settings_.width.indexOf('%') == -1)
+      anytest.settings_.width += 'px';
+  }
+  if (opt_height) {
+    anytest.settings_.height = opt_height.toString();
+    if (anytest.settings_.height.indexOf('%') == -1)
+      anytest.settings_.height += 'px';
+  }
   if (opt_sizeTarget) anytest.settings_.sizeTarget = opt_sizeTarget;
   var _types = anytest.enums.resizeTypes;
 
@@ -67,7 +75,6 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   }
   anytest.stage['suspend']();
   window['stage'] = anytest.stage;
-
   return window['anytest'];
 };
 
