@@ -66,9 +66,9 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   var _types = anytest.enums.resizeTypes;
 
   if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
-    anytest.stage = window['acgraph'].create('container', anytest.settings_.width, anytest.settings_.height);
+    anytest.stage = window['acgraph']['create']('container', anytest.settings_.width, anytest.settings_.height);
   else
-    anytest.stage = window['acgraph'].create('container');
+    anytest.stage = window['acgraph']['create']('container');
   if (anytest.settings_.sizeTarget != _types.STAGE) {
     document.getElementById('container').style.width = anytest.settings_.width;
     document.getElementById('container').style.height = anytest.settings_.height;
