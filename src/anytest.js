@@ -197,7 +197,7 @@ anytest.defaultCallbackFunction = function() {
 anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
-  var key = window['acgraph']['events']['listen'](anytest.stage, 'stagerendered', function(e) {
+  var key = window['acgraph']['events']['listen'](window['stage'], 'stagerendered', function(e) {
     if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
@@ -227,7 +227,7 @@ anytest.listenerFuncMain_ = function(callbackFunction, e) {
 anytest.drawInStage = function(opt_chart) {
   opt_chart = opt_chart || anytest.chart;
   if (!opt_chart['container']) return null;
-  opt_chart['container'](anytest.stage)['draw']();
+  opt_chart['container'](window['stage'])['draw']();
   // _chart.container(stage.layer()).draw();
   return window['anytest'];
 };

@@ -15,8 +15,8 @@ anytest.panel.interactive.reset = function() {
   if (anytest.panel.interactive.additionalLayer)
     anytest.panel.interactive.additionalLayer['dispose']();
 
-  anytest.panel.interactive.additionalLayer = anytest.stage['layer']();
-  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
+  anytest.panel.interactive.additionalLayer = window['stage']['layer']();
+  window['stage']['rect'](0, 0, window['stage']['width'](), window['stage']['height']())
       .fill('orange .05')
       .stroke('none')
       .parent(anytest.panel.interactive.additionalLayer);
@@ -108,14 +108,14 @@ anytest.panel.interactive.newPointCount_ = 0;
  */
 anytest.panel.interactive.initPoint = function(x, y, opt_isBasicLayer) {
   if (opt_isBasicLayer) {
-    anytest.stage['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
+    window['stage']['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
   } else {
     anytest.panel.interactive.newPointCount_++;
-    anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_] = anytest.stage['layer']()['parent'](anytest.panel.interactive.additionalLayer);
-    anytest.stage['circle'](x, y, 4)['fill']('blue')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    anytest.stage['circle'](x, y, 3)['fill']('red')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    anytest.stage['text'](x, y, '' + anytest.panel.interactive.newPointCount_)['color']('white')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    anytest.stage['text'](x + 1, y + 1, '' + anytest.panel.interactive.newPointCount_)['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
+    anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_] = window['stage']['layer']()['parent'](anytest.panel.interactive.additionalLayer);
+    window['stage']['circle'](x, y, 4)['fill']('blue')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
+    window['stage']['circle'](x, y, 3)['fill']('red')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
+    window['stage']['text'](x, y, '' + anytest.panel.interactive.newPointCount_)['color']('white')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
+    window['stage']['text'](x + 1, y + 1, '' + anytest.panel.interactive.newPointCount_)['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
     anytest.panel.interactive.log(x, y);
   }
 };
@@ -151,8 +151,8 @@ anytest.panel.interactive.getHTMLContent = function() {
       '<br/><br/><b>Coordinates log:</b><br/>' +
       '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
 
-  anytest.panel.interactive.basicLayer = anytest.stage['layer']();
-  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
+  anytest.panel.interactive.basicLayer = window['stage']['layer']();
+  window['stage']['rect'](0, 0, window['stage']['width'](), window['stage']['height']())
       .fill('blue .05')
       .stroke('none')
       .parent(anytest.panel.interactive.basicLayer);

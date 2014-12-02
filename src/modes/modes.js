@@ -93,13 +93,12 @@ anytest.modes.resize = function() {
   anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
   anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
 
-
   if (anytest.chart) {
     anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
     anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
     anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
   }
-
+//debugger;
   anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
   anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
   anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
@@ -142,7 +141,7 @@ anytest.modes.exportXMLJSON_ = function() {
         anytest.chart['container']()['parent'](null);
         anytest.chart = null;
         anytest.chart = window['anychart']['fromJson'](configJSON);
-        anytest.chart['container'](anytest.stage)['draw']();
+        anytest.chart['container'](window['stage'])['draw']();
         anytest.chartListen(anytest.chart, function(e) {
           anytest.CAT.getScreen('restoreFromXML', 1);
           anytest.turnOffDelay('exportJSON');
@@ -165,7 +164,7 @@ anytest.modes.exportXMLJSON_ = function() {
         anytest.chart['container']()['parent'](null);
         anytest.chart = null;
         anytest.chart = window['anychart']['fromXml'](configXML);
-        anytest.chart['container'](anytest.stage)['draw']();
+        anytest.chart['container'](window['stage'])['draw']();
         anytest.chartListen(anytest.chart, function(e) {
           anytest.CAT.getScreen('restoreFromXML', 1);
           anytest.turnOffDelay('exportXML');
