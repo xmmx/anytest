@@ -48,10 +48,6 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
     if (!anytest.CAT.duplicateBasic_) {
       opt_imgName = anytest.CAT.defaultScreenshotName_;
       anytest.CAT.duplicateBasic_ = true;
-      if (window['anychart']['licenseKey']() != 'anychart-CAT-64a5f14c-5d66a546') {
-        anytest.utils.sleep(10);
-        anytest.description('<br/>Тест ждет 10 секунд, пока загрузится картинка.');
-      }
     } else {
       alert('getScreen пытается перезаписать основной файл!');
       return null;
