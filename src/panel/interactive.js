@@ -107,6 +107,7 @@ anytest.panel.interactive.newPointCount_ = 0;
  * @ignore
  */
 anytest.panel.interactive.initPoint = function(x, y, opt_isBasicLayer) {
+  if (!window['stage']) window['stage'] = window['chart']['container']();
   if (opt_isBasicLayer) {
     window['stage']['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
   } else {
@@ -150,7 +151,7 @@ anytest.panel.interactive.getHTMLContent = function() {
       '<input type="button" value="Remove last point" onclick="anytest.panel.interactive.removeLastPoint()">' +
       '<br/><br/><b>Coordinates log:</b><br/>' +
       '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
-
+  if (!window['stage']) window['stage'] = window['chart']['container']();
   anytest.panel.interactive.basicLayer = window['stage']['layer']();
   window['stage']['rect'](0, 0, window['stage']['width'](), window['stage']['height']())
       .fill('blue .05')
