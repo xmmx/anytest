@@ -24,7 +24,7 @@ anytest.settings_.sizeTarget = anytest.enums.resizeTypes.BOTH;
  */
 anytest.settings_.modes = {
   resize: false, // only SINGLE chart
-  schemas: false, // only SINGLE chart
+  schemas: true, // only SINGLE chart
   hiddenContainer: false, // only SINGLE chart
   all: function(flag) {
     anytest.settings_.modes.resize = flag;

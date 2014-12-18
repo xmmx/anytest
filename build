@@ -19,6 +19,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 CONTRIB_PATH = os.path.join(PROJECT_PATH, 'contrib')
 SRC_PATH = os.path.join(PROJECT_PATH, 'src')
 OUT_PATH = os.path.join(PROJECT_PATH, 'out')
+EXTERNAL_PATH = os.path.join(PROJECT_PATH, 'external')
 
 #documentation
 JS_DOC_PATH = os.path.join(CONTRIB_PATH, 'jsdoc')
@@ -277,6 +278,36 @@ def __call_compiler(commands):
 #=======================================================================================================================
 #           Build deps
 #=======================================================================================================================
+def __rewrite_out_file():
+    tv4 = open(os.path.join(EXTERNAL_PATH, 'tv4.min.js')).read()
+    json_schema = open(os.path.join(EXTERNAL_PATH, 'json-schema.json')).read()
+    xml_schema = open(os.path.join(EXTERNAL_PATH, 'xml-schema.xsd')).read()
+    xmllint = open(os.path.join(EXTERNAL_PATH, 'xmllint.js')).read()
+
+    json_schema = re.sub('\n', '', json_schema)
+    json_schema = json_schema.replace('\\', '\\\\')
+    json_schema = re.sub('\s{2,}', ' ', json_schema)
+    json_schema = 'function getJSONSchema(){ return ' + json_schema + ';}\n'
+    xml_schema = re.sub('\n', '', xml_schema)
+    xml_schema = xml_schema.replace('\\', '\\\\')
+    xml_schema = re.sub('\s{2,}', ' ', xml_schema)
+    xml_schema = 'function getXMLSchema(){ return \'' + xml_schema + '\';}'
+
+    f = open(os.path.join(OUT_PATH, 'schemas.js'),'w')
+    f.write(json_schema)
+    f.write(xml_schema)
+    f.close()
+
+    f = open(os.path.join(OUT_PATH, 'anytest.min.js'),'a')
+    f.write(tv4)
+    f.write(xmllint)
+    f.write(json_schema)
+    f.write(xml_schema)
+    f.close()
+
+#=======================================================================================================================
+#           Build deps
+#=======================================================================================================================
 @sync_required
 def __build_deps():
     output_file = os.path.join(SRC_PATH, 'deps.js')
@@ -477,6 +508,7 @@ def __exec_main_script():
         __sync_contrib()
     elif command == 'compile':
         __compile_project()
+        __rewrite_out_file()
     elif command == 'deps':
         __build_deps()
     elif command == 'lint':

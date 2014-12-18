@@ -21,7 +21,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   var _resizeTarget = opt_resizeTarget || anytest.utils.getCheckedRadioByName('resizeTarget');
   var _types = anytest.enums.resizeTypes;
 
-  if (((anytest.chart && anytest.chart.width) || chartInstance) && _resizeTarget == _types.CHART) {
+  if (((anytest.chart && anytest.chart['width']) || chartInstance) && _resizeTarget == _types.CHART) {
     _width = chartInstance['width']() || anytest.settings_.width;
     _height = chartInstance['height']() || anytest.settings_.height;
   } else if (_resizeTarget == _types.STAGE) {
@@ -46,7 +46,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
       window['stage']['suspend']();
       window['stage']['width']('100%');
       window['stage']['height']('100%');
-      if (((anytest.chart && anytest.chart.width) || chartInstance)) {
+      if (((anytest.chart && anytest.chart['width']) || chartInstance)) {
         chartInstance['width']('100%');
         chartInstance['height']('100%');
       }
@@ -56,7 +56,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     document.getElementById('container').style.height = _height + 'px';
   }
 
-  if (((anytest.chart && anytest.chart.width) || chartInstance) && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
+  if (((anytest.chart && anytest.chart['width']) || chartInstance) && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
     chartInstance['width'](_width);
     chartInstance['height'](_height);
   }
@@ -84,7 +84,7 @@ anytest.panel.resize.getHTMLContent = function() {
       '<input type="text" id="resizeStep" value="10" style="width: 50px; text-align: right;">' +
       '<br/><br/><b>Target:</b><br/>' +
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.BOTH + '" CHECKED>Both<br/>';
-  if (anytest.chart && anytest.chart.width)
+  if (anytest.chart && anytest.chart['width'])
     content += '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.CHART + '">Chart Only<br/>';
   content += '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.STAGE + '">Stage Only<br/>' +
       '&nbsp;&nbsp;<input type="radio" name="resizeTarget" value="' + types_.CONTAINER_ONLY + '">Container Only<br/>' +

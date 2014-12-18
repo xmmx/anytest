@@ -117,4 +117,37 @@ anytest.utils.appendMyStyles = function(css) {
   head.appendChild(style);
 };
 
+
+/**
+ *
+ * @param o1
+ * @param o2
+ * @return {*}
+ */
+anytest.utils.compareObjects = function(o1, o2) {
+  var k, kDiff,
+      diff = {};
+  for (k in o1) {
+    if (!o1.hasOwnProperty(k)) {
+    } else if (typeof o1[k] != 'object' || typeof o2[k] != 'object') {
+      if (!(k in o2) || o1[k] !== o2[k]) {
+        diff[k] = o2[k];
+      }
+    } else if (kDiff = anytest.utils.compareObjects(o1[k], o2[k])) {
+      diff[k] = kDiff;
+    }
+  }
+  for (k in o2) {
+    if (o2.hasOwnProperty(k) && !(k in o1)) {
+      diff[k] = o2[k];
+    }
+  }
+  for (k in diff) {
+    if (diff.hasOwnProperty(k)) {
+      return diff;
+    }
+  }
+  return false;
+};
+
 goog.exportSymbol('anytest.utils.statistic', anytest.utils.statistic);

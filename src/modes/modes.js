@@ -20,7 +20,7 @@ goog.require('goog.dom');
  * @return {*}
  */
 anytest.modes.set = function(var_args) {
-  for (var i=0; i<arguments.length; i++) {
+  for (var i = 0; i < arguments.length; i++) {
     var mod = arguments[i];
     var flag = true;
     if ('!' == mod.substr(0, 1)) {
@@ -68,14 +68,10 @@ anytest.modes.checkModes = function() {
   }
   // самый "тяжелый" тест в конце.
   // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
-  if (_modes.schemas && false) {
-    if (!anytest.chart) {
-      alert('Ошибка: Нет инстанса чарта!');
-      return null;
+  if (_modes.schemas) {
+    if (window['chart']) {
+      anytest.modes.exportXMLJSON_();
     }
-    anytest.needDelay('exportXML');
-    anytest.needDelay('exportJSON');
-    anytest.modes.exportXMLJSON_();
   }
   anytest.modes.checkFlag_ = false;
   return null;
@@ -98,7 +94,7 @@ anytest.modes.resize = function() {
     anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
     anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
   }
-//debugger;
+
   anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
   anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
   anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
@@ -119,65 +115,70 @@ anytest.modes.resize = function() {
  */
 anytest.modes.exportXMLJSON_ = function() {
   if (window['anychart'].DEVELOP) {
-    // alert('На DEVELOP версии проверять жопа!');
+//    alert('На DEVELOP версии проверять жопа изза срани в консоли!');
     return null;
   }
+  window['modes'] = {};
+  window['modes']['configXML'] = window['chart']['toXml']();
+  window['modes']['configJSON'] = window['chart']['toJson']();
 
-  var _messageXML = 'XML schema is valid';
-  var _messageJSON = 'JSON schema is valid';
-  anytest.setCheckMsg(_messageXML);
-  anytest.setCheckMsg(_messageJSON);
-
-  var configXML = anytest.chart['toXml']();
-  var configJSON = anytest.chart['toJson']();
-
-  if (configJSON) {
-    window['acgraph']['validate'](configJSON, function(data) {
-      if (data == 'success') {
-        anytest.log(_messageJSON);
-      }
-      var _saveChart = anytest.chart;
-      try {
-        anytest.chart['container']()['parent'](null);
-        anytest.chart = null;
-        anytest.chart = window['anychart']['fromJson'](configJSON);
-        anytest.chart['container'](window['stage'])['draw']();
-        anytest.chartListen(anytest.chart, function(e) {
-          anytest.CAT.getScreen('restoreFromXML', 1);
-          anytest.turnOffDelay('exportJSON');
-          _step2();
+  if (window['modes']['configJSON']) {
+    anytest.stepsArray.push(function() {
+      var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
+      var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
+      if (diff)
+        log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
+      else {
+        var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], window['getJSONSchema']());
+        if (!validResp || !validResp.valid)
+          log('JSON not valid by schema', validResp);
+        anytest.stepsArray.unshift(function() {
+          try {
+            window['chart']['dispose']();
+            delete window['chart'];
+            window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
+            window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+              anytest.stepsArray.unshift(function() {
+                anytest.CAT.getScreen('restoreFromJSON', 1);
+              });
+              document.getElementsByClassName('CAT_STATUS').id = 'ready';
+              log('CAT: ready');
+            });
+            window['chart']['container'](window['stage'])['draw']();
+          } catch (e) {
+            log(e.message, e.stack);
+          }
         });
-      } catch (e) {
-        anytest.chart = _saveChart;
-        anytest.chart['draw']();
-        //log(e.message, e.stack);
-        anytest.turnOffDelay('exportJSON');
-        _step2();
       }
     });
   }
   // для того, чтоб тестировалось последовательно.
-  var _step2 = function() {
-    if (configXML) {
-      var _saveChart = anytest.chart;
+  if (window['modes']['configXML']) {
+    anytest.stepsArray.push(function() {
+      var Module = {};
+      Module['xml'] = window['modes']['configXML'];
+      Module['schema'] = window['getXMLSchema']();
+      Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
+      var result = window['validateXML'](Module);
+
+      if (result.trim() != 'file.xml validates') log(result);
       try {
-        anytest.chart['container']()['parent'](null);
-        anytest.chart = null;
-        anytest.chart = window['anychart']['fromXml'](configXML);
-        anytest.chart['container'](window['stage'])['draw']();
-        anytest.chartListen(anytest.chart, function(e) {
-          anytest.CAT.getScreen('restoreFromXML', 1);
-          anytest.turnOffDelay('exportXML');
+        window['chart']['dispose']();
+        delete window['chart'];
+        window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
+        window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+          anytest.stepsArray.unshift(function() {
+            anytest.CAT.getScreen('restoreFromXML', 1);
+          });
+          document.getElementsByClassName('CAT_STATUS').id = 'ready';
+          log('CAT: ready');
         });
+        window['chart']['container'](window['stage'])['draw']();
       } catch (e) {
-        anytest.chart = _saveChart;
-        anytest.chart['draw']();
-        // log(e.message, e.stack);
-        anytest.turnOffDelay('exportXML');
+        log(e.message, e.stack);
       }
-    }
-  };
-  return null;
+    });
+  }
 };
 
 
@@ -193,6 +194,7 @@ anytest.modes.hiddenContainer_ = function() {
 
   anytest.turnOffDelay('hiddenContainer');
 };
+
 
 /**
  * Включает/выключает режимы тестирования.<br/>

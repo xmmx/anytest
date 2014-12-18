@@ -151,6 +151,9 @@ anytest.tearDown = function() {
     if (anytest.CAT.needCheckConsoleMsg)
       anytest.CAT.checkMsg();
     anytest.CAT.exit();
+    anytest.utils.createDiv('ready').className = "CAT_STATUS";
+    log('CAT: ready');
+//    anytest.execStep();
   }
 };
 
@@ -166,9 +169,6 @@ anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce
   anytest.chart = window['chart'];
   opt_chart = opt_chart || anytest.chart;
   if (!opt_chart || !opt_chart['listen']) return null;
-  // вырубаем кредитс, по нашему ключу.
-  if (window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
-    opt_chart['credits'](null);
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
@@ -183,7 +183,9 @@ anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce
  * @ignore
  */
 anytest.defaultCallbackFunction = function() {
-  anytest.CAT.getScreen();
+  anytest.stepsArray.push(function() {
+    anytest.CAT.getScreen();
+  });
   anytest.exit();
 };
 
@@ -226,6 +228,11 @@ anytest.listenerFuncMain_ = function(callbackFunction, e) {
  */
 anytest.drawInStage = function(opt_chart) {
   opt_chart = opt_chart || anytest.chart;
+
+  // вырубаем кредитс, по нашему ключу.
+  if (opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+    opt_chart['credits'](null);
+
   if (!opt_chart['container']) return null;
   opt_chart['container'](window['stage'])['draw']();
   // _chart.container(stage.layer()).draw();
@@ -263,11 +270,19 @@ anytest.turnOffDelay = function(target) {
 };
 
 
-/**
- * Выводит в консоль (или специально обученный див (если нет консоли)) сообщение или значение переданных аргументов.
- * @type {Function}
- */
-anytest.log = anytest.utils.log;
+anytest.stepsArray = [];
+
+
+anytest.execStep = function() {
+  if (!anytest.stepsArray.length) return;
+  if (document.getElementById('status')) document.getElementById('status').value = '';
+  var stepFunction = anytest.stepsArray.shift();
+  stepFunction();
+  if (!document.getElementById('status').value){
+    return 'wait';
+  }
+  return document.getElementById('status').value;
+};
 
 
 /**
@@ -275,13 +290,14 @@ anytest.log = anytest.utils.log;
  * @ignore
  * @type {Function}
  */
-var log = anytest.log;
-window['log'] = anytest.log;
+var log = anytest.utils.log;
+window['log'] = anytest.utils.log;
 
 goog.exportSymbol('anytest.init', anytest.init);
-goog.exportSymbol('anytest.log', anytest.log);
 goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.stage', anytest.stage);
+goog.exportSymbol('anytest.stepsArray', anytest.stepsArray);
+goog.exportSymbol('anytest.execStep', anytest.execStep);
 goog.exportSymbol('anytest.description', anytest.description);
 goog.exportSymbol('anytest.setCheckMsg', anytest.setCheckMsg);
 goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);
