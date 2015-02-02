@@ -39,7 +39,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   _height += _step;
 
   if (!opt_logOff)
-    anytest.log('resize ' + _resizeTarget + ' from (', _width - _step, _height - _step, ') to (', _width, _height, ')');
+    log('resize ' + _resizeTarget + ' from (', _width - _step, _height - _step, ') to (', _width, _height, ')');
 
   if (_resizeTarget != _types.CHART && _resizeTarget != _types.STAGE) {
     if (_resizeTarget == _types.CONTAINER_FULL_PERCENT) {

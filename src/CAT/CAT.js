@@ -75,7 +75,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
  * @ignore
  */
 anytest.CAT.isDevelop = function() {
-  anytest.log('CAT: develop_edition');
+  log('CAT: develop_edition');
 };
 
 
@@ -84,7 +84,7 @@ anytest.CAT.isDevelop = function() {
  * @ignore
  */
 anytest.CAT.checkMsg = function() {
-  anytest.log('CAT: check_messages');
+  log('CAT: check_messages');
 };
 
 
@@ -96,7 +96,7 @@ anytest.CAT.checkMsg = function() {
  */
 anytest.CAT.action = function(x, y, opt_type) {
   opt_type = opt_type || 'click';
-  anytest.log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
+  log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
   // add point to base layer;
   anytest.panel.interactive.initPoint(x, y, true);
 };
