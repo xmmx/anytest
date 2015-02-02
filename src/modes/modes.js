@@ -123,38 +123,29 @@ anytest.modes.exportXMLJSON_ = function() {
   window['modes']['configJSON'] = window['chart']['toJson']();
 
   if (window['modes']['configJSON']) {
-    anytest.stepsArray.push(function() {
-      var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
-      var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
-      if (diff)
-        log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
-      else {
-        var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], window['getJSONSchema']());
-        if (!validResp || !validResp.valid)
-          log('JSON not valid by schema', validResp);
-        anytest.stepsArray.unshift(function() {
-          try {
-            window['chart']['dispose']();
-            delete window['chart'];
-            window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
-            window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-              anytest.stepsArray.unshift(function() {
-                anytest.CAT.getScreen('restoreFromJSON', 1);
-              });
-              document.getElementsByClassName('CAT_STATUS').id = 'ready';
-              log('CAT: ready');
-            });
-            window['chart']['container'](window['stage'])['draw']();
-          } catch (e) {
-            log(e.message, e.stack);
-          }
-        });
-      }
-    });
+    var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
+    var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
+    if (diff)
+      log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
+    else {
+      var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], window['getJSONSchema']());
+      if (!validResp || !validResp.valid)
+        log('JSON not valid by schema', validResp);
+        try {
+          window['chart']['dispose']();
+          delete window['chart'];
+          window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
+          window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+            anytest.CAT.getScreen('restoreFromJSON', 1);
+          });
+          window['chart']['container'](window['stage'])['draw']();
+        } catch (e) {
+          log(e.message, e.stack);
+        }
+    }
   }
   // для того, чтоб тестировалось последовательно.
   if (window['modes']['configXML']) {
-    anytest.stepsArray.push(function() {
       var Module = {};
       Module['xml'] = window['modes']['configXML'];
       Module['schema'] = window['getXMLSchema']();
@@ -167,17 +158,12 @@ anytest.modes.exportXMLJSON_ = function() {
         delete window['chart'];
         window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
         window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-          anytest.stepsArray.unshift(function() {
             anytest.CAT.getScreen('restoreFromXML', 1);
-          });
-          document.getElementsByClassName('CAT_STATUS').id = 'ready';
-          log('CAT: ready');
         });
         window['chart']['container'](window['stage'])['draw']();
       } catch (e) {
         log(e.message, e.stack);
       }
-    });
   }
 };
 

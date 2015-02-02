@@ -151,9 +151,6 @@ anytest.tearDown = function() {
     if (anytest.CAT.needCheckConsoleMsg)
       anytest.CAT.checkMsg();
     anytest.CAT.exit();
-    anytest.utils.createDiv('ready').className = "CAT_STATUS";
-    log('CAT: ready');
-//    anytest.execStep();
   }
 };
 
@@ -183,9 +180,7 @@ anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce
  * @ignore
  */
 anytest.defaultCallbackFunction = function() {
-  anytest.stepsArray.push(function() {
-    anytest.CAT.getScreen();
-  });
+  anytest.CAT.getScreen();
   anytest.exit();
 };
 
@@ -270,21 +265,6 @@ anytest.turnOffDelay = function(target) {
 };
 
 
-anytest.stepsArray = [];
-
-
-anytest.execStep = function() {
-  if (!anytest.stepsArray.length) return;
-  if (document.getElementById('status')) document.getElementById('status').value = '';
-  var stepFunction = anytest.stepsArray.shift();
-  stepFunction();
-  if (!document.getElementById('status').value){
-    return 'wait';
-  }
-  return document.getElementById('status').value;
-};
-
-
 /**
  * Внутренняя хня для быстрого дебага.
  * @ignore
@@ -296,8 +276,6 @@ window['log'] = anytest.utils.log;
 goog.exportSymbol('anytest.init', anytest.init);
 goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.stage', anytest.stage);
-goog.exportSymbol('anytest.stepsArray', anytest.stepsArray);
-goog.exportSymbol('anytest.execStep', anytest.execStep);
 goog.exportSymbol('anytest.description', anytest.description);
 goog.exportSymbol('anytest.setCheckMsg', anytest.setCheckMsg);
 goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);

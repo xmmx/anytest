@@ -12,9 +12,7 @@ goog.provide('anytest.CAT');
  * @ignore
  */
 anytest.CAT.exit = function() {
-  anytest.stepsArray.push(function() {
-    log('CAT: exit');
-  });
+  log('CAT: exit');
 };
 
 
@@ -77,9 +75,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
  * @ignore
  */
 anytest.CAT.isDevelop = function() {
-  anytest.stepsArray.push(function() {
-    log('CAT: develop_edition');
-  });
+  anytest.log('CAT: develop_edition');
 };
 
 
@@ -88,9 +84,7 @@ anytest.CAT.isDevelop = function() {
  * @ignore
  */
 anytest.CAT.checkMsg = function() {
-  anytest.stepsArray.push(function() {
-    log('CAT: check_messages');
-  });
+  anytest.log('CAT: check_messages');
 };
 
 
@@ -102,11 +96,9 @@ anytest.CAT.checkMsg = function() {
  */
 anytest.CAT.action = function(x, y, opt_type) {
   opt_type = opt_type || 'click';
-  anytest.stepsArray.push(function() {
-    log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
-    // add point to base layer;
-    anytest.panel.interactive.initPoint(x, y, true);
-  });
+  anytest.log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
+  // add point to base layer;
+  anytest.panel.interactive.initPoint(x, y, true);
 };
 
 goog.exportSymbol('anytest.CAT', anytest.CAT);
