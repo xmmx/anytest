@@ -15,6 +15,10 @@ anychart.onDocumentLoad(function() {
   lineSeries.fill('green')
       .stroke('5 yellow');
   anytest.chartListen().drawInStage(chart);
+
+
   stage.resume();
+
+
 
 });
