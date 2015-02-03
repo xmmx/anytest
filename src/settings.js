@@ -24,11 +24,13 @@ anytest.settings_.sizeTarget = anytest.enums.resizeTypes.BOTH;
  */
 anytest.settings_.modes = {
   resize: false, // only SINGLE chart
-  schemas: false, // only SINGLE chart
+  XMLschema: true, // only SINGLE chart
+  JSONschema: false, // only SINGLE chart
   hiddenContainer: false, // only SINGLE chart
   all: function(flag) {
     anytest.settings_.modes.resize = flag;
-    anytest.settings_.modes.schemas = flag;
+    anytest.settings_.modes.XMLschema = flag;
+    anytest.settings_.modes.JSONschema = flag;
     anytest.settings_.modes.hiddenContainer = flag;
   }
 };

@@ -68,9 +68,21 @@ anytest.modes.checkModes = function() {
   }
   // самый "тяжелый" тест в конце.
   // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
-  if (_modes.schemas) {
+  if (_modes.XMLschema || _modes.JSONschema) {
+    window['modes'] = {};
+
     if (window['chart']) {
-      anytest.modes.exportXMLJSON_();
+      window['modes']['configXML'] = window['chart']['toXml']();
+      window['modes']['configJSON'] = window['chart']['toJson']();
+
+      if (_modes.JSONschema) {
+        anytest.needDelay('JSON schema');
+        anytest.modes.exportJSON_();
+      }
+      else if (_modes.XMLschema) {
+        anytest.needDelay('XML schema');
+        anytest.modes.exportXML_();
+      }
     }
   }
   anytest.modes.checkFlag_ = false;
@@ -113,15 +125,7 @@ anytest.modes.resize = function() {
  * @return {null}
  * @ignore
  */
-anytest.modes.exportXMLJSON_ = function() {
-  if (window['anychart'].DEVELOP) {
-//    alert('На DEVELOP версии проверять жопа изза срани в консоли!');
-    return null;
-  }
-  window['modes'] = {};
-  window['modes']['configXML'] = window['chart']['toXml']();
-  window['modes']['configJSON'] = window['chart']['toJson']();
-
+anytest.modes.exportJSON_ = function() {
   if (window['modes']['configJSON']) {
     var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
     var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
@@ -131,19 +135,34 @@ anytest.modes.exportXMLJSON_ = function() {
       var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], window['getJSONSchema']());
       if (!validResp || !validResp.valid)
         log('JSON not valid by schema', validResp);
-        try {
-          window['chart']['dispose']();
-          delete window['chart'];
-          window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
-          window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-            anytest.CAT.getScreen('restoreFromJSON', 1);
-          });
-          window['chart']['container'](window['stage'])['draw']();
-        } catch (e) {
-          log(e.message, e.stack);
-        }
+      try {
+        window['chart']['dispose']();
+        delete window['chart'];
+        window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
+        window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+          anytest.CAT.getScreen('restoreFromJSON', 1);
+          anytest.turnOffDelay('JSON schema');
+          if (anytest.settings_.modes.XMLschema) {
+            anytest.needDelay('XML schema');
+            anytest.modes.exportXML_();
+          }
+        });
+        window['chart']['container'](window['stage'])['draw']();
+      } catch (e) {
+        log(e.message, e.stack);
+      }
     }
   }
+};
+
+
+/**
+ * Включает режим тестирования на экспорт.
+ * @private
+ * @return {null}
+ * @ignore
+ */
+anytest.modes.exportXML_ = function() {
   // для того, чтоб тестировалось последовательно.
   if (window['modes']['configXML']) {
       var Module = {};
@@ -159,6 +178,7 @@ anytest.modes.exportXMLJSON_ = function() {
         window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
         window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
             anytest.CAT.getScreen('restoreFromXML', 1);
+            anytest.turnOffDelay('XML schema');
         });
         window['chart']['container'](window['stage'])['draw']();
       } catch (e) {
