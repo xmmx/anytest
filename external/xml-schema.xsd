@@ -1162,6 +1162,10 @@
             <xsd:enumeration value="star6"/>
             <xsd:enumeration value="star7"/>
             <xsd:enumeration value="star10"/>
+            <xsd:enumeration value="bar"/>
+            <xsd:enumeration value="x"/>
+            <xsd:enumeration value="line"/>
+            <xsd:enumeration value="ellipse"/>
         </xsd:restriction>
     </xsd:simpleType>
 

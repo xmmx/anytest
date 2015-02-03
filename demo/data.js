@@ -2,21 +2,19 @@ var stage, chart;
 anychart.onDocumentLoad(function() {
 
   anytest.setUp();
-  chart = anychart.lineChart();
-  var dataSet = anychart.data.set([
-    ['A1' , 1,   5, 2],
-    ['A2' , 2,   5,  4],
-    ['A3' , 0,   3, 5],
-    ['A4' , 1.5, 3, 2],
-    ['A5' , 5,  7, 1],
-    ['A6' , 4,   6, -5],
-    ['A7' , 5,  2, 0.5]
-  ]);
-  chart.line(dataSet.mapAs({x: [0], value: [1]}));
-  chart.spline(dataSet.mapAs({x: [0], value: [2]}));
 
+  chart = anychart.cartesian();
+  var lineSeries = chart.line([
+    [15, 17, 14, 16],
+    [4, 9, 2, 3],
+    [20, 30, 15, 10],
+    [10, 15, 9, 20]
+  ]);
+  lineSeries.markers().enabled(true);
+  lineSeries.labels().enabled(true).position('righttop');
+  lineSeries.fill('green')
+      .stroke('5 yellow');
   anytest.chartListen().drawInStage(chart);
-  chart.area(dataSet.mapAs({x: [0], value: [1]}));
   stage.resume();
 
 });
