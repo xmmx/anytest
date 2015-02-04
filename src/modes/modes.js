@@ -75,8 +75,6 @@ anytest.modes.checkModes = function() {
       window['modes']['configXML'] = window['chart']['toXml']();
       window['modes']['configJSON'] = window['chart']['toJson']();
 
-      anytest.setCheckMsg('Warning: 8 Description:', 1, true);
-
       if (_modes.JSONschema) {
         anytest.needDelay('JSON schema');
         anytest.modes.exportJSON_();

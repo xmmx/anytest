@@ -75,6 +75,10 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   }
   anytest.stage['suspend']();
   window['stage'] = anytest.stage;
+
+  if (anytest.settings_.modes.XMLschema || anytest.settings_.modes.JSONschema)
+    anytest.setCheckMsg('Warning: 8 Description:', 1, true);
+
   return window['anytest'];
 };
 
@@ -112,8 +116,8 @@ anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
   opt_count = opt_count || 1;
   while (opt_count) {
     var _div = anytest.utils.createDiv();
-    _div.className = 'consoleMsg';
     if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
+    else _div.className = 'consoleMsg';
     _div.innerHTML = txt;
     anytest.CAT.needCheckConsoleMsg = true;
     opt_count--;
