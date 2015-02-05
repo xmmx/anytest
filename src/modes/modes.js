@@ -45,6 +45,31 @@ anytest.modes.set = function(var_args) {
  */
 anytest.modes.checkFlag_ = true;
 
+anytest.modes.getParameterByName = function (name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+};
+
+/**
+ * List of all possible modes.
+ * @enum {number}
+ */
+anytest.modes.Enum = {
+  NONE: 0x00000000,
+  RESIZE: 0x00000001,
+  HIDDEN_CONTAINER: 0x00000002,
+  SCHEMAS_JSON: 0x00000004,
+  SCHEMAS_XML: 0x00000008,
+  ALL: 0x0000000F
+};
+
+anytest.modes.hasMode = function(mode) {
+  return !!(anytest.modes.getParameterByName('mode') & mode);
+};
+
+
 
 /**
  * Автоматически запускает режимы тестирования заданные в настройках.
@@ -54,7 +79,7 @@ anytest.modes.checkFlag_ = true;
 anytest.modes.checkModes = function() {
   if (!anytest.modes.checkFlag_) return null;
   var _modes = anytest.settings_.modes;
-  if (_modes.hiddenContainer) {
+  if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER)) {
     if (!anytest.chart) {
       alert('Ошибка: Нет инстанса чарта!');
       return null;
@@ -62,24 +87,26 @@ anytest.modes.checkModes = function() {
     anytest.needDelay('hiddenContainer');
     anytest.modes.hiddenContainer_();
   }
-  if (_modes.resize) {
+  if (anytest.modes.hasMode(anytest.modes.Enum.RESIZE)) {
     anytest.needDelay('resize');
     anytest.modes.resize();
   }
   // самый "тяжелый" тест в конце.
   // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
-  if (_modes.XMLschema || _modes.JSONschema) {
+  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) || 
+  	  anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)
+  ) {
     window['modes'] = {};
 
     if (window['chart']) {
       window['modes']['configXML'] = window['chart']['toXml']();
       window['modes']['configJSON'] = window['chart']['toJson']();
 
-      if (_modes.JSONschema) {
+      if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
         anytest.needDelay('JSON schema');
         anytest.modes.exportJSON_();
       }
-      else if (_modes.XMLschema) {
+      else if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
         anytest.needDelay('XML schema');
         anytest.modes.exportXML_();
       }
@@ -142,7 +169,7 @@ anytest.modes.exportJSON_ = function() {
         window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
           anytest.CAT.getScreen('restoreFromJSON', 1);
           anytest.turnOffDelay('JSON schema');
-          if (anytest.settings_.modes.XMLschema) {
+          if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
             anytest.needDelay('XML schema');
             anytest.modes.exportXML_();
           }
