@@ -168,11 +168,11 @@ anytest.modes.exportJSON_ = function() {
         window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
         window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
           anytest.CAT.getScreen('restoreFromJSON', 1);
-          anytest.turnOffDelay('JSON schema');
           if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
             anytest.needDelay('XML schema');
             anytest.modes.exportXML_();
           }
+          anytest.turnOffDelay('JSON schema');
         });
         window['chart']['container'](window['stage'])['draw']();
       } catch (e) {
