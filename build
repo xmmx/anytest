@@ -72,7 +72,7 @@ def __sync_contrib():
     if not __has_closure_compiler():
         print 'Download closure compiler'
         __download_and_unzip_from_http(
-            'http://dl.google.com/closure-compiler/compiler-20131014.zip',
+            'http://dl.google.com/closure-compiler/compiler-20140303.zip',
             'compiler'
         )
 
@@ -280,29 +280,11 @@ def __call_compiler(commands):
 #=======================================================================================================================
 def __rewrite_out_file():
     tv4 = open(os.path.join(EXTERNAL_PATH, 'tv4.min.js')).read()
-    json_schema = open(os.path.join(EXTERNAL_PATH, 'json-schema.json')).read()
-    xml_schema = open(os.path.join(EXTERNAL_PATH, 'xml-schema.xsd')).read()
     xmllint = open(os.path.join(EXTERNAL_PATH, 'xmllint.js')).read()
-
-    json_schema = re.sub('\n', '', json_schema)
-    json_schema = json_schema.replace('\\', '\\\\')
-    json_schema = re.sub('\s{2,}', ' ', json_schema)
-    json_schema = 'function getJSONSchema(){ return ' + json_schema + ';}\n'
-    xml_schema = re.sub('\n', '', xml_schema)
-    xml_schema = xml_schema.replace('\\', '\\\\')
-    xml_schema = re.sub('\s{2,}', ' ', xml_schema)
-    xml_schema = 'function getXMLSchema(){ return \'' + xml_schema + '\';}'
-
-    f = open(os.path.join(OUT_PATH, 'schemas.js'),'w')
-    f.write(json_schema)
-    f.write(xml_schema)
-    f.close()
 
     f = open(os.path.join(OUT_PATH, 'anytest.min.js'),'a')
     f.write(tv4)
     f.write(xmllint)
-    f.write(json_schema)
-    f.write(xml_schema)
     f.close()
 
 #=======================================================================================================================

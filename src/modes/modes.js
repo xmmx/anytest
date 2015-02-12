@@ -45,11 +45,11 @@ anytest.modes.set = function(var_args) {
  */
 anytest.modes.checkFlag_ = true;
 
-anytest.modes.getParameterByName = function (name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+anytest.modes.getParameterByName = function(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
 
 /**
@@ -68,7 +68,6 @@ anytest.modes.Enum = {
 anytest.modes.hasMode = function(mode) {
   return !!(anytest.modes.getParameterByName('mode') & mode);
 };
-
 
 
 /**
@@ -93,9 +92,9 @@ anytest.modes.checkModes = function() {
   }
   // самый "тяжелый" тест в конце.
   // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) || 
-  	  anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)
-  ) {
+  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) ||
+      anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)
+      ) {
     window['modes'] = {};
 
     if (window['chart']) {
@@ -145,6 +144,38 @@ anytest.modes.resize = function() {
   anytest.turnOffDelay('resize');
 };
 
+anytest.modes.pathToSchema_ = '';
+anytest.modes.getPathToSchema = function() {
+  if (!anytest.modes.pathToSchema_) {
+    var scripts = document.getElementsByTagName("script");
+    for (var i=0;i<scripts.length;i++) {
+      if (scripts[i].src.indexOf('anychart.min.js') > -1){
+        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.min.js','');
+      }
+      if (scripts[i].src.indexOf('anychart.dev.min.js') > -1){
+        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.dev.min.js','');
+      }
+    }
+  }
+  return anytest.modes.pathToSchema_;
+};
+
+anytest.modes.getJSONSchema = function() {
+  var jsReq;
+  jsReq = new XMLHttpRequest();
+  jsReq.open('GET', anytest.modes.getPathToSchema()+'json-schema.json', false);
+  jsReq.send(null);
+  return jsReq.response;
+};
+
+anytest.modes.getXMLSchema = function() {
+  var xmlReq;
+  xmlReq = new XMLHttpRequest();
+  xmlReq.open('GET', anytest.modes.getPathToSchema()+'xml-schema.xsd', false);
+  xmlReq.send(null);
+  return xmlReq.response;
+};
+
 
 /**
  * Включает режим тестирования на экспорт.
@@ -159,7 +190,7 @@ anytest.modes.exportJSON_ = function() {
     if (diff)
       log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
     else {
-      var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], window['getJSONSchema']());
+      var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], anytest.modes.getJSONSchema());
       if (!validResp || !validResp.valid)
         log('JSON not valid by schema', validResp);
       try {
@@ -192,25 +223,25 @@ anytest.modes.exportJSON_ = function() {
 anytest.modes.exportXML_ = function() {
   // для того, чтоб тестировалось последовательно.
   if (window['modes']['configXML']) {
-      var Module = {};
-      Module['xml'] = window['modes']['configXML'];
-      Module['schema'] = window['getXMLSchema']();
-      Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
-      var result = window['validateXML'](Module);
+    var Module = {};
+    Module['xml'] = window['modes']['configXML'];
+    Module['schema'] = anytest.modes.getXMLSchema();
+    Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
+    var result = window['validateXML'](Module);
 
-      if (result.trim() != 'file.xml validates') log(result);
-      try {
-        window['chart']['dispose']();
-        delete window['chart'];
-        window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
-        window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-            anytest.CAT.getScreen('restoreFromXML', 1);
-            anytest.turnOffDelay('XML schema');
-        });
-        window['chart']['container'](window['stage'])['draw']();
-      } catch (e) {
-        log(e.message, e.stack);
-      }
+    if (result.trim() != 'file.xml validates') log(result);
+    try {
+      window['chart']['dispose']();
+      delete window['chart'];
+      window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
+      window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
+        anytest.CAT.getScreen('restoreFromXML', 1);
+        anytest.turnOffDelay('XML schema');
+      });
+      window['chart']['container'](window['stage'])['draw']();
+    } catch (e) {
+      log(e.message, e.stack);
+    }
   }
 };
 
