@@ -114,13 +114,16 @@ anytest.CAT.needCheckConsoleMsg = false;
  */
 anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
   opt_count = opt_count || 1;
-  while (opt_count) {
+  var count = opt_count;
+  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) count += opt_count;
+  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) count += opt_count;
+  while (count) {
     var _div = anytest.utils.createDiv();
     if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
     else _div.className = 'consoleMsg';
     _div.innerHTML = txt;
     anytest.CAT.needCheckConsoleMsg = true;
-    opt_count--;
+    count--;
   }
 };
 

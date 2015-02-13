@@ -3,6 +3,8 @@ anychart.onDocumentLoad(function() {
 
   anytest.setUp();
 
+  anytest.setCheckMsg('qqq', 2);
+
   chart = anychart.cartesian();
   var lineSeries = chart.line([
     [15, 17, 14, 16],
