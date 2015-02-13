@@ -100,6 +100,7 @@ anytest.modes.checkModes = function() {
     if (window['chart']) {
       window['modes']['configXML'] = window['chart']['toXml']();
       window['modes']['configJSON'] = window['chart']['toJson']();
+      window['modes']['container'] = window['chart']['container']();
 
       if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
         anytest.needDelay('JSON schema');
@@ -205,7 +206,7 @@ anytest.modes.exportJSON_ = function() {
           }
           anytest.turnOffDelay('JSON schema');
         });
-        window['chart']['container'](window['stage'])['draw']();
+        window['chart']['container'](window['modes']['container'])['draw']();
       } catch (e) {
         log(e.message, e.stack);
       }
@@ -238,7 +239,7 @@ anytest.modes.exportXML_ = function() {
         anytest.CAT.getScreen('restoreFromXML', 1);
         anytest.turnOffDelay('XML schema');
       });
-      window['chart']['container'](window['stage'])['draw']();
+      window['chart']['container'](window['modes']['container'])['draw']();
     } catch (e) {
       log(e.message, e.stack);
     }
