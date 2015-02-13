@@ -149,12 +149,12 @@ anytest.modes.pathToSchema_ = '';
 anytest.modes.getPathToSchema = function() {
   if (!anytest.modes.pathToSchema_) {
     var scripts = document.getElementsByTagName("script");
-    for (var i=0;i<scripts.length;i++) {
-      if (scripts[i].src.indexOf('anychart.min.js') > -1){
-        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.min.js','');
+    for (var i = 0; i < scripts.length; i++) {
+      if (scripts[i].src.indexOf('anychart.min.js') > -1) {
+        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.min.js', '');
       }
-      if (scripts[i].src.indexOf('anychart.dev.min.js') > -1){
-        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.dev.min.js','');
+      if (scripts[i].src.indexOf('anychart.dev.min.js') > -1) {
+        anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.dev.min.js', '');
       }
     }
   }
@@ -164,7 +164,7 @@ anytest.modes.getPathToSchema = function() {
 anytest.modes.getJSONSchema = function() {
   var jsReq;
   jsReq = new XMLHttpRequest();
-  jsReq.open('GET', anytest.modes.getPathToSchema()+'json-schema.json', false);
+  jsReq.open('GET', anytest.modes.getPathToSchema() + 'json-schema.json', false);
   jsReq.send(null);
   return jsReq.response;
 };
@@ -172,7 +172,7 @@ anytest.modes.getJSONSchema = function() {
 anytest.modes.getXMLSchema = function() {
   var xmlReq;
   xmlReq = new XMLHttpRequest();
-  xmlReq.open('GET', anytest.modes.getPathToSchema()+'xml-schema.xsd', false);
+  xmlReq.open('GET', anytest.modes.getPathToSchema() + 'xml-schema.xsd', false);
   xmlReq.send(null);
   return xmlReq.response;
 };
@@ -208,7 +208,7 @@ anytest.modes.exportJSON_ = function() {
         });
         window['chart']['container'](window['modes']['container'])['draw']();
       } catch (e) {
-        log(e.message, e.stack);
+        console.log(e.message, e.stack);
       }
     }
   }
@@ -239,9 +239,14 @@ anytest.modes.exportXML_ = function() {
         anytest.CAT.getScreen('restoreFromXML', 1);
         anytest.turnOffDelay('XML schema');
       });
-      window['chart']['container'](window['modes']['container'])['draw']();
+      if (window['modes']['container'] == window['stage'])
+        window['chart']['container'](window['modes']['container'])['draw']();
+      else {
+        document.getElementById('container').innerHTML = '';
+        window['chart']['container']('container')['draw']();
+      }
     } catch (e) {
-      log(e.message, e.stack);
+      console.log(e.message, e.stack);
     }
   }
 };

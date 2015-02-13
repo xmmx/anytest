@@ -17,7 +17,7 @@ goog.require('goog.vec.Float64Array');
 
 if (!!window['Float64Array']){
   window['Float64Array'] = goog.vec.Float64Array;
-  goog.vec.Float64Array.prototype.subarray = Array.prototype.slice;
+  goog.vec.Float64Array.prototype['subarray'] = Array.prototype['slice'];
 }
 
 /**
@@ -81,7 +81,7 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   anytest.stage['suspend']();
   window['stage'] = anytest.stage;
 
-  if (anytest.settings_.modes.XMLschema || anytest.settings_.modes.JSONschema)
+  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) || anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML))
     anytest.setCheckMsg('Warning: 8 Description:', 1, true);
 
   return window['anytest'];
