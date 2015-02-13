@@ -205,7 +205,6 @@ anytest.modes.exportJSON_ = function() {
             anytest.needDelay('XML schema');
             anytest.modes.exportXML_();
           }
-          anytest.turnOffDelay('JSON schema');
         });
         window['chart']['container'](window['modes']['container'])['draw']();
       } catch (e) {
@@ -213,6 +212,7 @@ anytest.modes.exportJSON_ = function() {
       }
     }
   }
+  anytest.turnOffDelay('JSON schema');
 };
 
 
@@ -238,7 +238,6 @@ anytest.modes.exportXML_ = function() {
       window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
       window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
         anytest.CAT.getScreen('restoreFromXML', 1);
-        anytest.turnOffDelay('XML schema');
       });
       if (window['modes']['container'] == window['stage'])
         window['chart']['container'](window['modes']['container'])['draw']();
@@ -250,6 +249,7 @@ anytest.modes.exportXML_ = function() {
       console.log(e.message, e.stack);
     }
   }
+  anytest.turnOffDelay('XML schema');
 };
 
 
