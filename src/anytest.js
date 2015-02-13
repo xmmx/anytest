@@ -81,9 +81,6 @@ anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
   anytest.stage['suspend']();
   window['stage'] = anytest.stage;
 
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) || anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML))
-    anytest.setCheckMsg('Warning: 8 Description:', 1, true);
-
   return window['anytest'];
 };
 

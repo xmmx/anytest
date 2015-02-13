@@ -96,6 +96,7 @@ anytest.modes.checkModes = function() {
       anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)
       ) {
     window['modes'] = {};
+    anytest.setCheckMsg('Warning: 8 Description:', 1, true);
 
     if (window['chart']) {
       window['modes']['configXML'] = window['chart']['toXml']();
