@@ -7,6 +7,7 @@ goog.require('anytest.settings_');
 goog.require('anytest.styles');
 goog.require('anytest.utils');
 goog.require('goog.array');
+goog.require('goog.vec.Float64Array');
 
 /**
  * Core space for all anytest components.
@@ -14,6 +15,10 @@ goog.require('goog.array');
  * @name anytest
  */
 
+if (!!window['Float64Array']){
+  window['Float64Array'] = goog.vec.Float64Array;
+  goog.vec.Float64Array.prototype.subarray = Array.prototype.slice;
+}
 
 /**
  * Stage on window.
