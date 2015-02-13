@@ -115,8 +115,8 @@ anytest.CAT.needCheckConsoleMsg = false;
 anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
   opt_count = opt_count || 1;
   var count = opt_count;
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) count += opt_count;
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) count += opt_count;
+  if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) count += opt_count;
+  if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) count += opt_count;
   while (count) {
     var _div = anytest.utils.createDiv();
     if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
