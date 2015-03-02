@@ -16,19 +16,12 @@ anytest.utils.statusDiv = null;
 
 
 /**
- * @type {Console}
- * @ignore
- */
-var console = window['console'];
-
-
-/**
  * Выводит сообщение в консоль браузера (если она есть, иначе в спе див).
  * @return {*}
  */
 anytest.utils.log = function() {
-  if (console && console.log && typeof console.log != 'object')
-    console.log.apply(console, arguments);
+  if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+      window['console']['log']['apply'](window['console'], arguments);
   //  else {
   if (!anytest.utils.statusDiv) {
     // создаем текстареа вместо консоли.

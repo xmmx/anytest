@@ -26,7 +26,7 @@ anytest.panel.create = function(type) {
   var content = '';
   switch (type) {
     case 'resize':
-      content = anytest.panel.resize.getHTMLContent.apply(anytest, arguments);
+      content = anytest.panel.resize.getHTMLContent.apply(window['anytest'], arguments);
       break;
     case 'interactive':
       content = anytest.panel.interactive.getHTMLContent();

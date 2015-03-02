@@ -20,7 +20,7 @@ anytest.settings_.sizeTarget = anytest.enums.resizeTypes.BOTH;
 
 
 /**
- * @type {{resize: boolean, schemas: boolean, hiddenContainer: boolean, all: Function}}
+ * @type {{resize: boolean, XMLschema: boolean, JSONschema: boolean, hiddenContainer: boolean, all: Function}}
  */
 anytest.settings_.modes = {
   resize: false, // only SINGLE chart

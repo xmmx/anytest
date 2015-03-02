@@ -21,6 +21,11 @@ if (!!window['Float64Array']){
 }
 
 /**
+ * @define {string} Replaced on compile time.
+ */
+anytest.VERSION = '';
+
+/**
  * Stage on window.
  * @ignore
  */
@@ -131,7 +136,7 @@ anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
 
 
 /**
- * @type {null}
+ * @type {Element|null}
  * @ignore
  */
 anytest.utils.descriptionDiv = null;
@@ -291,3 +296,4 @@ goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);
 goog.exportSymbol('anytest.stageListen', anytest.stageListen);
 goog.exportSymbol('anytest.chartListen', anytest.chartListen);
 goog.exportSymbol('anytest.exit', anytest.exit);
+goog.exportSymbol('anytest.VERSION', anytest.VERSION);
