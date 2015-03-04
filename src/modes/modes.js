@@ -90,8 +90,7 @@ anytest.modes.checkModes = function () {
         anytest.needDelay('resize');
         anytest.modes.resize();
     }
-    // самый "тяжелый" тест в конце.
-    // ПОКА ПЕРМАНЕНТНО ОТКЛЮЧЕН!!!!!!!!!!!
+
     if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON) ||
         anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)
     ) {
@@ -206,7 +205,12 @@ anytest.modes.exportJSON_ = function () {
                         anytest.modes.exportXML_();
                     }
                 });
-                window['chart']['container'](window['modes']['container'])['draw']();
+                if (window['modes']['container'] == window['stage'])
+                    window['chart']['container'](window['modes']['container'])['draw']();
+                else {
+                    document.getElementById('container').innerHTML = '';
+                    window['chart']['container']('container')['draw']();
+                }
             } catch (e) {
                 console.log(e.message, e.stack);
             }
