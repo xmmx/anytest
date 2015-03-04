@@ -33,6 +33,14 @@ anytest.CAT.defaultScreenshotName_ = 'basic';
 
 
 /**
+ * Screenname stack;
+ * @type {string}
+ * @private
+ */
+anytest.CAT.namesStack_ = [];
+
+
+/**
  * Команда о снятии скриншота.
  * @param {string=} opt_imgName Имя текущей картинки (без расширения). Латиница, без пробелов и подтирок.
  * @param {number=} opt_factor По умолчания выключен. То есть ни с кем не сравнивается. Может принимать значения 1 или -1.
@@ -53,9 +61,13 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
       return null;
     }
   }
+  anytest.CAT.namesStack_.push(opt_imgName);
   var _cmd = 'CAT: get_screenshot ' + opt_imgName;
   if (opt_factor) {
     opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
+    if (opt_imgName == 'hiddenContainerMode'){
+        opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
+    }
     if (+opt_factor) {
       if (opt_factor > 0)
         _cmd += ' equal';

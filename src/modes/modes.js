@@ -100,7 +100,7 @@ anytest.modes.checkModes = function () {
         if (window['chart']) {
             window['modes']['configXML'] = window['chart']['toXml']();
             window['modes']['configJSON'] = window['chart']['toJson']();
-            
+
             if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
                 anytest.needDelay('JSON schema');
                 anytest.modes.exportJSON_();
@@ -123,23 +123,27 @@ anytest.modes.checkModes = function () {
 anytest.modes.resize = function () {
     var _type = anytest.enums.resizeTypes;
 
-    anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.BOTH, 50, true);
-    anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
-    anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
-
     if (window['chart']) {
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
         anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
     }
 
-    anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
-    anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
-    anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
+    if (window['stage']) {
+        if (window['chart']) {
+            anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.BOTH, 50, true);
+            anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
+            anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
+        }
 
-    anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_ONLY, 50, true);
-    anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_ONLY, 50, true);
-    anytest.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
+        anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
+        anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
+        anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
+
+        anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_ONLY, 50, true);
+        anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_ONLY, 50, true);
+        anytest.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
+    }
 
     anytest.turnOffDelay('resize');
 };
@@ -258,7 +262,7 @@ anytest.modes.exportXML_ = function () {
 anytest.modes.hiddenContainer_ = function () {
     document.getElementById('container').style.display = 'none';
     document.getElementById('container').style.display = 'block';
-    anytest.CAT.getScreen('hiddenContainer', 1);
+    anytest.CAT.getScreen('hiddenContainerMode', 1);
 
     anytest.turnOffDelay('hiddenContainer');
 };

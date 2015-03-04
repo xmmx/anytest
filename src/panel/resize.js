@@ -42,7 +42,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     log('resize ' + _resizeTarget + ' from (', _width - _step, _height - _step, ') to (', _width, _height, ')');
 
   if (_resizeTarget != _types.CHART && _resizeTarget != _types.STAGE) {
-    if (_resizeTarget == _types.CONTAINER_FULL_PERCENT) {
+    if (_resizeTarget == _types.CONTAINER_FULL_PERCENT && window['stage']) {
       window['stage']['suspend']();
       window['stage']['width']('100%');
       window['stage']['height']('100%');
@@ -61,7 +61,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     chartInstance['height'](_height);
   }
 
-  if (_resizeTarget == _types.BOTH || _resizeTarget == _types.STAGE) {
+  if (window['stage'] && (_resizeTarget == _types.BOTH || _resizeTarget == _types.STAGE)) {
     window['stage']['width'](_width);
     window['stage']['height'](_height);
   }
