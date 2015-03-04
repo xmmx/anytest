@@ -34,7 +34,7 @@ anytest.CAT.defaultScreenshotName_ = 'basic';
 
 /**
  * Screenname stack;
- * @type {string}
+ * @type {Array}
  * @private
  */
 anytest.CAT.namesStack_ = [];
