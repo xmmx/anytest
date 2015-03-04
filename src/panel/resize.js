@@ -21,7 +21,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   var _resizeTarget = opt_resizeTarget || anytest.utils.getCheckedRadioByName('resizeTarget');
   var _types = anytest.enums.resizeTypes;
 
-  if (((anytest.chart && anytest.chart['width']) || chartInstance) && _resizeTarget == _types.CHART) {
+  if (((anytest.chart && anytest.chart['width']) && chartInstance) && _resizeTarget == _types.CHART) {
     _width = chartInstance['width']() || anytest.settings_.width;
     _height = chartInstance['height']() || anytest.settings_.height;
   } else if (_resizeTarget == _types.STAGE) {
@@ -46,7 +46,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
       window['stage']['suspend']();
       window['stage']['width']('100%');
       window['stage']['height']('100%');
-      if (((anytest.chart && anytest.chart['width']) || chartInstance)) {
+      if (((anytest.chart && anytest.chart['width']) && chartInstance)) {
         chartInstance['width']('100%');
         chartInstance['height']('100%');
       }
@@ -56,7 +56,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     document.getElementById('container').style.height = _height + 'px';
   }
 
-  if (((anytest.chart && anytest.chart['width']) || chartInstance) && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
+  if (((anytest.chart && anytest.chart['width']) && chartInstance) && (_resizeTarget == _types.BOTH || _resizeTarget == _types.CHART)) {
     chartInstance['width'](_width);
     chartInstance['height'](_height);
   }
