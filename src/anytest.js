@@ -231,6 +231,13 @@ anytest.listenerFuncMain_ = function(callbackFunction, e) {
 
 
 /**
+ * @type {Array}
+ * @private
+ */
+anytest.excludeCreditsForChart_ = ['circular', 'bullet', 'sparkline'];
+
+
+/**
  * Рисует чарт или элемент в слой стейджа.
  * @param {Object=} opt_chart chart or Element.
  * @return {*}
@@ -239,7 +246,7 @@ anytest.drawInStage = function(opt_chart) {
   opt_chart = opt_chart || anytest.chart;
 
   // вырубаем кредитс, по нашему ключу.
-  if (opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+  if (opt_chart['getType'] && anytest.excludeCreditsForChart_.indexOf(opt_chart['getType']()) == -1 && opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
     opt_chart['credits'](null);
 
   if (!opt_chart['container']) return null;
