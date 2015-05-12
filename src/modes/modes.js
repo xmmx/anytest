@@ -159,6 +159,12 @@ anytest.modes.getPathToSchema = function () {
             if (scripts[i].src.indexOf('anychart.dev.min.js') > -1) {
                 anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart.dev.min.js', '');
             }
+            if (scripts[i].src.indexOf('anychart-bundle.min.js') > -1) {
+                anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart-bundle.min.js', '');
+            }
+            if (scripts[i].src.indexOf('anychart-bundle.dev.min.js') > -1) {
+                anytest.modes.pathToSchema_ = scripts[i].src.replace('anychart-bundle.dev.min.js', '');
+            }
         }
     }
     return anytest.modes.pathToSchema_;
