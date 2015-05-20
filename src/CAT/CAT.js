@@ -11,8 +11,8 @@ goog.provide('anytest.CAT');
  * Завершающая команда для САТ.
  * @ignore
  */
-anytest.CAT.exit = function() {
-  log('CAT: exit');
+anytest.CAT.exit = function () {
+    log('CAT: exit');
 };
 
 
@@ -51,34 +51,34 @@ anytest.CAT.namesStack_ = [];
  *  По дефолту базовая.
  * @return {?string} Имя текущей картинки или null.
  */
-anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
-  if (!opt_imgName) {
-    if (!anytest.CAT.duplicateBasic_) {
-      opt_imgName = anytest.CAT.defaultScreenshotName_;
-      anytest.CAT.duplicateBasic_ = true;
-    } else {
-      alert('getScreen пытается перезаписать основной файл!');
-      return null;
+anytest.CAT.getScreen = function (opt_imgName, opt_factor, opt_compareImgName) {
+    if (!opt_imgName) {
+        if (!anytest.CAT.duplicateBasic_) {
+            opt_imgName = anytest.CAT.defaultScreenshotName_;
+            anytest.CAT.duplicateBasic_ = true;
+        } else {
+            alert('getScreen пытается перезаписать основной файл!');
+            return null;
+        }
     }
-  }
-  anytest.CAT.namesStack_.push(opt_imgName);
-  var _cmd = 'CAT: get_screenshot ' + opt_imgName;
-  if (opt_factor) {
-    opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
-    if (opt_imgName == 'hiddenContainerMode'){
-        opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
+    anytest.CAT.namesStack_.push(opt_imgName);
+    var _cmd = 'CAT: get_screenshot ' + opt_imgName;
+    if (opt_factor) {
+        opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
+        if (opt_imgName == 'hiddenContainerMode') {
+            opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length - 2];
+        }
+        if (+opt_factor) {
+            if (opt_factor > 0)
+                _cmd += ' equal';
+            else {
+                _cmd += ' different';
+            }
+            _cmd += '_' + opt_compareImgName;
+        }
     }
-    if (+opt_factor) {
-      if (opt_factor > 0)
-        _cmd += ' equal';
-      else {
-        _cmd += ' different';
-      }
-      _cmd += '_' + opt_compareImgName;
-    }
-  }
-  log(_cmd);
-  return opt_imgName;
+    log(_cmd);
+    return opt_imgName;
 };
 
 
@@ -86,8 +86,8 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
  * Проверка, что девелоп персия js.
  * @ignore
  */
-anytest.CAT.isDevelop = function() {
-  log('CAT: develop_edition');
+anytest.CAT.isDevelop = function () {
+    log('CAT: develop_edition');
 };
 
 
@@ -95,8 +95,8 @@ anytest.CAT.isDevelop = function() {
  * Посылает команду сравнить сообщения из консоли.
  * @ignore
  */
-anytest.CAT.checkMsg = function() {
-  log('CAT: check_messages');
+anytest.CAT.checkMsg = function () {
+    log('CAT: check_messages');
 };
 
 
@@ -105,12 +105,23 @@ anytest.CAT.checkMsg = function() {
  * @param {number} x
  * @param {number} y
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
+ * @param {boolean=} opt_timer timer.
  */
-anytest.CAT.action = function(x, y, opt_type) {
-  opt_type = opt_type || 'click';
-  log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
-  // add point to base layer;
-  anytest.panel.interactive.initPoint(x, y, true);
+anytest.CAT.action = function (x, y, opt_type, opt_timer) {
+    var saveT = anytest.timer.lastT;
+    if (opt_timer) anytest.timer.set('_deltaLog');
+    opt_type = opt_type || 'click';
+    log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
+    if (opt_timer){
+        var t = anytest.timer.end('_deltaLog', true);
+        anytest.timer.startTime_[saveT] = anytest.timer.startTime_[saveT] - t;
+        anytest.timer.lastT = saveT;
+    }else anytest.panel.interactive.initPoint(x, y, true);// add point to base layer;
+};
+
+
+anytest.CAT.timer = function (name, value) {
+    log('CAT: timer: ' + name + ' ' + value + '');
 };
 
 goog.exportSymbol('anytest.CAT', anytest.CAT);

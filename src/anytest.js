@@ -5,6 +5,7 @@ goog.require('anytest.modes');
 goog.require('anytest.panel');
 goog.require('anytest.settings_');
 goog.require('anytest.styles');
+goog.require('anytest.timer');
 goog.require('anytest.utils');
 goog.require('goog.array');
 goog.require('goog.vec.Float64Array');
@@ -15,9 +16,9 @@ goog.require('goog.vec.Float64Array');
  * @name anytest
  */
 
-if (!!window['Float64Array']){
-  window['Float64Array'] = goog.vec.Float64Array;
-  goog.vec.Float64Array.prototype['subarray'] = Array.prototype['slice'];
+if (!!window['Float64Array']) {
+    window['Float64Array'] = goog.vec.Float64Array;
+    goog.vec.Float64Array.prototype['subarray'] = Array.prototype['slice'];
 }
 
 /**
@@ -42,13 +43,13 @@ anytest.chart = [];
 /**
  * Вызывается, если не нужен setUp().
  */
-anytest.init = function() {
-  if (window['anychart']['DEVELOP'])
-    anytest.CAT.isDevelop();
+anytest.init = function () {
+    if (window['anychart']['DEVELOP'])
+        anytest.CAT.isDevelop();
 
-  anytest.utils.appendMyStyles(anytest.styles.rules);
+    anytest.utils.appendMyStyles(anytest.styles.rules);
 
-  window['anychart']['licenseKey']('anychart-CAT-64a5f14c-5d66a546');
+    window['anychart']['licenseKey']('anychart-CAT-64a5f14c-5d66a546');
 };
 
 
@@ -59,34 +60,34 @@ anytest.init = function() {
  * @param {string=} opt_sizeTarget Enum: both, container, stage.
  * @return {*}
  */
-anytest.setUp = function(opt_width, opt_height, opt_sizeTarget) {
-  anytest.init();
+anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
+    anytest.init();
 
-  if (opt_width) {
-    anytest.settings_.width = opt_width.toString();
-    if (anytest.settings_.width.indexOf('%') == -1)
-      anytest.settings_.width += 'px';
-  }
-  if (opt_height) {
-    anytest.settings_.height = opt_height.toString();
-    if (anytest.settings_.height.indexOf('%') == -1)
-      anytest.settings_.height += 'px';
-  }
-  if (opt_sizeTarget) anytest.settings_.sizeTarget = opt_sizeTarget;
-  var _types = anytest.enums.resizeTypes;
+    if (opt_width) {
+        anytest.settings_.width = opt_width.toString();
+        if (anytest.settings_.width.indexOf('%') == -1)
+            anytest.settings_.width += 'px';
+    }
+    if (opt_height) {
+        anytest.settings_.height = opt_height.toString();
+        if (anytest.settings_.height.indexOf('%') == -1)
+            anytest.settings_.height += 'px';
+    }
+    if (opt_sizeTarget) anytest.settings_.sizeTarget = opt_sizeTarget;
+    var _types = anytest.enums.resizeTypes;
 
-  if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
-    anytest.stage = window['acgraph']['create']('container', anytest.settings_.width, anytest.settings_.height);
-  else
-    anytest.stage = window['acgraph']['create']('container');
-  if (anytest.settings_.sizeTarget != _types.STAGE) {
-    document.getElementById('container').style.width = anytest.settings_.width;
-    document.getElementById('container').style.height = anytest.settings_.height;
-  }
-  anytest.stage['suspend']();
-  window['stage'] = anytest.stage;
+    if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
+        anytest.stage = window['acgraph']['create']('container', anytest.settings_.width, anytest.settings_.height);
+    else
+        anytest.stage = window['acgraph']['create']('container');
+    if (anytest.settings_.sizeTarget != _types.STAGE) {
+        document.getElementById('container').style.width = anytest.settings_.width;
+        document.getElementById('container').style.height = anytest.settings_.height;
+    }
+    anytest.stage['suspend']();
+    window['stage'] = anytest.stage;
 
-  return window['anytest'];
+    return window['anytest'];
 };
 
 
@@ -100,9 +101,9 @@ anytest.exitState = false;
 /**
  * Метод завершения теста.
  */
-anytest.exit = function() {
-  anytest.exitState = true;
-  anytest.tearDown();
+anytest.exit = function () {
+    anytest.exitState = true;
+    anytest.tearDown();
 };
 
 
@@ -119,19 +120,19 @@ anytest.CAT.needCheckConsoleMsg = false;
  * @param {number=} opt_count Количество сообщений. По умолчанию 1.
  * @param {boolean=} opt_isIgnored По дефолту не игнорить сообщения.
  */
-anytest.setCheckMsg = function(txt, opt_count, opt_isIgnored) {
-  opt_count = opt_count || 1;
-  var count = opt_count;
-  if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) count += opt_count;
-  if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) count += opt_count;
-  while (count) {
-    var _div = anytest.utils.createDiv();
-    if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
-    else _div.className = 'consoleMsg';
-    _div.innerHTML = txt;
-    anytest.CAT.needCheckConsoleMsg = true;
-    count--;
-  }
+anytest.setCheckMsg = function (txt, opt_count, opt_isIgnored) {
+    opt_count = opt_count || 1;
+    var count = opt_count;
+    if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) count += opt_count;
+    if (window['chart'] && anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) count += opt_count;
+    while (count) {
+        var _div = anytest.utils.createDiv();
+        if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
+        else _div.className = 'consoleMsg';
+        _div.innerHTML = txt;
+        anytest.CAT.needCheckConsoleMsg = true;
+        count--;
+    }
 };
 
 
@@ -147,11 +148,11 @@ anytest.utils.descriptionDiv = null;
  * @param {string} txt
  * @return {*}
  */
-anytest.description = function(txt) {
-  if (!anytest.utils.descriptionDiv)
-    anytest.utils.descriptionDiv = anytest.utils.createDiv('description');
-  anytest.utils.descriptionDiv.innerHTML += txt;
-  return window['anytest'];
+anytest.description = function (txt) {
+    if (!anytest.utils.descriptionDiv)
+        anytest.utils.descriptionDiv = anytest.utils.createDiv('description');
+    anytest.utils.descriptionDiv.innerHTML += txt;
+    return window['anytest'];
 };
 
 
@@ -159,13 +160,18 @@ anytest.description = function(txt) {
  * Процедура очистки и завершения теста.
  * @ignore
  */
-anytest.tearDown = function() {
-  // если кто-то откладывал конец, то выходим.
-  if (anytest.exitState && anytest.delayTarget_.length == 0) {
-    if (anytest.CAT.needCheckConsoleMsg)
-      anytest.CAT.checkMsg();
-    anytest.CAT.exit();
-  }
+anytest.tearDown = function () {
+    // если кто-то откладывал конец, то выходим.
+    if (anytest.exitState && anytest.delayTarget_.length == 0) {
+        if (anytest.CAT.needCheckConsoleMsg)
+            anytest.CAT.checkMsg();
+
+        anytest.timer.endAll();
+        for(var propertyName in anytest.timer.allDeltas) {
+            anytest.CAT.timer(propertyName, anytest.timer.allDeltas[propertyName]);
+        }
+        anytest.CAT.exit();
+    }
 };
 
 
@@ -176,26 +182,26 @@ anytest.tearDown = function() {
  * @param {boolean=} opt_isListenOnce
  * @return {*}
  */
-anytest.chartListen = function(opt_chart, opt_callbackFunction, opt_isListenOnce) {
-  anytest.chart = window['chart'];
-  opt_chart = opt_chart || anytest.chart;
-  if (!opt_chart || !opt_chart['listen']) return null;
-  if (opt_isListenOnce === undefined) opt_isListenOnce = true;
-  opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
-  var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function(e) {
-    if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
-    anytest.listenerFuncMain_(opt_callbackFunction, e);
-  });
-  return window['anytest'];
+anytest.chartListen = function (opt_chart, opt_callbackFunction, opt_isListenOnce) {
+    anytest.chart = window['chart'];
+    opt_chart = opt_chart || anytest.chart;
+    if (!opt_chart || !opt_chart['listen']) return null;
+    if (opt_isListenOnce === undefined) opt_isListenOnce = true;
+    opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
+    var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+        if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
+        anytest.listenerFuncMain_(opt_callbackFunction, e);
+    });
+    return window['anytest'];
 };
 
 
 /**
  * @ignore
  */
-anytest.defaultCallbackFunction = function() {
-  anytest.CAT.getScreen();
-  anytest.exit();
+anytest.defaultCallbackFunction = function () {
+    anytest.CAT.getScreen();
+    anytest.exit();
 };
 
 
@@ -205,14 +211,14 @@ anytest.defaultCallbackFunction = function() {
  * @param {boolean=} opt_isListenOnce
  * @return {*}
  */
-anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
-  opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
-  if (opt_isListenOnce === undefined) opt_isListenOnce = true;
-  var key = window['acgraph']['events']['listen'](window['stage'], 'stagerendered', function(e) {
-    if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
-    anytest.listenerFuncMain_(opt_callbackFunction, e);
-  });
-  return window['anytest'];
+anytest.stageListen = function (opt_callbackFunction, opt_isListenOnce) {
+    opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
+    if (opt_isListenOnce === undefined) opt_isListenOnce = true;
+    var key = window['acgraph']['events']['listen'](window['stage'], 'stagerendered', function (e) {
+        if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
+        anytest.listenerFuncMain_(opt_callbackFunction, e);
+    });
+    return window['anytest'];
 };
 
 
@@ -222,11 +228,11 @@ anytest.stageListen = function(opt_callbackFunction, opt_isListenOnce) {
  * @private
  * @ignore
  */
-anytest.listenerFuncMain_ = function(callbackFunction, e) {
-  anytest.needDelay('main');
-  callbackFunction.apply(callbackFunction, [e]);
-  anytest.modes.checkModes();
-  anytest.turnOffDelay('main');
+anytest.listenerFuncMain_ = function (callbackFunction, e) {
+    anytest.needDelay('main');
+    callbackFunction.apply(callbackFunction, [e]);
+    anytest.modes.checkModes();
+    anytest.turnOffDelay('main');
 };
 
 
@@ -242,17 +248,17 @@ anytest.excludeCreditsForChart_ = ['circular', 'bullet', 'sparkline'];
  * @param {Object=} opt_chart chart or Element.
  * @return {*}
  */
-anytest.drawInStage = function(opt_chart) {
-  opt_chart = opt_chart || anytest.chart;
+anytest.drawInStage = function (opt_chart) {
+    opt_chart = opt_chart || anytest.chart;
 
-  // вырубаем кредитс, по нашему ключу.
-  if (opt_chart['getType'] && anytest.excludeCreditsForChart_.indexOf(opt_chart['getType']()) == -1 && opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
-    opt_chart['credits'](null);
+    // вырубаем кредитс, по нашему ключу.
+    if (opt_chart['getType'] && anytest.excludeCreditsForChart_.indexOf(opt_chart['getType']()) == -1 && opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+        opt_chart['credits'](null);
 
-  if (!opt_chart['container']) return null;
-  opt_chart['container'](window['stage'])['draw']();
-  // _chart.container(stage.layer()).draw();
-  return window['anytest'];
+    if (!opt_chart['container']) return null;
+    opt_chart['container'](window['stage'])['draw']();
+    // _chart.container(stage.layer()).draw();
+    return window['anytest'];
 };
 
 
@@ -269,8 +275,8 @@ anytest.delayTarget_ = [];
  * @param {string} target
  * @ignore
  */
-anytest.needDelay = function(target) {
-  anytest.delayTarget_.push(target);
+anytest.needDelay = function (target) {
+    anytest.delayTarget_.push(target);
 };
 
 
@@ -279,10 +285,10 @@ anytest.needDelay = function(target) {
  * @param {string} target
  * @ignore
  */
-anytest.turnOffDelay = function(target) {
-  var index = goog.array.indexOf(anytest.delayTarget_, target);
-  anytest.delayTarget_.splice(index, 1);
-  anytest.tearDown();
+anytest.turnOffDelay = function (target) {
+    var index = goog.array.indexOf(anytest.delayTarget_, target);
+    anytest.delayTarget_.splice(index, 1);
+    anytest.tearDown();
 };
 
 
