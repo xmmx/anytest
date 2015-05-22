@@ -21,7 +21,7 @@ anytest.timer.startTime_ = {};
  * @type {Object}
  * @ignore
  */
-anytest.timer.allDeltas = {'startedFrom': 0};
+anytest.timer.allDeltas = {'JSstartedFrom': 0};
 
 
 /**
@@ -30,6 +30,13 @@ anytest.timer.allDeltas = {'startedFrom': 0};
  * @ignore
  */
 anytest.timer.names = [];
+
+
+/**
+ * Is timer used.
+ * @type {boolean}
+ */
+anytest.timer.inited = false;
 
 
 /**
@@ -47,6 +54,7 @@ anytest.timer.lastT = '';
  * @ignore
  */
 anytest.timer.set = function(name, opt_endLastTimer) {
+    anytest.timer.inited = true;
     if (!anytest.timer.allDeltas['JSstartedFrom']) {
         var t = anytest.timer.now();
         if (t.toFixed(0).toString().length > 5) t = 1;
@@ -67,7 +75,7 @@ anytest.timer.set = function(name, opt_endLastTimer) {
  */
 anytest.timer.end = function (name, opt_isReturn) {
     if (name && anytest.timer.startTime_[name]) {
-        anytest.timer.allDeltas[name] = anytest.timer.now() - anytest.timer.startTime_[name];
+        anytest.timer.allDeltas[name] = (anytest.timer.now() - anytest.timer.startTime_[name]).toFixed(2);
         var index = goog.array.indexOf(anytest.timer.names, name);
         anytest.timer.names.splice(index, 1);
         delete anytest.timer.startTime_[name];

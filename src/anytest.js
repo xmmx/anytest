@@ -166,9 +166,11 @@ anytest.tearDown = function () {
         if (anytest.CAT.needCheckConsoleMsg)
             anytest.CAT.checkMsg();
 
-        anytest.timer.endAll();
-        for(var propertyName in anytest.timer.allDeltas) {
-            anytest.CAT.timer(propertyName, anytest.timer.allDeltas[propertyName]);
+        if (anytest.timer.inited) {
+            anytest.timer.endAll();
+            for (var propertyName in anytest.timer.allDeltas) {
+                anytest.CAT.timer(propertyName, anytest.timer.allDeltas[propertyName]);
+            }
         }
         anytest.CAT.exit();
     }
