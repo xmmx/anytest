@@ -19,9 +19,10 @@ goog.require('anytest.panel.resize');
  *
  *  - ('interactive')
  * @param {string} type
+ * @param {boolean=} opt_flag
  * @return {*}
  */
-anytest.panel.create = function(type) {
+anytest.panel.create = function(type, opt_flag) {
   var _div = anytest.utils.createDiv('sidePanel', true);
   var content = '';
   switch (type) {
@@ -29,7 +30,7 @@ anytest.panel.create = function(type) {
       content = anytest.panel.resize.getHTMLContent.apply(window['anytest'], arguments);
       break;
     case 'interactive':
-      content = anytest.panel.interactive.getHTMLContent();
+      content = anytest.panel.interactive.getHTMLContent(opt_flag);
       break;
     default:
       content = null;

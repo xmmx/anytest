@@ -11,9 +11,9 @@ goog.provide('anytest.timer');
 /**
  * All started timers.
  * @type {Object}
- * @private
+ * @ignore
  */
-anytest.timer.startTime_ = {};
+anytest.timer.startTime = {};
 
 
 /**
@@ -41,7 +41,7 @@ anytest.timer.inited = false;
 
 /**
  * lat timer name.
- * @type {string}
+ * @type {string|number}
  */
 anytest.timer.lastT = '';
 
@@ -50,7 +50,6 @@ anytest.timer.lastT = '';
  * Starts new timer.
  * @param {string|number} name
  * @param {boolean=} opt_endLastTimer [false] name.
- * @return {string|number=} opt_endLastTimer
  * @ignore
  */
 anytest.timer.set = function(name, opt_endLastTimer) {
@@ -63,7 +62,7 @@ anytest.timer.set = function(name, opt_endLastTimer) {
     if (opt_endLastTimer) anytest.timer.end(anytest.timer.lastT);
     if (!name) name = anytest.timer.names.length;
     anytest.timer.names.push(name);
-    anytest.timer.startTime_[name] = anytest.timer.now();
+    anytest.timer.startTime[name] = anytest.timer.now();
     anytest.timer.lastT = name;
 };
 
@@ -72,19 +71,21 @@ anytest.timer.set = function(name, opt_endLastTimer) {
  * Ends timer by name
  * @param {string|number} name
  * @param {boolean=} opt_isReturn
+ * @return {?number}
  */
 anytest.timer.end = function (name, opt_isReturn) {
-    if (name && anytest.timer.startTime_[name]) {
-        anytest.timer.allDeltas[name] = (anytest.timer.now() - anytest.timer.startTime_[name]).toFixed(2);
+    if (name && anytest.timer.startTime[name]) {
+        anytest.timer.allDeltas[name] = (anytest.timer.now() - anytest.timer.startTime[name]).toFixed(2);
         var index = goog.array.indexOf(anytest.timer.names, name);
         anytest.timer.names.splice(index, 1);
-        delete anytest.timer.startTime_[name];
+        delete anytest.timer.startTime[name];
         if (opt_isReturn) {
             var vf = anytest.timer.allDeltas[name];
             delete anytest.timer.allDeltas[name];
             return vf;
         }
     }
+    return null;
 };
 
 

@@ -113,8 +113,7 @@ anytest.CAT.action = function (x, y, opt_type, opt_timer) {
     opt_type = opt_type || 'click';
     log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
     if (opt_timer){
-        var t = anytest.timer.end('_deltaLog', true);
-        anytest.timer.startTime_[saveT] = anytest.timer.startTime_[saveT] - t;
+        anytest.timer.startTime[saveT] = anytest.timer.startTime[saveT] - anytest.timer.end('_deltaLog', true);
         anytest.timer.lastT = saveT;
     }else anytest.panel.interactive.initPoint(x, y, true);// add point to base layer;
 };
