@@ -127,23 +127,23 @@ anytest.modes.resize = function () {
         //log('RESIZE');
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
-        anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeChart, 1);
     }
 
     if (window['stage']) {
         if (window['chart']) {
             anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.BOTH, 50, true);
             anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
-            anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
+            anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeBoth, 1);
         }
 
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
-        anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeContainerFP, 1);
 
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_ONLY, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_ONLY, 50, true);
-        anytest.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeContainer, 1);
     }
 
     anytest.turnOffDelay('resize');
@@ -209,7 +209,7 @@ anytest.modes.exportJSON_ = function () {
                 delete window['chart'];
                 window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
                 window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-                    anytest.CAT.getScreen('restoreFromJSON', 1);
+                    anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaJSON, 1);
                     if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
                         anytest.needDelay('XML schema');
                         anytest.modes.exportXML_();
@@ -248,7 +248,7 @@ anytest.modes.exportXML_ = function () {
             delete window['chart'];
             window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
             window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-                anytest.CAT.getScreen('restoreFromXML', 1);
+                anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaXML, 1);
             });
             document.getElementById('container').innerHTML = '';
             window['chart']['container']('container')['draw']();
@@ -269,7 +269,7 @@ anytest.modes.exportXML_ = function () {
 anytest.modes.hiddenContainer_ = function () {
     document.getElementById('container').style.display = 'none';
     document.getElementById('container').style.display = 'block';
-    anytest.CAT.getScreen('hiddenContainerMode', 1);
+    anytest.CAT.getScreen(anytest.enums.modesGSmsg.hiddenContainer, 1);
 
     anytest.turnOffDelay('hiddenContainer');
 };

@@ -65,7 +65,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
   var _cmd = 'CAT: get_screenshot ' + opt_imgName;
   if (opt_factor) {
     opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
-    if (opt_imgName == 'hiddenContainerMode'){
+    if (anytest.enums.modesGSmsg[opt_imgName]){
         opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
     }
     if (+opt_factor) {

@@ -19,6 +19,21 @@ anytest.enums.resizeTypes = {
 };
 
 
+/**
+ * GetMessage Enums
+ * @type {{hiddenContainer: string, schemaJSON: string, schemaXML: string, resizeChart: string, resizeBoth: string, resizeStage: string, resizeContainer: string, resizeContainerFP: string}}
+ */
+anytest.enums.modesGSmsg = {
+  hiddenContainer: 'hiddenContainerMode',
+  schemaJSON: 'restoreFromJSON',
+  schemaXML: 'restoreFromXML',
+  resizeChart: 'after' + anytest.enums.resizeTypes.CHART + 'Resize',
+  resizeBoth: 'after' + anytest.enums.resizeTypes.BOTH + 'Resize',
+  resizeStage: 'after' + anytest.enums.resizeTypes.STAGE + 'Resize',
+  resizeContainer: 'after' + anytest.enums.resizeTypes.CONTAINER_ONLY + 'Resize',
+  resizeContainerFP: 'after' + anytest.enums.resizeTypes.CONTAINER_FULL_PERCENT + 'Resize'
+};
+
 goog.exportSymbol('anytest.enums.resizeTypes.BOTH', anytest.enums.resizeTypes.BOTH);
 goog.exportSymbol('anytest.enums.resizeTypes.CHART', anytest.enums.resizeTypes.CHART);
 goog.exportSymbol('anytest.enums.resizeTypes.CONTAINER_ONLY', anytest.enums.resizeTypes.CONTAINER_ONLY);
