@@ -52,7 +52,7 @@ anytest.enums.hashMap = [];
 anytest.enums2arr = function (enumName) {
   if (!anytest.enums.hashMap[enumName]) {
     var res = [];
-    for (enm in anytest.enums[enumName]) {
+    for (var enm in anytest.enums[enumName]) {
       res.push(anytest.enums[enumName][enm]);
     }
     anytest.enums.hashMap[enumName] = res;
