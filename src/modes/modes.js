@@ -199,7 +199,7 @@ anytest.modes.exportJSON_ = function () {
         var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
         var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
         if (diff)
-            log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
+            log('Wrong JSON format (diff, toJson, stringify/parse)', diff, window['modes']['configJSON'], emoConfig);
         else {
             var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], anytest.modes.getJSONSchema());
             if (!validResp || !validResp.valid)
