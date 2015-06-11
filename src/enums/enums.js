@@ -34,6 +34,32 @@ anytest.enums.modesGSmsg = {
   resizeContainerFP: 'after' + anytest.enums.resizeTypes.CONTAINER_FULL_PERCENT + 'Resize'
 };
 
+
+/**
+ * HashMap.
+ * @type {Array.<Array>}
+ * @ignoreDoc
+ */
+anytest.enums.hashMap = [];
+
+
+/**
+ * Enum to array.
+ * @ignoreDoc
+ * @param {string} enumName
+ * @return {Array}
+ */
+anytest.enums2arr = function (enumName) {
+  if (!anytest.enums.hashMap[enumName]) {
+    var res = [];
+    for (enm in anytest.enums[enumName]) {
+      res.push(anytest.enums[enumName][enm]);
+    }
+    anytest.enums.hashMap[enumName] = res;
+  }
+  return anytest.enums.hashMap[enumName];
+};
+
 goog.exportSymbol('anytest.enums.resizeTypes.BOTH', anytest.enums.resizeTypes.BOTH);
 goog.exportSymbol('anytest.enums.resizeTypes.CHART', anytest.enums.resizeTypes.CHART);
 goog.exportSymbol('anytest.enums.resizeTypes.CONTAINER_ONLY', anytest.enums.resizeTypes.CONTAINER_ONLY);
