@@ -124,6 +124,7 @@ anytest.modes.resize = function () {
     var _type = anytest.enums.resizeTypes;
 
     if (window['chart']) {
+        //log('RESIZE');
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
         anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);

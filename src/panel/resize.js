@@ -31,12 +31,14 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     _width = document.getElementById('container').style.width;
     _height = document.getElementById('container').style.height;
   }
+  var isW_perc = (_width.toString()[_width.length-1] == "%");
+  var isH_perc = (_height.toString()[_height.length-1]== "%");
   _width = parseInt(_width, 10);
   _height = parseInt(_height, 10);
   _step = opt_step || document.getElementById('resizeStep').value;
-  _step = parseInt(_step, 10) * sign;
-  _width += _step;
-  _height += _step;
+  _step = parseInt(_step, 10) * parseInt(sign,10);
+  _width = 0 + _width + _step + (isW_perc ? "%":'px');
+  _height = 0 + _height + _step + (isH_perc ? "%":'px');
 
   if (!opt_logOff)
     log('resize ' + _resizeTarget + ' from (', _width - _step, _height - _step, ') to (', _width, _height, ')');
