@@ -35,13 +35,13 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   var isH_perc = (_height.toString()[_height.length-1]== "%");
   _width = parseInt(_width, 10);
   _height = parseInt(_height, 10);
-  log(_resizeTarget, 'from ', _width, _height);
+  //log(_resizeTarget, 'from ', _width, _height);
   _step = opt_step || document.getElementById('resizeStep').value;
   _step = parseInt(_step, 10) * parseInt(sign,10);
   _width = 0 + _width + _step + (isW_perc ? "%":'px');
   _height = 0 + _height + _step + (isH_perc ? "%":'px');
 
-  log(_resizeTarget, 'to ', _width, _height);
+  //log(_resizeTarget, 'to ', _width, _height);
 
   if (_resizeTarget != _types.CHART && _resizeTarget != _types.STAGE) {
     if (_resizeTarget == _types.CONTAINER_FULL_PERCENT && window['stage']) {
