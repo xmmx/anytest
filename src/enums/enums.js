@@ -49,15 +49,12 @@ anytest.enums.hashMap = [];
  * @param {string} enumName
  * @return {Array}
  */
-anytest.enums2arr = function (enumName) {
-  if (!anytest.enums.hashMap[enumName]) {
-    var res = [];
-    for (var enm in anytest.enums[enumName]) {
-      res.push(anytest.enums[enumName][enm]);
-    }
-    anytest.enums.hashMap[enumName] = res;
+anytest.enums2arr = function(enumName) {
+  var res = [];
+  for (var enm in enumName) {
+    res.push(enumName[enm]);
   }
-  return anytest.enums.hashMap[enumName];
+  return res;
 };
 
 goog.exportSymbol('anytest.enums.resizeTypes.BOTH', anytest.enums.resizeTypes.BOTH);

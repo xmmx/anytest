@@ -65,7 +65,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
   var _cmd = 'CAT: get_screenshot ' + opt_imgName;
   if (opt_factor) {
     opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
-    if (anytest.enums2arr('modesGSmsg').indexOf(opt_imgName) > -1){
+    if (anytest.enums2arr(anytest.enums.modesGSmsg).indexOf(opt_imgName) > -1){
       opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
     }
     if (+opt_factor) {
