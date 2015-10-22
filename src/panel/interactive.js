@@ -62,7 +62,7 @@ anytest.panel.interactive.toggleBasicLayer = function() {
  */
 anytest.panel.interactive.log = function(x, y) {
   var txtArea = document.getElementById('interactiveCoordinatesLogger');
-  txtArea.innerHTML = anytest.panel.interactive.newPointCount_ + ') ' + x + ' ' + y + '\n' + txtArea.innerHTML;
+  txtArea.innerHTML = anytest.panel.interactive.newPointCount_ + ') ' + x + ', ' + y + '\n' + txtArea.innerHTML;
 };
 
 
