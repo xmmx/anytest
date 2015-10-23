@@ -105,13 +105,13 @@ anytest.CAT.checkMsg = function() {
  * @param {number} x
  * @param {number} y
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
- * @param {string=} opt_theme v6|defaultTheme.
+ * @param {string=} opt_theme 0|v6|defaultTheme.
  */
 anytest.CAT.action = function(x, y, opt_type, opt_theme) {
   opt_type = opt_type || 'click';
   opt_theme = opt_theme || 'defaultTheme';
   // log only in theme
-  if (window['anychart']['themes'][opt_theme])
+  if (opt_theme == 'all' || window['anychart']['themes'][opt_theme])
     log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
   // add point to base layer;
   anytest.panel.interactive.initPoint(x, y, true);
