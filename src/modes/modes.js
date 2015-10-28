@@ -96,16 +96,14 @@ anytest.modes.checkModes = function () {
     ) {
         window['modes'] = {};
         anytest.setCheckMsg('Warning: 8 Description:', 1, true);
-
         if (window['chart']) {
-            window['modes']['configXML'] = window['chart']['toXml']();
-            window['modes']['configJSON'] = window['chart']['toJson']();
-
             if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
+                window['modes']['configJSON'] = window['chart']['toJson']();
                 anytest.needDelay('JSON schema');
                 anytest.modes.exportJSON_();
             }
-            else if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+            if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+                window['modes']['configXML'] = window['chart']['toXml']();
                 anytest.needDelay('XML schema');
                 anytest.modes.exportXML_();
             }
@@ -210,19 +208,20 @@ anytest.modes.exportJSON_ = function () {
                 window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
                 window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
                     anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaJSON, 1);
-                    if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
-                        anytest.needDelay('XML schema');
-                        anytest.modes.exportXML_();
-                    }
+                    anytest.turnOffDelay('JSON schema');
+                    //if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+                    //    anytest.needDelay('XML schema');
+                    //    anytest.modes.exportXML_();
+                    //}
                 });
-                document.getElementById('container').innerHTML = '';
-                window['chart']['container']('container')['draw']();
+                //document.getElementById('container').innerHTML = '';
+                window['chart']['container'](window['stage'])['draw']();
             } catch (e) {
                 console.log(e.message, e.stack);
+                anytest.turnOffDelay('JSON schema');
             }
         }
     }
-    anytest.turnOffDelay('JSON schema');
     return null;
 };
 
@@ -249,14 +248,15 @@ anytest.modes.exportXML_ = function () {
             window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
             window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
                 anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaXML, 1);
+                anytest.turnOffDelay('XML schema');
             });
             document.getElementById('container').innerHTML = '';
             window['chart']['container']('container')['draw']();
         } catch (e) {
             console.log(e.message, e.stack);
+            anytest.turnOffDelay('XML schema');
         }
     }
-    anytest.turnOffDelay('XML schema');
     return null;
 };
 

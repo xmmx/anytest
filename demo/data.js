@@ -1,6 +1,6 @@
 var stage, chart;
 anychart.onDocumentLoad(function() {
-  anytest.setUp(500,500);
+  anytest.setUp(500,500).description('123123');
 
   var dataSet = anychart.data.set([
     {x: 'A1', y: 'B1', value: 23},
@@ -13,7 +13,7 @@ anychart.onDocumentLoad(function() {
   chart.tooltip(null);
   anytest.drawInStage(chart);
 
-//        anytest.createPanel('interactive');
+        anytest.createPanel('interactive');
   anytest.chartListen(chart, function () {
     anytest.CAT.getScreen();
     chart.hover();
