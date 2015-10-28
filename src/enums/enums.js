@@ -46,7 +46,7 @@ anytest.enums.hashMap = [];
 /**
  * Enum to array.
  * @ignoreDoc
- * @param {string} enumName
+ * @param {Object} enumName
  * @return {Array}
  */
 anytest.enums2arr = function(enumName) {
