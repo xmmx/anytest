@@ -250,8 +250,8 @@ anytest.modes.exportXML_ = function () {
                 anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaXML, 1);
                 anytest.turnOffDelay('XML schema');
             });
-            document.getElementById('container').innerHTML = '';
-            window['chart']['container']('container')['draw']();
+            //document.getElementById('container').innerHTML = '';
+            window['chart']['container'](window['stage'])['draw']();
         } catch (e) {
             console.log(e.message, e.stack);
             anytest.turnOffDelay('XML schema');
