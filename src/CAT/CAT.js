@@ -65,8 +65,8 @@ anytest.CAT.getScreen = function (opt_imgName, opt_factor, opt_compareImgName) {
     var _cmd = 'CAT: get_screenshot ' + opt_imgName;
     if (opt_factor) {
         opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
-        if (opt_imgName == 'hiddenContainerMode') {
-            opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length - 2];
+        if (anytest.enums2arr(anytest.enums.modesGSmsg).indexOf(opt_imgName) > -1){
+          opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
         }
         if (+opt_factor) {
             if (opt_factor > 0)
@@ -105,9 +105,18 @@ anytest.CAT.checkMsg = function () {
  * @param {number} x
  * @param {number} y
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
+ * @param {string=} opt_theme all|v6|defaultTheme.
  * @param {boolean=} opt_timer timer.
  */
-anytest.CAT.action = function (x, y, opt_type, opt_timer) {
+anytest.CAT.action = function(x, y, opt_type, opt_theme) {
+  opt_type = opt_type || 'click';
+  opt_theme = opt_theme || 'all';
+  // log only in theme
+  if (opt_theme == 'all' || window['anychart']['themes'][opt_theme])
+    log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
+  // add point to base layer;
+  anytest.panel.interactive.initPoint(x, y, true);
+
     var saveT = anytest.timer.lastT;
     if (opt_timer) anytest.timer.set('_deltaLog');
     opt_type = opt_type || 'click';

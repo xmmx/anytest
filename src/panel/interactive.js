@@ -61,9 +61,9 @@ anytest.panel.interactive.toggleBasicLayer = function () {
  * @param {number} y
  * @ignore
  */
-anytest.panel.interactive.log = function (x, y) {
-    var txtArea = document.getElementById('interactiveCoordinatesLogger');
-    txtArea.innerHTML = anytest.panel.interactive.newPointCount_ + ') ' + x + ' ' + y + '\n' + txtArea.innerHTML;
+anytest.panel.interactive.log = function(x, y) {
+  var txtArea = document.getElementById('interactiveCoordinatesLogger');
+  txtArea.innerHTML = anytest.panel.interactive.newPointCount_ + ') ' + x + ', ' + y + '\n' + txtArea.innerHTML;
 };
 
 

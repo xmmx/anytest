@@ -96,16 +96,14 @@ anytest.modes.checkModes = function () {
     ) {
         window['modes'] = {};
         anytest.setCheckMsg('Warning: 8 Description:', 1, true);
-
         if (window['chart']) {
-            window['modes']['configXML'] = window['chart']['toXml']();
-            window['modes']['configJSON'] = window['chart']['toJson']();
-
             if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
+                window['modes']['configJSON'] = window['chart']['toJson']();
                 anytest.needDelay('JSON schema');
                 anytest.modes.exportJSON_();
             }
-            else if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+            if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+                window['modes']['configXML'] = window['chart']['toXml']();
                 anytest.needDelay('XML schema');
                 anytest.modes.exportXML_();
             }
@@ -124,25 +122,26 @@ anytest.modes.resize = function () {
     var _type = anytest.enums.resizeTypes;
 
     if (window['chart']) {
+        //log('RESIZE');
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CHART, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CHART, 50, true);
-        anytest.CAT.getScreen('after' + _type.CHART + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeChart, 1);
     }
 
     if (window['stage']) {
         if (window['chart']) {
             anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.BOTH, 50, true);
             anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.BOTH, 50, true);
-            anytest.CAT.getScreen('after' + _type.BOTH + 'Resize', 1);
+            anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeBoth, 1);
         }
 
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_FULL_PERCENT, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_FULL_PERCENT, 50, true);
-        anytest.CAT.getScreen('after' + _type.CONTAINER_FULL_PERCENT + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeContainerFP, 1);
 
         anytest.panel.resize.resizeTarget(anytest.chart, 1, _type.CONTAINER_ONLY, 50, true);
         anytest.panel.resize.resizeTarget(anytest.chart, -1, _type.CONTAINER_ONLY, 50, true);
-        anytest.CAT.getScreen('after' + _type.CONTAINER_ONLY + 'Resize', 1);
+        anytest.CAT.getScreen(anytest.enums.modesGSmsg.resizeContainer, 1);
     }
 
     anytest.turnOffDelay('resize');
@@ -198,7 +197,7 @@ anytest.modes.exportJSON_ = function () {
         var emoConfig = JSON.parse(JSON.stringify(window['modes']['configJSON']));
         var diff = anytest.utils.compareObjects(window['modes']['configJSON'], emoConfig);
         if (diff)
-            log('Wrong JSON format', diff, window['modes']['configJSON'], emoConfig);
+            log('Wrong JSON format (diff, toJson, stringify/parse)', diff, window['modes']['configJSON'], emoConfig);
         else {
             var validResp = window['tv4']['validateMultiple'](window['modes']['configJSON'], anytest.modes.getJSONSchema());
             if (!validResp || !validResp.valid)
@@ -208,20 +207,21 @@ anytest.modes.exportJSON_ = function () {
                 delete window['chart'];
                 window['chart'] = window['anychart']['fromJson'](window['modes']['configJSON']);
                 window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-                    anytest.CAT.getScreen('restoreFromJSON', 1);
-                    if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
-                        anytest.needDelay('XML schema');
-                        anytest.modes.exportXML_();
-                    }
+                    anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaJSON, 1);
+                    anytest.turnOffDelay('JSON schema');
+                    //if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+                    //    anytest.needDelay('XML schema');
+                    //    anytest.modes.exportXML_();
+                    //}
                 });
-                document.getElementById('container').innerHTML = '';
-                window['chart']['container']('container')['draw']();
+                //document.getElementById('container').innerHTML = '';
+                window['chart']['container'](window['stage'])['draw']();
             } catch (e) {
                 console.log(e.message, e.stack);
+                anytest.turnOffDelay('JSON schema');
             }
         }
     }
-    anytest.turnOffDelay('JSON schema');
     return null;
 };
 
@@ -247,15 +247,16 @@ anytest.modes.exportXML_ = function () {
             delete window['chart'];
             window['chart'] = window['anychart']['fromXml'](window['modes']['configXML']);
             window['chart']['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-                anytest.CAT.getScreen('restoreFromXML', 1);
+                anytest.CAT.getScreen(anytest.enums.modesGSmsg.schemaXML, 1);
+                anytest.turnOffDelay('XML schema');
             });
-            document.getElementById('container').innerHTML = '';
-            window['chart']['container']('container')['draw']();
+            //document.getElementById('container').innerHTML = '';
+            window['chart']['container'](window['stage'])['draw']();
         } catch (e) {
             console.log(e.message, e.stack);
+            anytest.turnOffDelay('XML schema');
         }
     }
-    anytest.turnOffDelay('XML schema');
     return null;
 };
 
@@ -268,7 +269,7 @@ anytest.modes.exportXML_ = function () {
 anytest.modes.hiddenContainer_ = function () {
     document.getElementById('container').style.display = 'none';
     document.getElementById('container').style.display = 'block';
-    anytest.CAT.getScreen('hiddenContainerMode', 1);
+    anytest.CAT.getScreen(anytest.enums.modesGSmsg.hiddenContainer, 1);
 
     anytest.turnOffDelay('hiddenContainer');
 };

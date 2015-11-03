@@ -23,7 +23,7 @@ anytest.styles.rules =
     '}' +
 
     '#sidePanel {' +
-    '  float: left;' +
+    '  float: right;' +
     '  width: 180px;' +
     '  background: #dcdcdc;' +
     '  border: 1px solid #5e5e5e;' +
@@ -32,7 +32,7 @@ anytest.styles.rules =
     '}' +
 
     '#description {' +
-    '  float: left;' +
+    //'  float: right;' +
     '  padding: 10px;' +
     '  margin: 0 10px;' +
     '  max-width: 400px;' +
