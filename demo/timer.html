@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../contrib/closure-library/closure/goog/base.js"></script>
+    <script src="../src/deps.js"></script>
+    <script>
+        goog.require('anytest');
+    </script>
+    <script>
+        anytest.time(anytest.timerEnum.BODY_ON_DOCUMENT_READY); // засекаем когда началась грузится страница (без учета загрузки anytest
+        anytest.time(anytest.timerEnum.BODY_AC_SCRIPT_LOAD); // засекаем когда начался грузится скрипт anychart
+    </script>
+    <!--<script src="../out/anychart-bundle.min.js"></script>-->
+    <script src="../out/anychart-bundle.min.js"></script>
+    <!--<script src="../out/schemas.js"></script>-->
+    <script>
+        anytest.timeEnd(anytest.timerEnum.BODY_AC_SCRIPT_LOAD); // засекаем когда начался грузится скрипт anychart
+    </script>
+</head>
+<body>
+<div id="container"></div>
+</body>
+<script src="data.js"></script>
+</html>

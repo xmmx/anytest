@@ -22,7 +22,7 @@ goog.require('anytest.panel.resize');
  * @return {*}
  */
 anytest.panel.create = function(type) {
-  var _div = anytest.utils.createDiv('sidePanel', true);
+  var _div = anytest.utils.createDiv('sidePanel');
   var content = '';
   switch (type) {
     case 'resize':
@@ -57,4 +57,22 @@ anytest.panel.create = function(type) {
  */
 anytest.createPanel = anytest.panel.create;
 
+
+/**
+ * Sugar for panel.
+ */
+anytest.resizePanel = function() {
+  anytest.createPanel('resize');
+};
+
+
+/**
+ * Sugar for panel.
+ */
+anytest.interactivePanel = function() {
+  anytest.createPanel('interactive');
+};
+
 goog.exportSymbol('anytest.createPanel', anytest.panel.create);
+goog.exportSymbol('anytest.resizePanel', anytest.resizePanel);
+goog.exportSymbol('anytest.interactivePanel', anytest.interactivePanel);

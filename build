@@ -239,7 +239,8 @@ def __get_optimized_compiler_args():
         # uncomment to have some fun ;)
         #'--jscomp_warning reportUnknownTypes',
     ]
-    __set_optimization_level(compiler_args, OptimizationLevel.ADVANCED)
+    __set_optimization_level(compiler_args, OptimizationLevel.SIMPLE)
+    __set_pretty_print(compiler_args)
     return compiler_args
 
 
@@ -306,13 +307,13 @@ def __call_compiler(commands):
 #           Build deps
 #=======================================================================================================================
 def __rewrite_out_file():
-    tv4 = open(os.path.join(EXTERNAL_PATH, 'tv4.min.js')).read()
-    xmllint = open(os.path.join(EXTERNAL_PATH, 'xmllint.js')).read()
-
-    f = open(os.path.join(OUT_PATH, 'anytest.min.js'),'a')
-    f.write(tv4)
-    f.write(xmllint)
-    f.close()
+    #tv4 = open(os.path.join(EXTERNAL_PATH, 'tv4.min.js')).read()
+    #xmllint = open(os.path.join(EXTERNAL_PATH, 'xmllint.js')).read()
+    print
+    #f = open(os.path.join(OUT_PATH, 'anytest.min.js'),'a')
+    #f.write(tv4)
+    #f.write(xmllint)
+    #f.close()
 
 #=======================================================================================================================
 #           Build deps

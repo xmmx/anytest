@@ -16,7 +16,7 @@ anytest.settings_.height = '300px';
 /**
  * @type {string}
  */
-anytest.settings_.sizeTarget = anytest.enums.resizeTypes.BOTH;
+anytest.settings_.sizeTarget = 'Both';
 
 
 /**
@@ -24,7 +24,7 @@ anytest.settings_.sizeTarget = anytest.enums.resizeTypes.BOTH;
  */
 anytest.settings_.modes = {
   resize: false, // only SINGLE chart
-  XMLschema: true, // only SINGLE chart
+  XMLschema: false, // only SINGLE chart
   JSONschema: false, // only SINGLE chart
   hiddenContainer: false, // only SINGLE chart
   all: function(flag) {

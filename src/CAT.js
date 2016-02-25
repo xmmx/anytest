@@ -5,14 +5,16 @@ goog.provide('anytest.CAT');
  @namespace
  @name anytest.CAT
  */
-
+anytest.CAT = {};
 
 /**
  * Завершающая команда для САТ.
  * @ignore
  */
-anytest.CAT.exit = function() {
-  log('CAT: exit');
+anytest.CAT.exit = function () {
+  anytest.step(function () {
+    log('CAT: exit');
+  }, false);
 };
 
 
@@ -51,23 +53,17 @@ anytest.CAT.namesStack_ = [];
  *  По дефолту базовая.
  * @return {?string} Имя текущей картинки или null.
  */
-anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
-  if (!opt_imgName) {
-    if (!anytest.CAT.duplicateBasic_) {
-      opt_imgName = anytest.CAT.defaultScreenshotName_;
-      anytest.CAT.duplicateBasic_ = true;
-    } else {
-      alert('getScreen пытается перезаписать основной файл!');
+anytest.CAT.getScreen = function (opt_imgName, opt_factor, opt_compareImgName) {
+  opt_imgName = opt_imgName || anytest.CAT.defaultScreenshotName_;
+  var pref = (anytest.screenPrefix_[anytest.currentStep_] || "");
+  if (goog.array.indexOf(anytest.CAT.namesStack_, pref+opt_imgName) > -1){
+      //alert('getScreen пытается перезаписать файл '+ opt_imgName+'!');
       return null;
-    }
   }
-  anytest.CAT.namesStack_.push(opt_imgName);
-  var _cmd = 'CAT: get_screenshot ' + opt_imgName;
-  if (opt_factor) {
+  anytest.CAT.namesStack_.push(pref+opt_imgName);
+  var _cmd = 'CAT: get_screenshot ' + pref+opt_imgName;
+  if (opt_factor && !pref) {
     opt_compareImgName = opt_compareImgName || anytest.CAT.defaultScreenshotName_;
-    if (anytest.enums2arr(anytest.enums.modesGSmsg).indexOf(opt_imgName) > -1){
-      opt_compareImgName = anytest.CAT.namesStack_[anytest.CAT.namesStack_.length-2];
-    }
     if (+opt_factor) {
       if (opt_factor > 0)
         _cmd += ' equal';
@@ -77,6 +73,10 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
       _cmd += '_' + opt_compareImgName;
     }
   }
+  if (pref){
+    _cmd += ' equal_'+opt_imgName;
+  }
+
   log(_cmd);
   return opt_imgName;
 };
@@ -86,7 +86,7 @@ anytest.CAT.getScreen = function(opt_imgName, opt_factor, opt_compareImgName) {
  * Проверка, что девелоп персия js.
  * @ignore
  */
-anytest.CAT.isDevelop = function() {
+anytest.CAT.isDevelop = function () {
   log('CAT: develop_edition');
 };
 
@@ -95,8 +95,10 @@ anytest.CAT.isDevelop = function() {
  * Посылает команду сравнить сообщения из консоли.
  * @ignore
  */
-anytest.CAT.checkMsg = function() {
-  log('CAT: check_messages');
+anytest.CAT.checkMsg = function () {
+  anytest.step(function () {
+    log('CAT: check_messages');
+  }, false);
 };
 
 
@@ -107,7 +109,7 @@ anytest.CAT.checkMsg = function() {
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
  * @param {string=} opt_theme all|v6|defaultTheme.
  */
-anytest.CAT.action = function(x, y, opt_type, opt_theme) {
+anytest.CAT.action = function (x, y, opt_type, opt_theme) {
   opt_type = opt_type || 'click';
   opt_theme = opt_theme || 'all';
   // log only in theme
@@ -117,6 +119,10 @@ anytest.CAT.action = function(x, y, opt_type, opt_theme) {
   anytest.panel.interactive.initPoint(x, y, true);
 };
 
-goog.exportSymbol('anytest.CAT', anytest.CAT);
+anytest.CAT.timer = function (name, value) {
+  log('CAT: timer: ' + name + ' ' + value + '');
+};
+
+//goog.exportSymbol('anytest.CAT', anytest.CAT);
 goog.exportSymbol('anytest.CAT.getScreen', anytest.CAT.getScreen);
 goog.exportSymbol('anytest.CAT.action', anytest.CAT.action);

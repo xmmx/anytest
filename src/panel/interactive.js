@@ -15,8 +15,8 @@ anytest.panel.interactive.reset = function() {
   if (anytest.panel.interactive.additionalLayer)
     anytest.panel.interactive.additionalLayer['dispose']();
 
-  anytest.panel.interactive.additionalLayer = window['stage']['layer']();
-  window['stage']['rect'](0, 0, window['stage']['width'](), window['stage']['height']())
+  anytest.panel.interactive.additionalLayer = anytest.stage['layer']();
+  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
       .fill('orange .05')
       .stroke('none')
       .parent(anytest.panel.interactive.additionalLayer);
@@ -107,16 +107,16 @@ anytest.panel.interactive.newPointCount_ = 0;
  * @ignore
  */
 anytest.panel.interactive.initPoint = function(x, y, opt_isBasicLayer) {
-  if (!window['stage']) window['stage'] = window['chart']['container']();
+  if (anytest.utils.isEmptyObj(anytest.stage)) return;
   if (opt_isBasicLayer) {
-    window['stage']['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
+    anytest.stage['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
   } else {
     anytest.panel.interactive.newPointCount_++;
-    anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_] = window['stage']['layer']()['parent'](anytest.panel.interactive.additionalLayer);
-    window['stage']['circle'](x, y, 4)['fill']('blue')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    window['stage']['circle'](x, y, 3)['fill']('red')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    window['stage']['text'](x, y, '' + anytest.panel.interactive.newPointCount_)['color']('white')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
-    window['stage']['text'](x + 1, y + 1, '' + anytest.panel.interactive.newPointCount_)['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_]);
+    anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_] = anytest.stage['layer']()['parent'](anytest.panel.interactive.additionalLayer);
+    anytest.stage['circle'](x, y, 4)['fill']('blue')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_])['disablePointerEvents'](true);
+    anytest.stage['circle'](x, y, 3)['fill']('red')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_])['disablePointerEvents'](true);
+    anytest.stage['text'](x, y, '' + anytest.panel.interactive.newPointCount_)['color']('white')['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_])['disablePointerEvents'](true);
+    anytest.stage['text'](x + 1, y + 1, '' + anytest.panel.interactive.newPointCount_)['parent'](anytest.panel.interactive.pointCollector_[anytest.panel.interactive.newPointCount_])['disablePointerEvents'](true);
     anytest.panel.interactive.log(x, y);
   }
 };
@@ -145,15 +145,19 @@ anytest.panel.interactive.additionalLayer = null;
  * @return {string}
  */
 anytest.panel.interactive.getHTMLContent = function() {
+  if (anytest.utils.isEmptyObj(anytest.stage) && !window['chart']) {
+    log('no window.chart or stage');
+    return '';
+  }
   var content = '<b>Interactive Panel</b><hr/>' +
       '<input type="button" value="Reset Layer" onclick="anytest.panel.interactive.reset()"><br/>' +
       '<input type="button" value="Toggle basic layer" onclick="anytest.panel.interactive.toggleBasicLayer()">' +
       '<input type="button" value="Remove last point" onclick="anytest.panel.interactive.removeLastPoint()">' +
       '<br/><br/><b>Coordinates log:</b><br/>' +
       '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
-  if (!window['stage']) window['stage'] = window['chart']['container']();
-  anytest.panel.interactive.basicLayer = window['stage']['layer']();
-  window['stage']['rect'](0, 0, window['stage']['width'](), window['stage']['height']())
+  if (anytest.utils.isEmptyObj(anytest.stage)) anytest.stage = window['chart']['container']();
+  anytest.panel.interactive.basicLayer = anytest.stage['layer']();
+  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
       .fill('blue .05')
       .stroke('none')
       .parent(anytest.panel.interactive.basicLayer);

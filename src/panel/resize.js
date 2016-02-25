@@ -19,14 +19,14 @@ goog.provide('anytest.panel.resize');
 anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarget, opt_step, opt_logOff) {
   var _width, _height, _step;
   var _resizeTarget = opt_resizeTarget || anytest.utils.getCheckedRadioByName('resizeTarget');
-  var _types = anytest.enums.resizeTypes;
+  var _types = anytest.resizeTypes;
 
   if (((anytest.chart && anytest.chart['width']) && chartInstance) && _resizeTarget == _types.CHART) {
     _width = chartInstance['width']() || anytest.settings_.width;
     _height = chartInstance['height']() || anytest.settings_.height;
   } else if (_resizeTarget == _types.STAGE) {
-    _width = window['stage']['width']();
-    _height = window['stage']['height']();
+    _width = anytest.stage['width']();
+    _height = anytest.stage['height']();
   } else {
     _width = document.getElementById('container').style.width;
     _height = document.getElementById('container').style.height;
@@ -44,15 +44,15 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
   //log(_resizeTarget, 'to ', _width, _height);
 
   if (_resizeTarget != _types.CHART && _resizeTarget != _types.STAGE) {
-    if (_resizeTarget == _types.CONTAINER_FULL_PERCENT && window['stage']) {
-      window['stage']['suspend']();
-      window['stage']['width']('100%');
-      window['stage']['height']('100%');
+    if (_resizeTarget == _types.CONTAINER_FULL_PERCENT && anytest.stage) {
+      anytest.stage['suspend']();
+      anytest.stage['width']('100%');
+      anytest.stage['height']('100%');
       if (((anytest.chart && anytest.chart['width']) && chartInstance)) {
         chartInstance['width']('100%');
         chartInstance['height']('100%');
       }
-      window['stage']['resume']();
+      anytest.stage['resume']();
     }
     document.getElementById('container').style.width = _width;
     document.getElementById('container').style.height = _height;
@@ -63,9 +63,9 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
     chartInstance['height'](_height);
   }
 
-  if (window['stage'] && (_resizeTarget == _types.BOTH || _resizeTarget == _types.STAGE)) {
-    window['stage']['width'](_width);
-    window['stage']['height'](_height);
+  if (anytest.stage && (_resizeTarget == _types.BOTH || _resizeTarget == _types.STAGE)) {
+    anytest.stage['width'](_width);
+    anytest.stage['height'](_height);
   }
 
 
@@ -79,7 +79,7 @@ anytest.panel.resize.resizeTarget = function(chartInstance, sign, opt_resizeTarg
 anytest.panel.resize.getHTMLContent = function() {
   var content;
   var obj_ = arguments[1] || 'chart';
-  var types_ = anytest.enums.resizeTypes;
+  var types_ = anytest.resizeTypes;
   content = '<b>Resize panel</b><hr/>' +
       '<input type="button" value="Inc(++)" onclick="anytest.panel.resize.resizeTarget(window[\'' + obj_ + '\'], 1)">&nbsp;' +
       '<input type="button" value="Dec(--)" onclick="anytest.panel.resize.resizeTarget(window[\'' + obj_ + '\'], -1)">&nbsp;' +

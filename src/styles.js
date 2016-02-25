@@ -6,8 +6,25 @@ goog.provide('anytest.styles');
  */
 
 
-anytest.styles.rules =
-    '#container {' +
+/**
+ * include css
+ */
+anytest.styles.include = function () {
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+
+  style.type = 'text/css';
+  if (style.styleSheet) {
+    style.styleSheet.cssText = anytest.styles.rules_;
+  } else {
+    style.appendChild(document.createTextNode(anytest.styles.rules_));
+  }
+
+  head.appendChild(style);
+};
+
+anytest.styles.rules_ =
+    '#container, #container1 {' +
     '  border: 1px solid #000000;' +
     '  float: left;' +
     '  width: 400px;' +
@@ -32,10 +49,11 @@ anytest.styles.rules =
     '}' +
 
     '#description {' +
-    //'  float: right;' +
+      //'  float: right;' +
     '  padding: 10px;' +
     '  margin: 0 10px;' +
     '  max-width: 400px;' +
+    '  display: none;' +
     '  background: rgba(217, 148, 13, 0.06);' +
     '}' +
 
