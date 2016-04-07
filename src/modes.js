@@ -82,7 +82,7 @@ anytest.modes.checkModes = function () {
     anytest.modes.elemExec=0;
     anytest.step(function () {
       for (var jsonSmI = 0; jsonSmI < anytest.charts.length; jsonSmI++) {
-        if (!window[anytest.charts[jsonSmI]]['toJson']) continue;
+        if (!window[anytest.charts[jsonSmI]]['toJson'] || window[anytest.charts[jsonSmI]]['at_exclude_json']) continue;
         anytest.modes.elemExec++;
         if (!anytest.utils.compareObjects(anytest.modes.JSON_small_[jsonSmI], anytest.modes.JSON_large_[jsonSmI]))
           log(anytest.charts[jsonSmI], 'JSON small & large are equal.');
@@ -116,52 +116,52 @@ anytest.modes.checkModes = function () {
 
 
 
-    //consoleMsgMultiplier++;
-    //anytest.modes.elemExec=0;
-    //anytest.step(function () {
-    //  for (var jsonLgI = 0; jsonLgI < anytest.charts.length; jsonLgI++) {
-    //    if (!window[anytest.charts[jsonLgI]]['toJson']) continue;
-    //    anytest.modes.elemExec++;
-    //    var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
-    //    var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_large_[jsonLgI]));
-    //    var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonLgI], restoreConfig);
-    //    if (diff)
-    //      log(anytest.charts[jsonLgI], 'Wrong JSON_lagre format (diff, toJson, stringify/parse)', diff, anytest.modes.JSON_large_[jsonLgI], restoreConfig);
-    //    else {
-    //      var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_large_[jsonLgI], anytest.modes.schemaJSON_);
-    //      if (!validResp || !validResp.valid)
-    //        log(anytest.charts[jsonLgI], 'JSON_large not valid by schema', validResp);
-    //      try {
-    //        window[anytest.charts[jsonLgI]]['dispose']();
-    //        delete window[anytest.charts[jsonLgI]];
-    //        window[anytest.charts[jsonLgI]] = window['anychart']['fromJson'](anytest.modes.JSON_large_[jsonLgI]);
-    //        anytest.utils.loadManager['fromJSON_LG_' + anytest.charts[jsonLgI]] = true;
-    //        window[anytest.charts[jsonLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-    //          delete anytest.utils.loadManager['fromJSON_LG_' + anytest.utils.getKeyByValue(window, this)];
-    //        });
-    //        window[anytest.charts[jsonLgI]]['container'](chartContainer)['draw']();
-    //      } catch (e) {
-    //        if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
-    //          console.log('error', e.message, e.stack);
-    //      }
-    //    }
-    //  }
-    //},false);
-    //if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-');
+    consoleMsgMultiplier++;
+    anytest.modes.elemExec=0;
+    anytest.step(function () {
+      for (var jsonLgI = 0; jsonLgI < anytest.charts.length; jsonLgI++) {
+        if (!window[anytest.charts[jsonLgI]]['toJson'] || window[anytest.charts[jsonLgI]]['at_exclude_json']) continue;
+        anytest.modes.elemExec++;
+        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
+        var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_large_[jsonLgI]));
+        var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonLgI], restoreConfig);
+        if (diff)
+          log(anytest.charts[jsonLgI], 'Wrong JSON_lagre format (diff, toJson, stringify/parse)', diff, anytest.modes.JSON_large_[jsonLgI], restoreConfig);
+        else {
+          var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_large_[jsonLgI], anytest.modes.schemaJSON_);
+          if (!validResp || !validResp.valid)
+            log(anytest.charts[jsonLgI], 'JSON_large not valid by schema', validResp);
+          try {
+            window[anytest.charts[jsonLgI]]['dispose']();
+            delete window[anytest.charts[jsonLgI]];
+            window[anytest.charts[jsonLgI]] = window['anychart']['fromJson'](anytest.modes.JSON_large_[jsonLgI]);
+            anytest.utils.loadManager['fromJSON_LG_' + anytest.charts[jsonLgI]] = true;
+            window[anytest.charts[jsonLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+              delete anytest.utils.loadManager['fromJSON_LG_' + anytest.utils.getKeyByValue(window, this)];
+            });
+            window[anytest.charts[jsonLgI]]['container'](chartContainer)['draw']();
+          } catch (e) {
+            if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+              console.log('error', e.message, e.stack);
+          }
+        }
+      }
+    },false);
+    if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-');
 
-    //// secondary export
-    //anytest.step(function () {
-    //  for (var jsonI = 0; jsonI < anytest.charts.length; jsonI++) {
-    //    if (!window[anytest.charts[jsonI]]['toJson']) continue;
-    //    var secondJson = window[anytest.charts[jsonI]]['toJson'](false, true);
-    //    var secondJsonStr = window[anytest.charts[jsonI]]['toJson'](true, true);
-    //    var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonI], secondJson);
-    //    if (diff)
-    //      log(anytest.charts[jsonI], 'toJson after restore doesn\'t match as object (diff, first, second)', diff, anytest.modes.JSON_large_[jsonI], secondJson);
-    //    else if (JSON.stringify(anytest.modes.JSON_large_[jsonI]) != secondJsonStr)
-    //      log(anytest.charts[jsonI], 'toJson after restore doesn\'t match as string (first, second)', JSON.stringify(anytest.modes.JSON_large_[jsonI]), secondJsonStr);
-    //  }
-    //},false);
+    // secondary export
+    anytest.step(function () {
+      for (var jsonI = 0; jsonI < anytest.charts.length; jsonI++) {
+        if (!window[anytest.charts[jsonI]]['toJson'] || window[anytest.charts[jsonI]]['at_exclude_json']) continue;
+        var secondJson = window[anytest.charts[jsonI]]['toJson'](false, true);
+        var secondJsonStr = window[anytest.charts[jsonI]]['toJson'](true, true);
+        var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonI], secondJson);
+        if (diff)
+          log(anytest.charts[jsonI], 'toJson after restore doesn\'t match as object (diff, first, second)', diff, anytest.modes.JSON_large_[jsonI], secondJson);
+        else if (JSON.stringify(anytest.modes.JSON_large_[jsonI]) != secondJsonStr)
+          log(anytest.charts[jsonI], 'toJson after restore doesn\'t match as string (first, second)', JSON.stringify(anytest.modes.JSON_large_[jsonI]), secondJsonStr);
+      }
+    },false);
   }
   ///////////////    XML mode
   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
@@ -176,7 +176,7 @@ anytest.modes.checkModes = function () {
     anytest.modes.elemExec=0;
     anytest.step(function () {
       for (var xmlSmI = 0; xmlSmI < anytest.charts.length; xmlSmI++) {
-        if (!window[anytest.charts[xmlSmI]]['toXml']) continue;
+        if (!window[anytest.charts[xmlSmI]]['toXml'] || window[anytest.charts[xmlSmI]]['at_exclude_xml']) continue;
         anytest.modes.elemExec++;
         if (anytest.modes.XML_small_[xmlSmI]==anytest.modes.XML_large_[xmlSmI])
           log(anytest.charts[xmlSmI], 'XML small & large are equal.');
@@ -206,45 +206,45 @@ anytest.modes.checkModes = function () {
     },false);
 
 
-    //consoleMsgMultiplier++;
-    //anytest.modes.elemExec=0;
-    //anytest.step(function () {
-    //  for (var xmlLgI = 0; xmlLgI < anytest.charts.length; xmlLgI++) {
-    //    if (!window[anytest.charts[xmlLgI]]['toXml']) continue;
-    //    anytest.modes.elemExec++;
-    //    var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
-    //    var Module = {};
-    //    Module['xml'] = anytest.modes.XML_large_[xmlLgI];
-    //    Module['schema'] = anytest.modes.schemaXML_;
-    //    Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
-    //    var result = window['validateXML'](Module);
-    //    if (result.trim() != 'file.xml validates') log(anytest.charts[xmlLgI],'XML large',result);
-    //    try {
-    //      window[anytest.charts[xmlLgI]]['dispose']();
-    //      delete window[anytest.charts[xmlLgI]];
-    //      window[anytest.charts[xmlLgI]] = window['anychart']['fromXml'](anytest.modes.XML_large_[xmlLgI]);
-    //      anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlLgI]] = true;
-    //      window[anytest.charts[xmlLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-    //        delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
-    //      });
-    //      window[anytest.charts[xmlLgI]]['container'](chartContainer)['draw']();
-    //    } catch (e) {
-    //      if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
-    //        console.log('error', e.message, e.stack);
-    //    }
-    //  }
-    //},false);
-    //if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-');
-    //
-    //// secondary export
-    //anytest.step(function () {
-    //  for (var xmlI = 0; xmlI < anytest.charts.length; xmlI++) {
-    //    if (!window[anytest.charts[xmlI]]['toXml']) continue;
-    //    var secondXML = window[anytest.charts[xmlI]]['toXml'](false, true);
-    //    if (anytest.modes.XML_large_[xmlI] != secondXML)
-    //      log(anytest.charts[xmlI], 'toXml after restore doesn\'t match diff:', anytest.utils.compareStrings(anytest.modes.XML_large_[xmlI], secondXML));
-    //  }
-    //},false);
+    consoleMsgMultiplier++;
+    anytest.modes.elemExec=0;
+    anytest.step(function () {
+      for (var xmlLgI = 0; xmlLgI < anytest.charts.length; xmlLgI++) {
+        if (!window[anytest.charts[xmlLgI]]['toXml'] || window[anytest.charts[xmlLgI]]['at_exclude_xml']) continue;
+        anytest.modes.elemExec++;
+        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage;
+        var Module = {};
+        Module['xml'] = anytest.modes.XML_large_[xmlLgI];
+        Module['schema'] = anytest.modes.schemaXML_;
+        Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
+        var result = window['validateXML'](Module);
+        if (result.trim() != 'file.xml validates') log(anytest.charts[xmlLgI],'XML large',result);
+        try {
+          window[anytest.charts[xmlLgI]]['dispose']();
+          delete window[anytest.charts[xmlLgI]];
+          window[anytest.charts[xmlLgI]] = window['anychart']['fromXml'](anytest.modes.XML_large_[xmlLgI]);
+          anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlLgI]] = true;
+          window[anytest.charts[xmlLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+            delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
+          });
+          window[anytest.charts[xmlLgI]]['container'](chartContainer)['draw']();
+        } catch (e) {
+          if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+            console.log('error', e.message, e.stack);
+        }
+      }
+    },false);
+    if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-');
+
+    // secondary export
+    anytest.step(function () {
+      for (var xmlI = 0; xmlI < anytest.charts.length; xmlI++) {
+        if (!window[anytest.charts[xmlI]]['toXml'] || window[anytest.charts[xmlI]]['at_exclude_xml']) continue;
+        var secondXML = window[anytest.charts[xmlI]]['toXml'](false, true);
+        if (anytest.modes.XML_large_[xmlI] != secondXML)
+          log(anytest.charts[xmlI], 'toXml after restore doesn\'t match diff:', anytest.utils.compareStrings(anytest.modes.XML_large_[xmlI], secondXML));
+      }
+    },false);
   }
 
   ////////////////////// HIDDEN CONTAINER
