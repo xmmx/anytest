@@ -25,6 +25,9 @@ anytest.styles.include = function () {
 
 anytest.styles.rules_ =
     '#container, #container1 {' +
+    '  box-sizing: border-box;' +
+    '  -moz-box-sizing: border-box;' +
+    '  -webkit-box-sizing: border-box;' +
     '  border: 1px solid #000000;' +
     '  float: left;' +
     '  width: 400px;' +

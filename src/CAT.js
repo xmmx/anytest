@@ -103,18 +103,29 @@ anytest.CAT.checkMsg = function () {
 
 
 /**
+ * Послать событие клавиатуры
+ * @param {string} type Enum: keypress|keyup|keydown.
+ * @param {string} key_name Escape|Backspace|A|B....
+ */
+anytest.CAT.actionKeyBoard = function (type, key_name) {
+    log('CAT: action: ' + type + ' ' + key_name);
+};
+
+
+/**
  * Перемещает курсор в указанные координаты.
  * @param {number} x
  * @param {number} y
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
  * @param {string=} opt_theme all|v6|defaultTheme.
  */
-anytest.CAT.action = function (x, y, opt_type, opt_theme) {
+anytest.CAT.action = function (x, y, opt_type, opt_theme,opt_button) {
   opt_type = opt_type || 'click';
   opt_theme = opt_theme || 'all';
+  opt_button = opt_button || 'left';
   // log only in theme
   if (opt_theme == 'all' || window['anychart']['themes'][opt_theme])
-    log('CAT: action: ' + opt_type + ' ' + x + ' ' + y);
+    log('CAT: action: ' + opt_type + ' ' + x + ' ' + y + ' '+ opt_button);
   // add point to base layer;
   anytest.panel.interactive.initPoint(x, y, true);
 };
@@ -126,3 +137,4 @@ anytest.CAT.timer = function (name, value) {
 //goog.exportSymbol('anytest.CAT', anytest.CAT);
 goog.exportSymbol('anytest.CAT.getScreen', anytest.CAT.getScreen);
 goog.exportSymbol('anytest.CAT.action', anytest.CAT.action);
+goog.exportSymbol('anytest.CAT.actionKeyBoard', anytest.CAT.actionKeyBoard);
