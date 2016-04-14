@@ -75,7 +75,10 @@ var compareObjects_count = 0;
 anytest.utils.compareObjects = function (o1, o2, opt_isRecursive) {
   if (opt_isRecursive) compareObjects_count++;
   else compareObjects_count = 0;
-  if (compareObjects_count > 1000) log('comapreObject recursive fail', o1,o2)
+  if (compareObjects_count > 1000) {
+    log('comapreObject recursive fail', o1,o2);
+    return false;
+  }
   var k, kDiff,
       diff = {};
   for (k in o1) {
