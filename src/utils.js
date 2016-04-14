@@ -73,6 +73,7 @@ var compareObjects_count = 0;
  * @return {*}
  */
 anytest.utils.compareObjects = function (o1, o2, opt_isRecursive) {
+  if (compareObjects_count > 1000) return false;
   if (opt_isRecursive) compareObjects_count++;
   else compareObjects_count = 0;
   if (compareObjects_count > 1000) {
