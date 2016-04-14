@@ -64,13 +64,18 @@ anytest.utils.getCheckedRadioByName = function (name) {
 };
 
 
+var compareObjects_count = 0;
 /**
  *
  * @param o1
  * @param o2
+ * @param opt_isRecursive
  * @return {*}
  */
-anytest.utils.compareObjects = function (o1, o2) {
+anytest.utils.compareObjects = function (o1, o2, opt_isRecursive) {
+  if (opt_isRecursive) compareObjects_count++;
+  else compareObjects_count = 0;
+  if (compareObjects_count > 1000) log('comapreObject recursive fail', o1,o2)
   var k, kDiff,
       diff = {};
   for (k in o1) {
@@ -79,7 +84,7 @@ anytest.utils.compareObjects = function (o1, o2) {
       if (!(k in o2) || o1[k] !== o2[k]) {
         diff[k] = o2[k];
       }
-    } else if (kDiff = anytest.utils.compareObjects(o1[k], o2[k])) {
+    } else if (kDiff = anytest.utils.compareObjects(o1[k], o2[k],1)) {
       diff[k] = kDiff;
     }
   }
