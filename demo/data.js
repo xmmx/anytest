@@ -25,7 +25,7 @@ anychart.onDocumentLoad(function () {
         });
         anytest.exit();
     }).charts4modes();
-    //anytest.interactivePanel();
+    anytest.interactivePanel();
     stage.resume();
 
 });

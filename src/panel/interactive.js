@@ -20,11 +20,30 @@ anytest.panel.interactive.reset = function() {
       .fill('orange .05')
       .stroke('none')
       .parent(anytest.panel.interactive.additionalLayer);
+  var crosshair = {};
+  crosshair['x'] = anytest.stage['path']()['moveTo'](0, 0)['lineTo'](0, anytest.stage['height']())
+      .stroke('1 grey')
+      .parent(anytest.panel.interactive.additionalLayer);
+  crosshair['y'] = anytest.stage['path']()['moveTo'](0, 0)['lineTo'](anytest.stage['width'](),0)
+      .stroke('1 grey')
+      .parent(anytest.panel.interactive.additionalLayer);
+  crosshair['xLabel'] = anytest.stage['text'](0, 0, 0).parent(anytest.panel.interactive.additionalLayer);
+  crosshair['yLabel'] = anytest.stage['text'](0, 0, 0).parent(anytest.panel.interactive.additionalLayer);
   window['acgraph']['events']['listen'](
       anytest.panel.interactive.additionalLayer,
       window['acgraph']['events']['EventType']['CLICK'],
       function(e) {
         anytest.panel.interactive.initPoint(e.offsetX, e.offsetY);
+      });
+  window['acgraph']['events']['listen'](
+      anytest.panel.interactive.additionalLayer,
+      window['acgraph']['events']['EventType']['MOUSEMOVE'],
+      function(e) {
+        //anytest.panel.interactive.initPoint(e.offsetX, e.offsetY);
+        crosshair['x']['setPosition'](e.offsetX,0);
+        crosshair['y']['setPosition'](0,e.offsetY);
+        crosshair['xLabel']['setPosition'](e.offsetX,0)['text'](e.offsetX);
+        crosshair['yLabel']['setPosition'](0,e.offsetY)['text'](e.offsetY);
       });
 
   anytest.panel.interactive.newPointCount_ = 0;
