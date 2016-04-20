@@ -385,7 +385,7 @@ anytest.modes.checkModes = function () {
 
   }
 
-  anytest.utils.doubleConsoleMsg(consoleMsgMultiplier);
+  //anytest.utils.doubleConsoleMsg(consoleMsgMultiplier);
 };
 
 anytest.modes.hiddenTrigger = false;

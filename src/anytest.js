@@ -125,16 +125,12 @@ anytest.exit = function () {
  * @param {number=} opt_count Количество сообщений. По умолчанию 1.
  * @param {boolean=} opt_isIgnored По дефолту не игнорить сообщения.
  */
-anytest.setCheckMsg = function (txt, opt_count, opt_isIgnored) {
-  opt_count = opt_count || 1;
-  while (opt_count) {
+anytest.setCheckMsg = function (txt, opt_isIgnored) {
     var _div = anytest.utils.createDiv();
     if (opt_isIgnored) _div.className = 'ignoreConsoleMsg';
     else _div.className = 'consoleMsg';
     _div.innerHTML = txt;
     anytest.CAT.needCheckConsoleMsg = true;
-    opt_count--;
-  }
 };
 
 
