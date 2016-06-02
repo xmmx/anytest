@@ -14,7 +14,10 @@ goog.provide('anytest.panel.interactive');
 anytest.panel.interactive.reset = function() {
   if (anytest.panel.interactive.additionalLayer)
     anytest.panel.interactive.additionalLayer['dispose']();
+  if (anytest.panel.interactive.crosshairLayer)
+    anytest.panel.interactive.crosshairLayer['dispose']();
 
+  anytest.panel.interactive.crosshairLayer = anytest.stage['layer']();
   anytest.panel.interactive.additionalLayer = anytest.stage['layer']();
   anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
       .fill('orange .05')
@@ -23,10 +26,10 @@ anytest.panel.interactive.reset = function() {
   var crosshair = {};
   crosshair['x'] = anytest.stage['path']()['moveTo'](0, 0)['lineTo'](0, anytest.stage['height']())
       .stroke('1 grey')
-      .parent(anytest.panel.interactive.additionalLayer);
+      .parent(anytest.panel.interactive.crosshairLayer);
   crosshair['y'] = anytest.stage['path']()['moveTo'](0, 0)['lineTo'](anytest.stage['width'](),0)
       .stroke('1 grey')
-      .parent(anytest.panel.interactive.additionalLayer);
+      .parent(anytest.panel.interactive.crosshairLayer);
   crosshair['xLabel'] = anytest.stage['text'](0, 0, 0).parent(anytest.panel.interactive.additionalLayer);
   crosshair['yLabel'] = anytest.stage['text'](0, 0, 0).parent(anytest.panel.interactive.additionalLayer);
   window['acgraph']['events']['listen'](
