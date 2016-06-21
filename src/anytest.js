@@ -122,7 +122,6 @@ anytest.exit = function () {
 /**
  * Создает <div> с сообщением, которое мы ожидаем/неожидаем.
  * @param {string} txt Текст ожидаемого сообщения.
- * @param {number=} opt_count Количество сообщений. По умолчанию 1.
  * @param {boolean=} opt_isIgnored По дефолту не игнорить сообщения.
  */
 anytest.setCheckMsg = function (txt, opt_isIgnored) {

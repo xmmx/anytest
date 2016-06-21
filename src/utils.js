@@ -67,9 +67,9 @@ anytest.utils.getCheckedRadioByName = function (name) {
 var compareObjects_count = 0;
 /**
  *
- * @param o1
- * @param o2
- * @param opt_isRecursive
+ * @param {*} o1
+ * @param {*} o2
+ * @param {boolean|number=} opt_isRecursive
  * @return {*}
  */
 anytest.utils.compareObjects = function (o1, o2, opt_isRecursive) {

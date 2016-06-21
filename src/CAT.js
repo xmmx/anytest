@@ -118,6 +118,7 @@ anytest.CAT.actionKeyBoard = function (type, key_name) {
  * @param {number} y
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
  * @param {string=} opt_theme all|v6|defaultTheme.
+ * @param {string=} opt_button left|right|middle.
  */
 anytest.CAT.action = function (x, y, opt_type, opt_theme,opt_button) {
   opt_type = opt_type || 'click';

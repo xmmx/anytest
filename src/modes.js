@@ -311,12 +311,15 @@ anytest.modes.checkModes = function () {
         var excluded=false;
         for (var rI = 0; rI < anytest.charts.length; rI++) {
           if (!window[anytest.charts[rI]]['width'] || !window[anytest.charts[rI]]['height']) continue;
+          if(window[anytest.charts[rI]]['at_exclude_R-CHART-plus']) {
+            excluded = true;
+            continue;
+          }
           anytest.modes.elemExec++;
           if (!window[anytest.charts[rI]]['width']()) window[anytest.charts[rI]]['width']('100%');
           if (!window[anytest.charts[rI]]['height']()) window[anytest.charts[rI]]['height']('100%');
           window[anytest.charts[rI]]['width'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['width'](), 50));
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), 50));
-          if(window[anytest.charts[rI]]['at_exclude_R-CHART-plus']) excluded = true;
         }
         if (anytest.modes.elemExec > 0 && !excluded) anytest.CAT.getScreen('R-CHART-plus', -1);
       },false);
@@ -325,9 +328,12 @@ anytest.modes.checkModes = function () {
         var excluded=false;
         for (var rI = 0; rI < anytest.charts.length; rI++) {
           if (!window[anytest.charts[rI]]['width'] || !window[anytest.charts[rI]]['height']) continue;
+          if(window[anytest.charts[rI]]['at_exclude_R-CHART-minus']) {
+            excluded = true;
+            continue;
+          }
           window[anytest.charts[rI]]['width'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['width'](), -100));
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), -100));
-          if(window[anytest.charts[rI]]['at_exclude_R-CHART-minus']) excluded = true;
         }
         if (anytest.modes.elemExec > 0 && !excluded) anytest.CAT.getScreen('R-CHART-minus', -1);
       },false);
