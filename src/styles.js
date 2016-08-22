@@ -9,17 +9,16 @@ goog.provide('anytest.styles');
 /**
  * include css
  */
-anytest.styles.include = function () {
+anytest.styles.include = function (cssString) {
   var head = document.head || document.getElementsByTagName('head')[0];
   var style = document.createElement('style');
 
   style.type = 'text/css';
   if (style.styleSheet) {
-    style.styleSheet.cssText = anytest.styles.rules_;
+    style.styleSheet.cssText = cssString || anytest.styles.rules_;
   } else {
-    style.appendChild(document.createTextNode(anytest.styles.rules_));
+    style.appendChild(document.createTextNode(cssString ||anytest.styles.rules_));
   }
-
   head.appendChild(style);
 };
 

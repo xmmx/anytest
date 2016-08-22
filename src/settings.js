@@ -16,7 +16,7 @@ anytest.settings_.height = '300px';
 /**
  * @type {string}
  */
-anytest.settings_.sizeTarget = 'Both';
+anytest.settings_.sizeTarget = 'Container';
 
 
 /**

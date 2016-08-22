@@ -83,6 +83,7 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
 
   anytest.createStage();
   anytest.stage['suspend']();
+  anytest.stage.container('container');
   window['stage'] = anytest.stage;
 
   return window['anytest'];
@@ -91,9 +92,9 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
 anytest.createStage = function () {
   var _types = anytest.resizeTypes;
   if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
-    anytest.stage = window['acgraph']['create']('container', anytest.settings_.width, anytest.settings_.height);
+    anytest.stage = window['acgraph']['create'](null, anytest.settings_.width, anytest.settings_.height);
   else
-    anytest.stage = window['acgraph']['create']('container');
+    anytest.stage = window['acgraph']['create']();
   if (anytest.settings_.sizeTarget != _types.STAGE) {
     document.getElementById('container').style.width = anytest.settings_.width;
     document.getElementById('container').style.height = anytest.settings_.height;
@@ -297,8 +298,8 @@ anytest.drawInStage = function (opt_chart, opt_isDisposed) {
     anytest.utils.loadManager[anytest.utils.getKeyByValue(window, opt_chart)] = true;
   }
   // вырубаем кредитс, по нашему ключу.
-  if (opt_chart['getType'] && goog.array.indexOf(anytest.excludeCreditsForChart_, opt_chart['getType']()) == -1 && opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
-    opt_chart['credits'](null);
+  if (opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+    anytest.styles.include('.anychart-credits{display:none}');
 
   if (!opt_chart['container']) return null;
   opt_chart['container'](anytest.stage)['draw']();
