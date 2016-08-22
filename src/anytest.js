@@ -48,7 +48,7 @@ anytest.init = function () {
 
   if (window['anychart']['DEVELOP']) anytest.CAT.isDevelop();
 
-  anytest.styles.include();
+  anytest.styles.include(undefined);
 
   window['anychart']['licenseKey']('anychart-CAT-64a5f14c-5d66a546');
 
@@ -81,7 +81,7 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
   }
   if (opt_sizeTarget) anytest.settings_.sizeTarget = opt_sizeTarget;
 
-  anytest.createStage();
+  anytest.stage = anytest.createStage();
   anytest.stage['suspend']();
   anytest.stage.container('container');
   window['stage'] = anytest.stage;
@@ -89,6 +89,10 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
   return window['anytest'];
 };
 
+/**
+ * Create and return stage (for compiler)
+ * @returns {{}|*}
+ */
 anytest.createStage = function () {
   var _types = anytest.resizeTypes;
   if (anytest.settings_.sizeTarget == _types.BOTH || anytest.settings_.sizeTarget == _types.STAGE)
@@ -99,6 +103,7 @@ anytest.createStage = function () {
     document.getElementById('container').style.width = anytest.settings_.width;
     document.getElementById('container').style.height = anytest.settings_.height;
   }
+  return anytest.stage;
 };
 
 
