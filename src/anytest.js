@@ -81,9 +81,7 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
   }
   if (opt_sizeTarget) anytest.settings_.sizeTarget = opt_sizeTarget;
 
-  anytest.stage = anytest.createStage();
-  anytest.stage['suspend']();
-  anytest.stage.container('container');
+  anytest.createStage();
   window['stage'] = anytest.stage;
 
   return window['anytest'];
@@ -91,7 +89,6 @@ anytest.setUp = function (opt_width, opt_height, opt_sizeTarget) {
 
 /**
  * Create and return stage (for compiler)
- * @returns {{}|*}
  */
 anytest.createStage = function () {
   var _types = anytest.resizeTypes;
@@ -103,7 +100,8 @@ anytest.createStage = function () {
     document.getElementById('container').style.width = anytest.settings_.width;
     document.getElementById('container').style.height = anytest.settings_.height;
   }
-  return anytest.stage;
+  anytest.stage['suspend']();
+  anytest.stage.container('container');
 };
 
 
