@@ -351,7 +351,7 @@ anytest.modes.checkModes = function () {
       anytest.step(function(){
         anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 150));
         anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 150));
-        anytest.CAT.getScreen('R-STG-plus', 1);
+        anytest.CAT.getScreen('R-STG-plus', -1);
       }, false);
       consoleMsgMultiplier++;
       anytest.step(function(){

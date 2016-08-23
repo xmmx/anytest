@@ -231,6 +231,10 @@ anytest.stageListen = function (opt_callbackFunction, opt_isListenOnce) {
  * @ignore
  */
 anytest.listenerFuncMain_ = function (callbackFunction, e) {
+  // вырубаем кредитс, по нашему ключу.
+  if (window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
+    anytest.styles.include('.anychart-credits{display:none}');
+
   callbackFunction.apply(callbackFunction, [e]);
   anytest.modes.checkModes();
   window.setTimeout(function () {
@@ -300,9 +304,6 @@ anytest.drawInStage = function (opt_chart, opt_isDisposed) {
     anytest.onStageDrawed_.push(opt_chart);
     anytest.utils.loadManager[anytest.utils.getKeyByValue(window, opt_chart)] = true;
   }
-  // вырубаем кредитс, по нашему ключу.
-  if (opt_chart['credits'] && window['anychart']['licenseKey']() == 'anychart-CAT-64a5f14c-5d66a546')
-    anytest.styles.include('.anychart-credits{display:none}');
 
   if (!opt_chart['container']) return null;
   opt_chart['container'](anytest.stage)['draw']();
