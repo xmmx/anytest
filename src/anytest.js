@@ -61,7 +61,7 @@ anytest.init = function () {
   if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1) || anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_2)) {
     anytest.step(function(){
       document.getElementById('container').style.display = 'block';
-    },1,200);
+    },true,200);
   }
 };
 
