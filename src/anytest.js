@@ -56,6 +56,13 @@ anytest.init = function () {
     anytest.timer.end(anytest.timer.enm.BODY_ON_DOCUMENT_READY); // страница загрузилась
     anytest.timer.set(anytest.timer.enm.TOTAL); // начал работу тест
   }
+
+  if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1)) document.getElementById('container').style.display = 'none';
+  if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1) || anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_2)) {
+    anytest.step(function(){
+      document.getElementById('container').style.display = 'block';
+    },1,200);
+  }
 };
 
 

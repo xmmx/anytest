@@ -42,10 +42,11 @@ anytest.modes.prepare = function () {
 anytest.modes.Enum = {
   NONE: 0x00000000,
   RESIZE: 0x00000001,
-  HIDDEN_CONTAINER: 0x00000002,
   SCHEMAS_JSON: 0x00000004,
   SCHEMAS_XML: 0x00000008,
-  ALL: 0x0000000F
+  HIDDEN_CONTAINER_1: 0x00000010,
+  HIDDEN_CONTAINER_2: 0x00000020,
+  ALL: 0x0000002F
 };
 
 
@@ -250,52 +251,9 @@ anytest.modes.checkModes = function () {
   }
 
   ////////////////////// HIDDEN CONTAINER
-  if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER)) {
-    var needStage = false;
-    var chartTarget = 'container1';
-
+  if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1) || anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_2)) {
     consoleMsgMultiplier++;
-    anytest.step(function () {
-      var container0 = document.getElementById('container');
-      var container = document.createElement('div');
-      container.id = "container1";
-      container.style.display = 'block';
-      container.style.width = container0.style.width;
-      container.style.height = container0.style.height;
-      document.getElementsByTagName('body')[0].appendChild(container);
-      if (!anytest.utils.isEmptyObj(anytest.stage)) {
-        needStage = true;
-        delete anytest.stage;
-        anytest.stage = window['acgraph']['create'](container.id);
-        chartTarget = anytest.stage;
-        anytest.stage['suspend']();
-      }
-    },false);
-
-    anytest.step(function () {
-      for (var hcI = 0; hcI < anytest.charts.length; hcI++) {
-        if (needStage){
-          anytest.drawInStage(window[anytest.charts[hcI]]);
-        }else{
-          window[anytest.charts[hcI]]['container'](chartTarget);
-          anytest.utils.loadManager['HC_' + anytest.charts[hcI]] = true;
-          window[anytest.charts[hcI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-            delete anytest.utils.loadManager['HC_' + anytest.utils.getKeyByValue(window, this)];
-            anytest.modes.hiddenModeDisplay_(needStage);
-          });
-          window[anytest.charts[hcI]]['draw']();
-        }
-      }
-      if (needStage) {
-        window['acgraph']['events']['listenOnce'](anytest.stage, 'stagerendered', function (e) {
-          for (var i = 0; i < anytest.onStageDrawed_.length; i++)
-            delete anytest.utils.loadManager[anytest.utils.getKeyByValue(window,anytest.onStageDrawed_[i])];
-          anytest.modes.hiddenModeDisplay_(needStage);
-        });
-        //anytest.stage['listen']('stagerender',function(){anytest.modes.hiddenModeDisplay_(needStage);log(123)});
-        anytest.stage['resume']();
-      }
-    },false);
+    anytest.step(function () {document.getElementById('container').style.display = 'none';},false);
     anytest.stepAppendCycle('HC-');
   }
 
