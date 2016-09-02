@@ -62,6 +62,9 @@ anytest.init = function () {
     anytest.step(function(){
       document.getElementById('container').style.display = 'block';
     },true,200);
+    anytest.step(function(){
+      // wait for fucking 
+    },true,200);
   }
 };
 
