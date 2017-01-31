@@ -253,7 +253,7 @@ anytest.modes.checkModes = function () {
   ////////////////////// HIDDEN CONTAINER
   if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1) || anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_2)) {
     consoleMsgMultiplier++;
-    anytest.step(function () {document.getElementById('container').style.display = 'none';},false);
+    anytest.step(function () {document.getElementById('container').style.display = 'none';},false,200);
     anytest.stepAppendCycle('HC-');
   }
 

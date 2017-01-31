@@ -18,11 +18,14 @@ anytest.asserts.equal = function (a, b, strict) {
 
 
 anytest.asserts.deepEqual = function (a, b) {
+  log(JSON.stringify(a),JSON.stringify(b),' START');
   anytest.asserts.itemCount_++;
   var res = true;
   res = anytest.utils.compareObjects(a,b);
+
   if (res) {
-    log('assert '+anytest.asserts.itemCount_+' failed!',a,b,res);
+    //log(JSON.stringify(res));
+    log('assert '+anytest.asserts.itemCount_+' failed!',JSON.stringify(a),JSON.stringify(b),JSON.stringify(res));
   }
 };
 
