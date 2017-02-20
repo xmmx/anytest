@@ -6,77 +6,47 @@ anychart.onDocumentLoad(function() {
     anytest.setUp(900, 400);
     //anychart.licenseKey('Irina-d43a427a-1985961f');
 
-    chart1 = anychart.line();
-    chart1.line([
-        ['A1' , 3],
-        ['A2' , 5],
-        ['A3' , 0],
-        ['A4' , 4.1],
-        ['A5' , 9.5]
+
+    var calendar = anychart.scales.calendar();
+    calendar.weekendRange([5,6]);
+
+    calendar.availabilities([  // Правило для абсолютно любого дня, каждый год (переопределит weekendRange указанный ранее)
+        {each:'day', from: '10:00', to: '18:00'},
+        {each:'day', from: '14:00', to: '15:00', isWorking: false}
     ]);
-    chart1.bounds(new acgraph.math.Rect(0, 0, 300, 400));
-    anytest.drawInStage(chart1);
-    chart1.credits(true);
-    chart1.credits()
-        .text('Credits')
-        .url('http://playground.anychart.com/')
-        .alt('WaterMarkCredits')
-        .logoSrc('http://static.anychart.com/kitty.png');
+    calendar.availabilities(null);
 
-    chart2 = anychart.line();
-    chart2.line([
-        ['A1' , 3],
-        ['A2' , 5],
-        ['A3' , 0],
-        ['A4' , 4.1],
-        ['A5' , 9.5]
+
+    var calendar1 = anychart.scales.calendar(calendar);
+
+    calendar1.availabilities([ // Правило что суббота и воскресенье, каждую неделю, не рабочие дни
+        {each: 'day'},
+        {each:'week', on:6, isWorking: false},
+        {each:'week', on:5, isWorking: false},
+        {each:'day', from: '14:00', to: '15:00', isWorking: false}
     ]);
+    console.log(
+            [new Date('2016-01-01').getTime(), new Date(1970,1,1,10,11).getTime()]
 
-    chart2.bounds(new acgraph.math.Rect(300, 0, 300, 400));
-    anytest.drawInStage(chart2);
-    chart2.credits(false);
+    )
 
-    chart3 = anychart.line();
-    chart3.line([
-        ['A1' , 3],
-        ['A2' , 5],
-        ['A3' , 0],
-        ['A4' , 4.1],
-        ['A5' , 9.5]
-    ]);
+    anytest.asserts.deepEqual(calendar1.getWorkingSchedule(new Date('1970-01-01 08:00:00').getTime(), new Date('1970-01-01 08:00:00').getTime()), //Антон С. сказал что это ОК (хотя бы один день всегда есть)
+        [
+            [
+                [new Date('1970-01-01 08:00:00').getTime(), new Date('1970-01-01 22:00:00').getTime()],
+                [new Date('1970-01-01 23:00:00').getTime(), new Date('1970-01-02 07:59:00').getTime()]
+            ]
+        ]
+    );
+    anytest.asserts.deepEqual(calendar1.getWorkingSchedule(-5, -4), // отрицательный timestamp
+        [
+            [
+                [new Date('1969-12-31 08:00:00').getTime(), new Date('1969-12-31 22:00:00').getTime()],
+                [new Date('1969-12-31 23:00:00').getTime(), new Date('1970-01-01 07:59:00').getTime()]
+            ]
+        ]
+    );
 
-    chart3.bounds(new acgraph.math.Rect(600, 0, 300, 400));
-    anytest.drawInStage(chart3);
-
-    anytest.stageListen(function(){
-        anytest.step(function(){
-            chart3.credits(true);
-        }, true, 200);
-        anytest.step(function(){
-            anytest.CAT.getScreen();
-        });
-        anytest.step(function(){
-            chart2.credits(false);
-            anytest.CAT.getScreen('CreditsFalse', -1);
-        });
-        anytest.step(function(){
-            chart3.credits(true);
-            chart2.credits()
-                .text('CreditsNew')
-                .url('https://anychart.atlassian.net/browse/DVF-2261')
-                .alt('DVF-2261')
-                .logoSrc('http://static.anychart.com/images/github.png');
-            anytest.CAT.getScreen('ChangeCredits', -1, 'CreditsFalse');
-            chart1.credits()
-                .text('Credits')
-                .url('http://playground.anychart.com/')
-                .alt('WaterMarkCredits')
-                .logoSrc('http://static.anychart.com/kitty.png');
-        });
-        anytest.step(function(){
-            anytest.CAT.getScreen('BackToInitialState', 1);
-        });
-        anytest.exit();
-    }).charts4modes('chart1','chart2','chart3');
+    anytest.stageListen();
     stage.resume();
 });
