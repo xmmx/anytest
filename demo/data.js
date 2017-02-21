@@ -7,46 +7,31 @@ anychart.onDocumentLoad(function() {
     //anychart.licenseKey('Irina-d43a427a-1985961f');
 
 
-    var calendar = anychart.scales.calendar();
-    calendar.weekendRange([5,6]);
+    chart = anychart.bullet();
+    chart.data([11, 13]);
+    chart.title('Bullet\r\nAxis');
+    chart.range().from(0).to(5);
+    chart.range(1).from(5).to(10);
+    chart.range(2).from(10).to(15);
 
-    calendar.availabilities([  // Правило для абсолютно любого дня, каждый год (переопределит weekendRange указанный ранее)
-        {each:'day', from: '10:00', to: '18:00'},
-        {each:'day', from: '14:00', to: '15:00', isWorking: false}
-    ]);
-    calendar.availabilities(null);
-
-
-    var calendar1 = anychart.scales.calendar(calendar);
-
-    calendar1.availabilities([ // Правило что суббота и воскресенье, каждую неделю, не рабочие дни
-        {each: 'day'},
-        {each:'week', on:6, isWorking: false},
-        {each:'week', on:5, isWorking: false},
-        {each:'day', from: '14:00', to: '15:00', isWorking: false}
-    ]);
-    console.log(
-            [new Date('2016-01-01').getTime(), new Date(1970,1,1,10,11).getTime()]
-
-    )
-
-    anytest.asserts.deepEqual(calendar1.getWorkingSchedule(new Date('1970-01-01 08:00:00').getTime(), new Date('1970-01-01 08:00:00').getTime()), //Антон С. сказал что это ОК (хотя бы один день всегда есть)
-        [
-            [
-                [new Date('1970-01-01 08:00:00').getTime(), new Date('1970-01-01 22:00:00').getTime()],
-                [new Date('1970-01-01 23:00:00').getTime(), new Date('1970-01-02 07:59:00').getTime()]
-            ]
-        ]
-    );
-    anytest.asserts.deepEqual(calendar1.getWorkingSchedule(-5, -4), // отрицательный timestamp
-        [
-            [
-                [new Date('1969-12-31 08:00:00').getTime(), new Date('1969-12-31 22:00:00').getTime()],
-                [new Date('1969-12-31 23:00:00').getTime(), new Date('1970-01-01 07:59:00').getTime()]
-            ]
-        ]
-    );
-
-    anytest.stageListen();
+    chart.axis({
+        stroke: '2 green',
+        orientation: 'bottom',
+        minorLabels: {enabled: true},
+        minorTicks: {length: 5, position: 'inside', stroke: '2 red'},
+        title: 'Settings for axis - stroke, minorTicks,\r\norientation, minorLabels'
+    });
+    anytest.stageListen(function() {
+        anytest.step(function() {
+            anytest.CAT.getScreen();
+        });
+        anytest.step(function() {
+            chart.axis({orientation: 'top'});
+            anytest.CAT.getScreen('afterDrawChangeOfOrientationAtTheTop', -1);
+            chart.axis({orientation: 'bottom'});
+        });
+        anytest.exit();
+    }).drawInStage(chart);
+    anytest.charts4modes("chart");
     stage.resume();
 });

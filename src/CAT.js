@@ -57,7 +57,7 @@ anytest.CAT.getScreen = function (opt_imgName, opt_factor, opt_compareImgName) {
   opt_imgName = opt_imgName || anytest.CAT.defaultScreenshotName_;
   var pref = (anytest.screenPrefix_[anytest.currentStep_] || "");
   if (goog.array.indexOf(anytest.CAT.namesStack_, pref+opt_imgName) > -1){
-      //alert('getScreen пытается перезаписать файл '+ opt_imgName+'!');
+      alert('getScreen пытается перезаписать файл '+ opt_imgName+'!');
       return null;
   }
   anytest.CAT.namesStack_.push(pref+opt_imgName);

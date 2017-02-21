@@ -59,4 +59,14 @@ anytest.styles.rules_ =
     '  background: rgba(217, 148, 13, 0.06);' +
     '}' +
 
+    '#logStepListDebugger{'+
+    'width:98%;background: #fff;overflow: scroll;border:1px solid #000;'+
+    'height:48%;'+
+    '}'+
+
+    '#nextStepListDebugger{'+
+    'width:98%;background: #fff;overflow: scroll;border:1px solid #000;'+
+    'height:48%;'+
+    '}'+
+
     '.ignoreConsoleMsg, .consoleMsg { display: none;}';

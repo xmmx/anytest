@@ -80,8 +80,8 @@ anytest.modes.checkModes = function () {
     }
 
     consoleMsgMultiplier++;
-    anytest.modes.elemExec=0;
     anytest.step(function () {
+      anytest.modes.elemExec=0;
       for (var jsonSmI = 0; jsonSmI < anytest.charts.length; jsonSmI++) {
         if (!window[anytest.charts[jsonSmI]]['toJson'] || window[anytest.charts[jsonSmI]]['at_exclude_json']) continue;
         anytest.modes.elemExec++;
@@ -112,14 +112,14 @@ anytest.modes.checkModes = function () {
           }
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-');
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-',1);
     },false);
 
 
 
     consoleMsgMultiplier++;
-    anytest.modes.elemExec=0;
     anytest.step(function () {
+      anytest.modes.elemExec=0;
       for (var jsonLgI = 0; jsonLgI < anytest.charts.length; jsonLgI++) {
         if (!window[anytest.charts[jsonLgI]]['toJson'] || window[anytest.charts[jsonLgI]]['at_exclude_json']) continue;
         anytest.modes.elemExec++;
@@ -147,8 +147,8 @@ anytest.modes.checkModes = function () {
           }
         }
       }
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-',1);
     },false);
-    if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-');
 
     // secondary export
     // ПОКА БЛЯДСКИЙ МАППИНГ СУЕТ СВОЕ ШТОПОПАЛО, то конфиги собвпадать не будут!!!
@@ -175,8 +175,8 @@ anytest.modes.checkModes = function () {
     }
 
     consoleMsgMultiplier++;
-    anytest.modes.elemExec=0;
     anytest.step(function () {
+      anytest.modes.elemExec=0;
       for (var xmlSmI = 0; xmlSmI < anytest.charts.length; xmlSmI++) {
         if (!window[anytest.charts[xmlSmI]]['toXml'] || window[anytest.charts[xmlSmI]]['at_exclude_xml']) continue;
         anytest.modes.elemExec++;
@@ -204,13 +204,13 @@ anytest.modes.checkModes = function () {
             console.log('error', e.message, e.stack);
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-');
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-',1);
     },false);
 
 
     consoleMsgMultiplier++;
-    anytest.modes.elemExec=0;
     anytest.step(function () {
+      anytest.modes.elemExec=0;
       for (var xmlLgI = 0; xmlLgI < anytest.charts.length; xmlLgI++) {
         if (!window[anytest.charts[xmlLgI]]['toXml'] || window[anytest.charts[xmlLgI]]['at_exclude_xml']) continue;
         anytest.modes.elemExec++;
@@ -235,8 +235,8 @@ anytest.modes.checkModes = function () {
             console.log('error', e.message, e.stack);
         }
       }
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-',1);
     },false);
-    if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-');
 
     // secondary export
     // ПОКА БЛЯДСКИЙ МАППИНГ СУЕТ СВОЕ ШТОПОПАЛО, то конфиги собвпадать не будут!!!

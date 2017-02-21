@@ -51,7 +51,7 @@ anytest.panel.interactive.reset = function() {
 
   anytest.panel.interactive.newPointCount_ = 0;
   try {
-    document.getElementById('interactiveCoordinatesLogger').innerHTML = '';
+    //document.getElementById('interactiveCoordinatesLogger').innerHTML = '';
   } catch (e) {
   }
 };
@@ -129,6 +129,7 @@ anytest.panel.interactive.newPointCount_ = 0;
  * @ignore
  */
 anytest.panel.interactive.initPoint = function(x, y, opt_isBasicLayer) {
+  if (anytest.panel.interactive.silentMode) return;
   if (anytest.utils.isEmptyObj(anytest.stage)) return;
   if (opt_isBasicLayer) {
     anytest.stage['circle'](x, y, 3).fill('grey').parent(anytest.panel.interactive.basicLayer);
@@ -161,6 +162,22 @@ anytest.panel.interactive.basicLayer = null;
  */
 anytest.panel.interactive.additionalLayer = null;
 
+anytest.panel.interactive.silentMode = false;
+
+anytest.panel.interactive.createBasicLayer = function(opt_silent){
+  anytest.panel.interactive.silentMode = opt_silent;
+  if (anytest.utils.isEmptyObj(anytest.stage)) anytest.stage = window['chart']['container']();
+  anytest.panel.interactive.basicLayer = anytest.stage['layer']();
+  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
+      .fill('blue .05')
+      .stroke('none')
+      .parent(anytest.panel.interactive.basicLayer);
+  anytest.panel.interactive.reset();
+};
+
+anytest.panel.interactive.removeBasicLayer = function(){
+  anytest.panel.interactive.basicLayer['dispose']();
+};
 
 /**
  * @ignore
@@ -177,14 +194,6 @@ anytest.panel.interactive.getHTMLContent = function() {
       '<input type="button" value="Remove last point" onclick="anytest.panel.interactive.removeLastPoint()">' +
       '<br/><br/><b>Coordinates log:</b><br/>' +
       '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
-  if (anytest.utils.isEmptyObj(anytest.stage)) anytest.stage = window['chart']['container']();
-  anytest.panel.interactive.basicLayer = anytest.stage['layer']();
-  anytest.stage['rect'](0, 0, anytest.stage['width'](), anytest.stage['height']())
-      .fill('blue .05')
-      .stroke('none')
-      .parent(anytest.panel.interactive.basicLayer);
-  anytest.panel.interactive.reset();
-
   return content;
 };
 

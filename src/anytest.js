@@ -23,6 +23,13 @@ if (!!window['Float64Array']) {
 
 
 /**
+ * Define is the debug mode on.
+ * @type {boolean}
+ */
+anytest.DEBUG_MODE = false;
+
+
+/**
  * @define {string} Replaced on compile time.
  */
 anytest.VERSION = '';
@@ -39,6 +46,8 @@ anytest.stage = {};
  * Вызывается, если не нужен setUp().
  */
 anytest.init = function () {
+  anytest.DEBUG_MODE = !!anytest.utils.getParameterByName('debug');
+
   // создаем текстареа вместо консоли.
   anytest.utils.statusDiv = document.createElement('textarea');
   anytest.utils.statusDiv.id = 'status';
@@ -248,7 +257,8 @@ anytest.listenerFuncMain_ = function (callbackFunction, e) {
   callbackFunction.apply(callbackFunction, [e]);
   anytest.modes.checkModes();
   window.setTimeout(function () {
-    if (!anytest.utils.getParameterByName('se')) {
+    if (anytest.DEBUG_MODE) anytest.panel.create('debug');
+    if (!anytest.DEBUG_MODE && !anytest.utils.getParameterByName('se')) {
       anytest.stepRunner();
     }
   }, 500);
@@ -352,8 +362,10 @@ anytest.cyclesteps_ = [];
  */
 anytest.step = function (stepFunc, isCycle, opt_timeOut) {
   opt_timeOut = opt_timeOut || 0;
-  anytest.steps_.push({'func': stepFunc, 'timeout':opt_timeOut});
-  if (isCycle != false) anytest.cyclesteps_.push({'func': stepFunc, 'timeout':opt_timeOut});
+  var step  = {'func': stepFunc, 'timeout':opt_timeOut,'body':stepFunc.toString()};
+  anytest.steps_.push(step);
+  if (anytest.DEBUG_MODE) anytest.panel.debug.logAllSteps.push(anytest.panel.debug.stepToLog(step));
+  if (isCycle != false) anytest.cyclesteps_.push(step);
 };
 
 /**
@@ -362,13 +374,33 @@ anytest.step = function (stepFunc, isCycle, opt_timeOut) {
 anytest.stepExec = function () {
   anytest.utils.statusDiv.value = "";
   if (anytest.steps_.length > anytest.currentStep_) {
-    if (anytest.steps_[anytest.currentStep_] && anytest.steps_[anytest.currentStep_]['func']) anytest.steps_[anytest.currentStep_]['func']();
+    if (anytest.steps_[anytest.currentStep_] && anytest.steps_[anytest.currentStep_]['func']) {
+      anytest.steps_[anytest.currentStep_]['func']();
+
+      if (anytest.DEBUG_MODE) {
+        //console.log(anytest.steps_[anytest.currentStep_]['body'])
+        var func = anytest.panel.debug.stepToLog(anytest.steps_[anytest.currentStep_]);
+
+        anytest.panel.debug.logSteps.unshift(func);
+        if (func == anytest.panel.debug.logAllSteps[0]) anytest.panel.debug.logAllSteps.shift();
+
+        document.getElementById('logStepListDebugger').innerHTML = '<pre class="brush: js">' + anytest.panel.debug.logSteps.join(anytest.panel.debug.logListStepSeparator) + '</pre>';
+        document.getElementById('nextStepListDebugger').innerHTML = '<pre class="brush: js">' + anytest.panel.debug.logAllSteps.join(anytest.panel.debug.logListStepSeparator) + '</pre>';
+        window.setTimeout(function () {
+          window['SyntaxHighlighter']['highlight']()
+        }, 0);
+        document.getElementById('debuggerAllSteps').innerHTML = anytest.panel.debug.logAllSteps.length + anytest.panel.debug.logSteps.length;
+      }
+    }
     anytest.currentStep_++;
   } else log('exit');
   return anytest.utils.statusDiv.value;
 };
 
-
+/**
+ *
+ * @type {Array}
+ */
 anytest.screenPrefix_ = [];
 anytest.currentStep_ = 0;
 
@@ -376,16 +408,26 @@ anytest.currentStep_ = 0;
  *
  * @ignoreDoc
  */
-anytest.stepAppendCycle = function (screenPrefix) {
-  for (var i = anytest.steps_.length; i < anytest.cyclesteps_.length + anytest.steps_.length; i++)
-    anytest.screenPrefix_[i] = screenPrefix
-  anytest.steps_ = anytest.steps_.concat(anytest.cyclesteps_);
-  for(var f in anytest.steps_) {
-    if (anytest.steps_[f]['func'] && anytest.steps_[f]['func'].toString().indexOf('CAT: exit') > -1){
-      anytest.steps_.push(anytest.steps_[f]);
-      delete anytest.steps_[f];
+anytest.stepAppendCycle = function (screenPrefix, opt_flag) {
+
+  if (opt_flag){
+    // вставляем в очерень в текущую позицию циклы
+    Array.prototype.splice.apply(anytest.steps_, [anytest.currentStep_+1, 0].concat(anytest.cyclesteps_));
+    for (var i = anytest.currentStep_; i <= (anytest.currentStep_+anytest.cyclesteps_.length); i++)
+      anytest.screenPrefix_[i] = screenPrefix
+  }else{
+    anytest.steps_ = anytest.steps_.concat(anytest.cyclesteps_)
+    for (var i = anytest.screenPrefix_.length; i < anytest.steps_.length; i++)
+      anytest.screenPrefix_[i] = screenPrefix
+  }
+
+  if (anytest.DEBUG_MODE){
+    anytest.panel.debug.logSteps.unshift('//- change prefix: "'+screenPrefix+'"');
+    for(var i=anytest.cyclesteps_.length-1;i>=0;i--) {
+      anytest.panel.debug.logAllSteps.splice(1,0,anytest.panel.debug.stepToLog(anytest.cyclesteps_[i]));
     }
   }
+
   //for(f in anytest.steps_)  console.log(anytest.steps_[f])
 }
 

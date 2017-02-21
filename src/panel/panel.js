@@ -1,4 +1,5 @@
 goog.provide('anytest.panel');
+goog.require('anytest.panel.debug');
 goog.require('anytest.panel.interactive');
 goog.require('anytest.panel.resize');
 /**
@@ -30,6 +31,11 @@ anytest.panel.create = function(type) {
       break;
     case 'interactive':
       content = anytest.panel.interactive.getHTMLContent();
+      break;
+    case 'debug':
+      _div.style.width = document.body.clientWidth - anytest.stage.width()-40+'px';
+      _div.style.height = "100%";
+      content = anytest.panel.debug.getHTMLContent();
       break;
     default:
       content = null;
