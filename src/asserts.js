@@ -18,7 +18,6 @@ anytest.asserts.equal = function (a, b, strict) {
 
 
 anytest.asserts.deepEqual = function (a, b) {
-  log(JSON.stringify(a),JSON.stringify(b),' START');
   anytest.asserts.itemCount_++;
   var res = true;
   res = anytest.utils.compareObjects(a,b);

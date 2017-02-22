@@ -405,8 +405,8 @@ anytest.screenPrefix_ = [];
 anytest.currentStep_ = 0;
 
 /**
- *
- * @ignoreDoc
+ * @param {string} screenPrefix
+ * @param {boolean=} opt_flag
  */
 anytest.stepAppendCycle = function (screenPrefix, opt_flag) {
 

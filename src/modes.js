@@ -112,7 +112,7 @@ anytest.modes.checkModes = function () {
           }
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-',1);
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-',true);
     },false);
 
 
@@ -147,7 +147,7 @@ anytest.modes.checkModes = function () {
           }
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-',1);
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-',true);
     },false);
 
     // secondary export
@@ -204,7 +204,7 @@ anytest.modes.checkModes = function () {
             console.log('error', e.message, e.stack);
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-',1);
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-',true);
     },false);
 
 
@@ -235,7 +235,7 @@ anytest.modes.checkModes = function () {
             console.log('error', e.message, e.stack);
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-',1);
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-',true);
     },false);
 
     // secondary export

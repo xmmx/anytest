@@ -51,7 +51,7 @@ anytest.panel.interactive.reset = function() {
 
   anytest.panel.interactive.newPointCount_ = 0;
   try {
-    //document.getElementById('interactiveCoordinatesLogger').innerHTML = '';
+    document.getElementById('interactiveCoordinatesLogger').innerHTML = '';
   } catch (e) {
   }
 };
