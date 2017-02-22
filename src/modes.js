@@ -15,8 +15,13 @@ anytest.modes.prepare = function () {
   if (anytest.VERSION) {
     //pathToEngine = "https://raw.github.com/geraintluff/tv4/master/";
     //pathToSchemas = anytest.utils.getPathToSchema()+"../../";
-    pathToEngine = anytest.utils.getPathToSchema() + "../local-cdn/";
-    pathToSchemas = anytest.utils.getPathToSchema();
+    if (window['anychart'] && window['anychart']['VERSION']){
+      pathToEngine = anytest.utils.getPathToSchema() + "../local-cdn/";
+      pathToSchemas = anytest.utils.getPathToSchema();
+    }else{
+      pathToEngine = "./utils/";
+      pathToSchemas = "../../dist/";
+    }
   } else {
     pathToEngine = "../external/";
     pathToSchemas = "../out/";
