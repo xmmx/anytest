@@ -69,7 +69,6 @@ anytest.styles.rules_ =
     'height:48%;'+
     '}'+
 
-    '#sidePanel-border {height: 100%; background:lime; border: 2px solid black; position:absolute; right:23px;}'+
-    '#sidePanel-border.resizer { width: 10px; height: 10px; background: blue; position:absolute; right: 0; bottom: 0; cursor: se-resize; }'+
+    '#sidePanel-border {height: 100%; background:lime; border: 2px solid black; position:absolute; right:23px;cursor:ew-resize}'+
 
     '.ignoreConsoleMsg, .consoleMsg { display: none;}';
