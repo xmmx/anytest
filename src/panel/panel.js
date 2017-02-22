@@ -35,7 +35,16 @@ anytest.panel.create = function(type) {
     case 'debug':
       _div.style.width = document.body.clientWidth - anytest.stage.width()-40+'px';
       _div.style.height = "100%";
+      _div.style.position = "absolute";
+      _div.style.top = 0;
+      _div.style.right = 0;
+      _div.style.bottom = 0;
+      _div.style['z-index']=10001;
+      var resizer = anytest.utils.createDiv('sidePanel-border',1);
+      resizer.style.width = _div.style.width;
+      resizer.style['z-index']=10000;
       content = anytest.panel.debug.getHTMLContent();
+      anytest.panel.resizable();
       break;
     default:
       content = null;
@@ -44,11 +53,32 @@ anytest.panel.create = function(type) {
   if (content) {
     _div.innerHTML = content;
     _div.style.display = 'block';
+    //_div.style.display='none';
   }
 
   return window['anytest'];
 };
 
+anytest.panel.resizable = function(){
+  var p = document.getElementById('sidePanel-border'); // element to make resizable
+
+  p.addEventListener('mousedown', initDrag, false);
+
+  function initDrag(e) {
+    document.documentElement.addEventListener('mousemove', doDrag, false);
+    document.documentElement.addEventListener('mouseup', stopDrag, false);
+  }
+
+  function doDrag(e) {
+    p.style.width = ( document.body.clientWidth - e.clientX) + 'px';
+  }
+
+  function stopDrag(e) {
+    document.getElementById('sidePanel').style.width = p.style.width;
+    document.documentElement.removeEventListener('mousemove', doDrag, false);
+    document.documentElement.removeEventListener('mouseup', stopDrag, false);
+  }
+}
 
 /**
  * Включает панель слева от теста.<br/>
