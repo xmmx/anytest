@@ -164,6 +164,10 @@ anytest.panel.interactive.additionalLayer = null;
 
 anytest.panel.interactive.silentMode = false;
 
+/**
+ *
+ * @param {boolean=} opt_silent
+ */
 anytest.panel.interactive.createBasicLayer = function(opt_silent){
   anytest.panel.interactive.silentMode = opt_silent;
   if (anytest.utils.isEmptyObj(anytest.stage)) anytest.stage = window['chart']['container']();
