@@ -24,6 +24,7 @@ anychart.onDocumentLoad(function() {
     anytest.stageListen(function() {
         anytest.step(function() {
             anytest.CAT.getScreen();
+            anytest.CAT.action(100,100)
         });
         anytest.step(function() {
             chart.axis({orientation: 'top'});
@@ -32,6 +33,7 @@ anychart.onDocumentLoad(function() {
         });
         anytest.exit();
     }).drawInStage(chart);
+    anytest.interactivePanel();
     anytest.charts4modes("chart");
     stage.resume();
 });

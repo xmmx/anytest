@@ -194,6 +194,7 @@ anytest.panel.interactive.getHTMLContent = function() {
       '<input type="button" value="Remove last point" onclick="anytest.panel.interactive.removeLastPoint()">' +
       '<br/><br/><b>Coordinates log:</b><br/>' +
       '<textarea id="interactiveCoordinatesLogger" rows="10" style="width: 100%"></textarea>';
+  anytest.panel.interactive.createBasicLayer();
   return content;
 };
 
