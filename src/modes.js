@@ -258,8 +258,10 @@ anytest.modes.checkModes = function () {
   ////////////////////// HIDDEN CONTAINER
   if (anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_1) || anytest.modes.hasMode(anytest.modes.Enum.HIDDEN_CONTAINER_2)) {
     consoleMsgMultiplier++;
-    anytest.step(function () {document.getElementById('container').style.display = 'none';},false,200);
-    anytest.stepAppendCycle('HC-');
+    anytest.step(function () {
+      document.getElementById('container').style.display = 'none';
+      anytest.stepAppendCycle('HC-', true);
+    },false,200);
   }
 
   ////////////////////// RESIZE
@@ -307,8 +309,9 @@ anytest.modes.checkModes = function () {
           window[anytest.charts[rI]]['width'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['width'](), 50));
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), 50));
         }
+        anytest.stepAppendCycle('R-CHART-', true);
       },false);
-      anytest.stepAppendCycle('R-CHART-');
+
       /// STAGE
       consoleMsgMultiplier++;
       anytest.step(function(){
@@ -327,8 +330,8 @@ anytest.modes.checkModes = function () {
         //restore
         anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 50));
         anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 50));
+        anytest.stepAppendCycle('R-STAGE-', true);
       }, false);
-      anytest.stepAppendCycle('R-STAGE-');
     }
 
     /// container
@@ -349,9 +352,8 @@ anytest.modes.checkModes = function () {
       //restore
       document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
       document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
+      anytest.stepAppendCycle('R-DIV-', true);
     }, false);
-    anytest.stepAppendCycle('R-DIV-');
-
   }
 
   //anytest.utils.doubleConsoleMsg(consoleMsgMultiplier);
