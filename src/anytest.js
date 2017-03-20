@@ -334,7 +334,7 @@ anytest.drawInStage = function (opt_chart, opt_isDisposed) {
 
 /**
  * Накапливает сообщения
- * @type {string}
+ * @type {Array}
  * @private
  */
 anytest.log_ = [];
@@ -342,8 +342,11 @@ anytest.log_ = [];
 
 /**
  * Выводит накопленные сообщения одним при выходе
+ * @param {...*} var_args
+ * return {?Array}
  */
-anytest.log = function(){
+anytest.log = function(var_args){
+  if (var_args == undefined) return anytest.log_;
   for (var a = 0; a < arguments.length; a++)
     anytest.log_.push(arguments[a]);
 }
@@ -492,6 +495,7 @@ anytest.charts4modes = function (var_args) {
       anytest.charts.push(arguments[a]);
 };
 
+goog.exportSymbol('anytest.log', anytest.log);
 goog.exportSymbol('anytest.init', anytest.init);
 goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);
