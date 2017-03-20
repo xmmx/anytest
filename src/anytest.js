@@ -333,6 +333,23 @@ anytest.drawInStage = function (opt_chart, opt_isDisposed) {
 
 
 /**
+ * Накапливает сообщения
+ * @type {string}
+ * @private
+ */
+anytest.log_ = [];
+
+
+/**
+ * Выводит накопленные сообщения одним при выходе
+ */
+anytest.log = function(){
+  for (var a = 0; a < arguments.length; a++)
+    anytest.log_.push(arguments[a]);
+}
+
+
+/**
  * Внутренняя хня для быстрого дебага.
  * @ignore
  * @type {Function}

@@ -10,6 +10,7 @@ anychart.onDocumentLoad(function() {
 
     anytest.stageListen(function () {
         anytest.step(function () {
+            anytest.log(1,2,3);
             anytest.CAT.getScreen();
         });
 

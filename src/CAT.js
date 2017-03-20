@@ -13,6 +13,7 @@ anytest.CAT = {};
  */
 anytest.CAT.exit = function () {
   anytest.step(function () {
+    log(anytest.log_.join('\n'));
     log('CAT: exit');
   }, false);
 };
