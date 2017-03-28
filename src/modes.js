@@ -65,9 +65,9 @@ anytest.modes.hasMode = function (mode) {
 };
 
 anytest.modes.JSON_small_ = [];
-anytest.modes.JSON_large_ = [];
+//anytest.modes.JSON_large_ = [];
 anytest.modes.XML_small_ = [];
-anytest.modes.XML_large_ = [];
+//anytest.modes.XML_large_ = [];
 
 anytest.modes.elemExec=0;
 anytest.modes.checkModes = function () {
@@ -122,38 +122,38 @@ anytest.modes.checkModes = function () {
 
 
 
-    consoleMsgMultiplier++;
-    anytest.step(function () {
-      anytest.modes.elemExec=0;
-      for (var jsonLgI = 0; jsonLgI < anytest.charts.length; jsonLgI++) {
-        if (!window[anytest.charts[jsonLgI]]['toJson'] || window[anytest.charts[jsonLgI]]['at_exclude_json']) continue;
-        anytest.modes.elemExec++;
-        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
-        var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_large_[jsonLgI]));
-        var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonLgI], restoreConfig);
-        if (diff)
-          log(anytest.charts[jsonLgI], 'Wrong JSON_lagre format (diff, toJson, stringify/parse)', diff, anytest.modes.JSON_large_[jsonLgI], restoreConfig);
-        else {
-          var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_large_[jsonLgI], anytest.modes.schemaJSON_);
-          if (!validResp || !validResp.valid)
-            log(anytest.charts[jsonLgI], 'JSON_large not valid by schema', validResp);
-          try {
-            window[anytest.charts[jsonLgI]]['dispose']();
-            delete window[anytest.charts[jsonLgI]];
-            window[anytest.charts[jsonLgI]] = window['anychart']['fromJson'](anytest.modes.JSON_large_[jsonLgI]);
-            anytest.utils.loadManager['fromJSON_LG_' + anytest.charts[jsonLgI]] = true;
-            window[anytest.charts[jsonLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-              delete anytest.utils.loadManager['fromJSON_LG_' + anytest.utils.getKeyByValue(window, this)];
-            });
-            window[anytest.charts[jsonLgI]]['container'](chartContainer)['draw']();
-          } catch (e) {
-            if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
-              console.log('error', e.message, e.stack);
-          }
-        }
-      }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-',true);
-    },false);
+    //consoleMsgMultiplier++;
+    //anytest.step(function () {
+    //  anytest.modes.elemExec=0;
+    //  for (var jsonLgI = 0; jsonLgI < anytest.charts.length; jsonLgI++) {
+    //    if (!window[anytest.charts[jsonLgI]]['toJson'] || window[anytest.charts[jsonLgI]]['at_exclude_json']) continue;
+    //    anytest.modes.elemExec++;
+    //    var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
+    //    var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_large_[jsonLgI]));
+    //    var diff = anytest.utils.compareObjects(anytest.modes.JSON_large_[jsonLgI], restoreConfig);
+    //    if (diff)
+    //      log(anytest.charts[jsonLgI], 'Wrong JSON_lagre format (diff, toJson, stringify/parse)', diff, anytest.modes.JSON_large_[jsonLgI], restoreConfig);
+    //    else {
+    //      var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_large_[jsonLgI], anytest.modes.schemaJSON_);
+    //      if (!validResp || !validResp.valid)
+    //        log(anytest.charts[jsonLgI], 'JSON_large not valid by schema', validResp);
+    //      try {
+    //        window[anytest.charts[jsonLgI]]['dispose']();
+    //        delete window[anytest.charts[jsonLgI]];
+    //        window[anytest.charts[jsonLgI]] = window['anychart']['fromJson'](anytest.modes.JSON_large_[jsonLgI]);
+    //        anytest.utils.loadManager['fromJSON_LG_' + anytest.charts[jsonLgI]] = true;
+    //        window[anytest.charts[jsonLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+    //          delete anytest.utils.loadManager['fromJSON_LG_' + anytest.utils.getKeyByValue(window, this)];
+    //        });
+    //        window[anytest.charts[jsonLgI]]['container'](chartContainer)['draw']();
+    //      } catch (e) {
+    //        if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+    //          console.log('error', e.message, e.stack);
+    //      }
+    //    }
+    //  }
+    //  if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-lg-',true);
+    //},false);
 
     // secondary export
     // ПОКА БЛЯДСКИЙ МАППИНГ СУЕТ СВОЕ ШТОПОПАЛО, то конфиги собвпадать не будут!!!
@@ -213,35 +213,35 @@ anytest.modes.checkModes = function () {
     },false);
 
 
-    consoleMsgMultiplier++;
-    anytest.step(function () {
-      anytest.modes.elemExec=0;
-      for (var xmlLgI = 0; xmlLgI < anytest.charts.length; xmlLgI++) {
-        if (!window[anytest.charts[xmlLgI]]['toXml'] || window[anytest.charts[xmlLgI]]['at_exclude_xml']) continue;
-        anytest.modes.elemExec++;
-        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage;
-        var Module = {};
-        Module['xml'] = anytest.modes.XML_large_[xmlLgI];
-        Module['schema'] = anytest.modes.schemaXML_;
-        Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
-        var result = window['validateXML'](Module);
-        if (result.trim() != 'file.xml validates') log(anytest.charts[xmlLgI],'XML large',result);
-        try {
-          window[anytest.charts[xmlLgI]]['dispose']();
-          delete window[anytest.charts[xmlLgI]];
-          window[anytest.charts[xmlLgI]] = window['anychart']['fromXml'](anytest.modes.XML_large_[xmlLgI]);
-          anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlLgI]] = true;
-          window[anytest.charts[xmlLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
-            delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
-          });
-          window[anytest.charts[xmlLgI]]['container'](chartContainer)['draw']();
-        } catch (e) {
-          if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
-            console.log('error', e.message, e.stack);
-        }
-      }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-',true);
-    },false);
+    //consoleMsgMultiplier++;
+    //anytest.step(function () {
+    //  anytest.modes.elemExec=0;
+    //  for (var xmlLgI = 0; xmlLgI < anytest.charts.length; xmlLgI++) {
+    //    if (!window[anytest.charts[xmlLgI]]['toXml'] || window[anytest.charts[xmlLgI]]['at_exclude_xml']) continue;
+    //    anytest.modes.elemExec++;
+    //    var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage;
+    //    var Module = {};
+    //    Module['xml'] = anytest.modes.XML_large_[xmlLgI];
+    //    Module['schema'] = anytest.modes.schemaXML_;
+    //    Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
+    //    var result = window['validateXML'](Module);
+    //    if (result.trim() != 'file.xml validates') log(anytest.charts[xmlLgI],'XML large',result);
+    //    try {
+    //      window[anytest.charts[xmlLgI]]['dispose']();
+    //      delete window[anytest.charts[xmlLgI]];
+    //      window[anytest.charts[xmlLgI]] = window['anychart']['fromXml'](anytest.modes.XML_large_[xmlLgI]);
+    //      anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlLgI]] = true;
+    //      window[anytest.charts[xmlLgI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+    //        delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
+    //      });
+    //      window[anytest.charts[xmlLgI]]['container'](chartContainer)['draw']();
+    //    } catch (e) {
+    //      if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+    //        console.log('error', e.message, e.stack);
+    //    }
+    //  }
+    //  if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-LG-',true);
+    //},false);
 
     // secondary export
     // ПОКА БЛЯДСКИЙ МАППИНГ СУЕТ СВОЕ ШТОПОПАЛО, то конфиги собвпадать не будут!!!
