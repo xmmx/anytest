@@ -80,7 +80,7 @@ anytest.modes.checkModes = function () {
     for (var i = 0; i < anytest.charts.length; i++) {
       if (window[anytest.charts[i]]['toJson']) {
         anytest.modes.JSON_small_[i]=window[anytest.charts[i]]['toJson'](false, false);
-        anytest.modes.JSON_large_[i]=window[anytest.charts[i]]['toJson'](false, true);
+        //anytest.modes.JSON_large_[i]=window[anytest.charts[i]]['toJson'](false, true);
       }
     }
 
@@ -90,8 +90,8 @@ anytest.modes.checkModes = function () {
       for (var jsonSmI = 0; jsonSmI < anytest.charts.length; jsonSmI++) {
         if (!window[anytest.charts[jsonSmI]]['toJson'] || window[anytest.charts[jsonSmI]]['at_exclude_json']) continue;
         anytest.modes.elemExec++;
-        if (!anytest.utils.compareObjects(anytest.modes.JSON_small_[jsonSmI], anytest.modes.JSON_large_[jsonSmI]))
-          log(anytest.charts[jsonSmI], 'JSON small & large are equal.');
+        //if (!anytest.utils.compareObjects(anytest.modes.JSON_small_[jsonSmI], anytest.modes.JSON_large_[jsonSmI]))
+        //  log(anytest.charts[jsonSmI], 'JSON small & large are equal.');
 
         var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage;
         var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_small_[jsonSmI]));
@@ -176,7 +176,7 @@ anytest.modes.checkModes = function () {
     for (var ii = 0; ii < anytest.charts.length; ii++) {
       if (!window[anytest.charts[ii]]['toXml']) continue;
       anytest.modes.XML_small_.push(window[anytest.charts[ii]]['toXml'](false, false));
-      anytest.modes.XML_large_.push(window[anytest.charts[ii]]['toXml'](false, true));
+      //anytest.modes.XML_large_.push(window[anytest.charts[ii]]['toXml'](false, true));
     }
 
     consoleMsgMultiplier++;
@@ -185,8 +185,8 @@ anytest.modes.checkModes = function () {
       for (var xmlSmI = 0; xmlSmI < anytest.charts.length; xmlSmI++) {
         if (!window[anytest.charts[xmlSmI]]['toXml'] || window[anytest.charts[xmlSmI]]['at_exclude_xml']) continue;
         anytest.modes.elemExec++;
-        if (anytest.modes.XML_small_[xmlSmI]==anytest.modes.XML_large_[xmlSmI])
-          log(anytest.charts[xmlSmI], 'XML small & large are equal.');
+        //if (anytest.modes.XML_small_[xmlSmI]==anytest.modes.XML_large_[xmlSmI])
+        //  log(anytest.charts[xmlSmI], 'XML small & large are equal.');
 
         var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
         var Module = {};
