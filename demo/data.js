@@ -7,15 +7,23 @@ anychart.onDocumentLoad(function() {
     chart = anychart.cartesian();
     chart.area([1,3,4,-2,-7]);
 
+    chart['at_exclude_json'] = 'yes;'
+    chart['at_exclude_xml'] = 'yes;'
 
     anytest.stageListen(function () {
         anytest.step(function () {
             anytest.log(1,2,3);
             anytest.CAT.getScreen();
         });
+        anytest.step(function () {
+            anytest.CAT.getScreen('1');
+        });
+        anytest.step(function () {
+            anytest.CAT.getScreen('2');
+        });
 
         anytest.exit();
-    }).charts4modes("chart");
+    }).charts4modes();
     anytest.drawInStage(chart);
 
     stage.resume();

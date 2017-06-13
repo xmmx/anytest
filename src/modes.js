@@ -69,19 +69,21 @@ anytest.modes.JSON_small_ = [];
 anytest.modes.XML_small_ = [];
 //anytest.modes.XML_large_ = [];
 
+anytest.modes.skipTest = true;
+
 anytest.modes.elemExec=0;
 anytest.modes.checkModes = function () {
-  if (!anytest.charts.length) return;
+  if (!anytest.charts.length) return anytest.CAT.skipTest();
   var consoleMsgMultiplier = 0;
 
   ///////////////    JSON mode
   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
     // get all charts JSON
     for (var i = 0; i < anytest.charts.length; i++) {
-      if (window[anytest.charts[i]]['toJson']) {
-        anytest.modes.JSON_small_[i]=window[anytest.charts[i]]['toJson'](false, false);
-        //anytest.modes.JSON_large_[i]=window[anytest.charts[i]]['toJson'](false, true);
-      }
+      if (!window[anytest.charts[i]]['toJson'] || window[anytest.charts[i]]['at_exclude_json'])  continue;
+      anytest.modes.JSON_small_[i]=window[anytest.charts[i]]['toJson'](false, false);
+      anytest.modes.skipTest = false;
+      //anytest.modes.JSON_large_[i]=window[anytest.charts[i]]['toJson'](false, true);
     }
 
     consoleMsgMultiplier++;
@@ -174,8 +176,9 @@ anytest.modes.checkModes = function () {
   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
     // get all charts JSON
     for (var ii = 0; ii < anytest.charts.length; ii++) {
-      if (!window[anytest.charts[ii]]['toXml']) continue;
+      if (!window[anytest.charts[ii]]['toXml'] || window[anytest.charts[i]]['at_exclude_xml']) continue;
       anytest.modes.XML_small_.push(window[anytest.charts[ii]]['toXml'](false, false));
+      anytest.modes.skipTest = false;
       //anytest.modes.XML_large_.push(window[anytest.charts[ii]]['toXml'](false, true));
     }
 
@@ -356,6 +359,7 @@ anytest.modes.checkModes = function () {
     }, false);
   }
 
+  if (anytest.modes.skipTest) anytest.CAT.skipTest();
   //anytest.utils.doubleConsoleMsg(consoleMsgMultiplier);
 };
 
