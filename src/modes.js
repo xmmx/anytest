@@ -107,7 +107,7 @@ anytest.modes.checkModes = function () {
             delete window[anytest.charts[jsonSmI]];
             window[anytest.charts[jsonSmI]] = window['anychart']['fromJson'](anytest.modes.JSON_small_[jsonSmI]);
             anytest.utils.loadManager['fromJSON_SM_' + anytest.charts[jsonSmI]] = true;
-            window[anytest.charts[jsonSmI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+            window[anytest.charts[jsonSmI]]['listen']('chartdraw', function (e) {
               delete anytest.utils.loadManager['fromJSON_SM_' + anytest.utils.getKeyByValue(window, this)];
             });
             window[anytest.charts[jsonSmI]]['container'](chartContainer)['draw']();
@@ -200,7 +200,7 @@ anytest.modes.checkModes = function () {
           delete window[anytest.charts[xmlSmI]];
           window[anytest.charts[xmlSmI]] = window['anychart']['fromXml'](anytest.modes.XML_small_[xmlSmI]);
           anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlSmI]] = true;
-          window[anytest.charts[xmlSmI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+          window[anytest.charts[xmlSmI]]['listen']('chartdraw', function (e) {
             delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
           });
           window[anytest.charts[xmlSmI]]['container'](chartContainer)['draw']();

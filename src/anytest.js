@@ -206,7 +206,7 @@ anytest.chartListen = function (opt_chart, opt_callbackFunction, opt_isListenOnc
   if (!opt_chart || !opt_chart['listen']) return null;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
-  var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+  var key = opt_chart['listen']('chartdraw', function (e) {
     if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
