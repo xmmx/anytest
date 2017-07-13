@@ -34,13 +34,13 @@ anytest.panel.interactive.reset = function() {
   crosshair['yLabel'] = anytest.stage['text'](0, 0, 0).parent(anytest.panel.interactive.additionalLayer);
   window['acgraph']['events']['listen'](
       anytest.panel.interactive.additionalLayer,
-      window['acgraph']['events']['EventType']['CLICK'],
+      'click',
       function(e) {
         anytest.panel.interactive.initPoint(e.offsetX, e.offsetY);
       });
   window['acgraph']['events']['listen'](
       anytest.panel.interactive.additionalLayer,
-      window['acgraph']['events']['EventType']['MOUSEMOVE'],
+      'mousemove',
       function(e) {
         //anytest.panel.interactive.initPoint(e.offsetX, e.offsetY);
         crosshair['x']['setPosition'](e.offsetX,0);
