@@ -1,4 +1,5 @@
 var stage, chart0, chart1, chart, chart3, chart4, chart5, chart6, chart;
+anytest.ACDVF = true;
 //anytest.time('onDocumentReady'); // засекаем когда началась грузится страница (без учета загрузки anytest
 //anytest.time('scriptLoad'); // засекаем когда начался грузится скрипт anychart
 //anytest.timeEnd('scriptLoad'); // засекаем когда начался грузится скрипт anychart

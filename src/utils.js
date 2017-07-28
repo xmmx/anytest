@@ -170,17 +170,8 @@ anytest.utils.getPathToSchema = function () {
   if (!anytest.utils.pathToSchema_) {
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
-      if (scripts[i].src.indexOf('anychart.min.js') > -1) {
-        anytest.utils.pathToSchema_ = scripts[i].src.replace('anychart.min.js', '');
-      }
-      if (scripts[i].src.indexOf('anychart.dev.min.js') > -1) {
-        anytest.utils.pathToSchema_ = scripts[i].src.replace('anychart.dev.min.js', '');
-      }
-      if (scripts[i].src.indexOf('anychart-bundle.min.js') > -1) {
-        anytest.utils.pathToSchema_ = scripts[i].src.replace('anychart-bundle.min.js', '');
-      }
-      if (scripts[i].src.indexOf('anychart-bundle.dev.min.js') > -1) {
-        anytest.utils.pathToSchema_ = scripts[i].src.replace('anychart-bundle.dev.min.js', '');
+      if (scripts[i].src.indexOf('anytest.min.js') > -1) {
+        anytest.utils.pathToSchema_ = scripts[i].src.replace('anytest.min.js', '');
       }
     }
   }
