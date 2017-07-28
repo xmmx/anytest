@@ -20,7 +20,7 @@ anytest.modes.prepare = function () {
       pathToSchemas = "../../dist/";
     } else {
       pathToEngine = anytest.utils.getPathToSchema() + "local-cdn/";
-      pathToSchemas = anytest.utils.getPathToSchema();
+      pathToSchemas = anytest.utils.getPathToSchema()+"scripts/";
     }
   } else {
     pathToEngine = "../external/";
