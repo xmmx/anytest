@@ -15,12 +15,12 @@ anytest.modes.prepare = function () {
   if (anytest.VERSION) {
     //pathToEngine = "https://raw.github.com/geraintluff/tv4/master/";
     //pathToSchemas = anytest.utils.getPathToSchema()+"../../";
-    if (window['anychart'] && window['anychart']['VERSION']){
-      pathToEngine = anytest.utils.getPathToSchema() + "../local-cdn/";
-      pathToSchemas = anytest.utils.getPathToSchema();
-    }else{
+    if (anytest.ACDVF) {
       pathToEngine = "./utils/";
       pathToSchemas = "../../dist/";
+    } else {
+      pathToEngine = anytest.utils.getPathToSchema() + "local-cdn/";
+      pathToSchemas = anytest.utils.getPathToSchema()+"scripts/";
     }
   } else {
     pathToEngine = "../external/";
@@ -30,7 +30,7 @@ anytest.modes.prepare = function () {
 
   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
     anytest.utils.loadScript(pathToEngine + 'tv4.min.js');
-    anytest.modes.schemaJSON_ = goog.global.JSON.parse(''+anytest.utils.loadFile(pathToSchemas + 'json-schema.json'));
+    anytest.modes.schemaJSON_ = goog.global.JSON.parse('' + anytest.utils.loadFile(pathToSchemas + 'json-schema.json'));
   }
 
   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
@@ -88,14 +88,14 @@ anytest.modes.checkModes = function () {
 
     consoleMsgMultiplier++;
     anytest.step(function () {
-      anytest.modes.elemExec=0;
+      anytest.modes.elemExec = 0;
       for (var jsonSmI = 0; jsonSmI < anytest.charts.length; jsonSmI++) {
         if (!window[anytest.charts[jsonSmI]]['toJson'] || window[anytest.charts[jsonSmI]]['at_exclude_json']) continue;
         anytest.modes.elemExec++;
         //if (!anytest.utils.compareObjects(anytest.modes.JSON_small_[jsonSmI], anytest.modes.JSON_large_[jsonSmI]))
         //  log(anytest.charts[jsonSmI], 'JSON small & large are equal.');
 
-        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage;
+        var chartContainer = anytest.utils.isEmptyObj(anytest.stage) ? 'container' : anytest.stage;
         var restoreConfig = JSON.parse(JSON.stringify(anytest.modes.JSON_small_[jsonSmI]));
         var diff = anytest.utils.compareObjects(anytest.modes.JSON_small_[jsonSmI], restoreConfig);
         if (diff)
@@ -109,7 +109,7 @@ anytest.modes.checkModes = function () {
             delete window[anytest.charts[jsonSmI]];
             window[anytest.charts[jsonSmI]] = window['anychart']['fromJson'](anytest.modes.JSON_small_[jsonSmI]);
             anytest.utils.loadManager['fromJSON_SM_' + anytest.charts[jsonSmI]] = true;
-            window[anytest.charts[jsonSmI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+            window[anytest.charts[jsonSmI]]['listen']('chartdraw', function (e) {
               delete anytest.utils.loadManager['fromJSON_SM_' + anytest.utils.getKeyByValue(window, this)];
             });
             window[anytest.charts[jsonSmI]]['container'](chartContainer)['draw']();
@@ -119,9 +119,8 @@ anytest.modes.checkModes = function () {
           }
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-',true);
-    },false);
-
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('JSON-sm-', true);
+    }, false);
 
 
     //consoleMsgMultiplier++;
@@ -184,26 +183,26 @@ anytest.modes.checkModes = function () {
 
     consoleMsgMultiplier++;
     anytest.step(function () {
-      anytest.modes.elemExec=0;
+      anytest.modes.elemExec = 0;
       for (var xmlSmI = 0; xmlSmI < anytest.charts.length; xmlSmI++) {
         if (!window[anytest.charts[xmlSmI]]['toXml'] || window[anytest.charts[xmlSmI]]['at_exclude_xml']) continue;
         anytest.modes.elemExec++;
         //if (anytest.modes.XML_small_[xmlSmI]==anytest.modes.XML_large_[xmlSmI])
         //  log(anytest.charts[xmlSmI], 'XML small & large are equal.');
 
-        var chartContainer = anytest.utils.isEmptyObj(anytest.stage)?'container':anytest.stage
+        var chartContainer = anytest.utils.isEmptyObj(anytest.stage) ? 'container' : anytest.stage
         var Module = {};
         Module['xml'] = anytest.modes.XML_small_[xmlSmI];
         Module['schema'] = anytest.modes.schemaXML_;
         Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
         var result = window['validateXML'](Module);
-        if (result.trim() != 'file.xml validates') log(anytest.charts[xmlSmI],'XML small',result);
+        if (result.trim() != 'file.xml validates') log(anytest.charts[xmlSmI], 'XML small', result);
         try {
           window[anytest.charts[xmlSmI]]['dispose']();
           delete window[anytest.charts[xmlSmI]];
           window[anytest.charts[xmlSmI]] = window['anychart']['fromXml'](anytest.modes.XML_small_[xmlSmI]);
           anytest.utils.loadManager['fromXML_SM_' + anytest.charts[xmlSmI]] = true;
-          window[anytest.charts[xmlSmI]]['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+          window[anytest.charts[xmlSmI]]['listen']('chartdraw', function (e) {
             delete anytest.utils.loadManager['fromXML_SM_' + anytest.utils.getKeyByValue(window, this)];
           });
           window[anytest.charts[xmlSmI]]['container'](chartContainer)['draw']();
@@ -212,8 +211,8 @@ anytest.modes.checkModes = function () {
             console.log('error', e.message, e.stack);
         }
       }
-      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-',true);
-    },false);
+      if (anytest.modes.elemExec > 0) anytest.stepAppendCycle('XML-SM-', true);
+    }, false);
 
 
     //consoleMsgMultiplier++;
@@ -264,7 +263,7 @@ anytest.modes.checkModes = function () {
     anytest.step(function () {
       document.getElementById('container').style.display = 'none';
       anytest.stepAppendCycle('HC-', true);
-    },false,200);
+    }, false, 200);
   }
 
   ////////////////////// RESIZE
@@ -274,12 +273,12 @@ anytest.modes.checkModes = function () {
       consoleMsgMultiplier++;
 
       ///// Charts
-      anytest.modes.elemExec=0;
+      anytest.modes.elemExec = 0;
       anytest.step(function () {
-        var excluded=false;
+        var excluded = false;
         for (var rI = 0; rI < anytest.charts.length; rI++) {
           if (!window[anytest.charts[rI]]['width'] || !window[anytest.charts[rI]]['height']) continue;
-          if(window[anytest.charts[rI]]['at_exclude_R-CHART']) {
+          if (window[anytest.charts[rI]]['at_exclude_R-CHART']) {
             excluded = true;
             continue;
           }
@@ -290,13 +289,13 @@ anytest.modes.checkModes = function () {
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), 50));
         }
         if (anytest.modes.elemExec > 0 && !excluded) anytest.CAT.getScreen('R-CHART-plus', -1);
-      },false);
+      }, false);
       consoleMsgMultiplier++;
       anytest.step(function () {
-        var excluded=false;
+        var excluded = false;
         for (var rI = 0; rI < anytest.charts.length; rI++) {
           if (!window[anytest.charts[rI]]['width'] || !window[anytest.charts[rI]]['height']) continue;
-          if(window[anytest.charts[rI]]['at_exclude_R-CHART']) {
+          if (window[anytest.charts[rI]]['at_exclude_R-CHART']) {
             excluded = true;
             continue;
           }
@@ -304,7 +303,7 @@ anytest.modes.checkModes = function () {
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), -100));
         }
         if (anytest.modes.elemExec > 0 && !excluded) anytest.CAT.getScreen('R-CHART-minus', -1);
-      },false);
+      }, false);
       consoleMsgMultiplier++;
       anytest.step(function () {
         for (var rI = 0; rI < anytest.charts.length; rI++) {
@@ -313,23 +312,23 @@ anytest.modes.checkModes = function () {
           window[anytest.charts[rI]]['height'](anytest.modes.resizeCalc(window[anytest.charts[rI]]['height'](), 50));
         }
         anytest.stepAppendCycle('R-CHART-', true);
-      },false);
+      }, false);
 
       /// STAGE
       consoleMsgMultiplier++;
-      anytest.step(function(){
+      anytest.step(function () {
         anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 150));
         anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 150));
         anytest.CAT.getScreen('R-STG-plus', -1);
       }, false);
       consoleMsgMultiplier++;
-      anytest.step(function(){
+      anytest.step(function () {
         anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), -200));
         anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), -200));
         anytest.CAT.getScreen('R-STG-minus', -1);
       }, false);
       consoleMsgMultiplier++;
-      anytest.step(function(){
+      anytest.step(function () {
         //restore
         anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 50));
         anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 50));
@@ -339,19 +338,19 @@ anytest.modes.checkModes = function () {
 
     /// container
     consoleMsgMultiplier++;
-    anytest.step(function(){
+    anytest.step(function () {
       document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
       document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
       anytest.CAT.getScreen('R-DIV-plus', -1);
     }, false);
     consoleMsgMultiplier++;
-    anytest.step(function(){
+    anytest.step(function () {
       document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, -100);
       document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, -100);
       anytest.CAT.getScreen('R-DIV-minus', -1);
     }, false);
     consoleMsgMultiplier++;
-    anytest.step(function(){
+    anytest.step(function () {
       //restore
       document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
       document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
@@ -364,7 +363,7 @@ anytest.modes.checkModes = function () {
 };
 
 anytest.modes.hiddenTrigger = false;
-anytest.modes.hiddenModeDisplay_ = function(needStage) {
+anytest.modes.hiddenModeDisplay_ = function (needStage) {
   if (anytest.utils.isEmptyObj(anytest.utils.loadManager) && !anytest.modes.hiddenTrigger) {
     document.getElementById('container1').style.display = 'block';
     document.getElementById('container').style.display = 'none';
@@ -378,10 +377,10 @@ anytest.modes.hiddenModeDisplay_ = function(needStage) {
 };
 
 
-anytest.modes.resizeCalc = function(value, delta) {
-  var isPerc = ((value||'1').toString().substr(-1) == '%');
-  if (isPerc && Math.abs(delta).toString().length > 1) delta = delta/10;
-  value = parseInt(value,10);
+anytest.modes.resizeCalc = function (value, delta) {
+  var isPerc = ((value || '1').toString().substr(-1) == '%');
+  if (isPerc && Math.abs(delta).toString().length > 1) delta = delta / 10;
+  value = parseInt(value, 10);
   value += delta;
-  return value+(isPerc?'%':'px');
+  return value + (isPerc ? '%' : 'px');
 };

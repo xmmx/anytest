@@ -34,6 +34,7 @@ anytest.DEBUG_MODE = false;
  */
 anytest.VERSION = '';
 
+anytest.ACDVF = false;
 
 /**
  * Stage on window.
@@ -206,7 +207,7 @@ anytest.chartListen = function (opt_chart, opt_callbackFunction, opt_isListenOnc
   if (!opt_chart || !opt_chart['listen']) return null;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
-  var key = opt_chart['listen'](window['anychart']['enums']['EventType']['CHART_DRAW'], function (e) {
+  var key = opt_chart['listen']('chartdraw', function (e) {
     if (opt_isListenOnce) opt_chart['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
   });
@@ -401,13 +402,16 @@ anytest.stepExec = function () {
         //console.log(anytest.steps_[anytest.currentStep_]['body'])
         var func = anytest.panel.debug.stepToLog(anytest.steps_[anytest.currentStep_]);
 
-        anytest.panel.debug.logSteps.unshift(func);
+        anytest.panel.debug.logSteps.push(func);
         if (func == anytest.panel.debug.logAllSteps[0]) anytest.panel.debug.logAllSteps.shift();
 
         document.getElementById('logStepListDebugger').innerHTML = '<pre class="brush: js">' + anytest.panel.debug.logSteps.join(anytest.panel.debug.logListStepSeparator) + '</pre>';
+        document.getElementById('logStepListDebugger').scrollTop = document.getElementById('logStepListDebugger').scrollHeight;
         document.getElementById('nextStepListDebugger').innerHTML = '<pre class="brush: js">' + anytest.panel.debug.logAllSteps.join(anytest.panel.debug.logListStepSeparator) + '</pre>';
         window.setTimeout(function () {
           window['SyntaxHighlighter']['highlight']()
+          var elem = document.getElementById('logStepListDebugger');
+          elem.scrollTop = elem.scrollHeight;
         }, 0);
         document.getElementById('debuggerAllSteps').innerHTML = anytest.panel.debug.logAllSteps.length + anytest.panel.debug.logSteps.length;
       }
@@ -416,7 +420,6 @@ anytest.stepExec = function () {
   } else log('exit');
   return anytest.utils.statusDiv.value;
 };
-
 /**
  *
  * @type {Array}
@@ -442,7 +445,7 @@ anytest.stepAppendCycle = function (screenPrefix, opt_flag) {
   }
 
   if (anytest.DEBUG_MODE){
-    anytest.panel.debug.logSteps.unshift('//- change prefix: "'+screenPrefix+'"');
+    anytest.panel.debug.logSteps.push('//- change prefix: "'+screenPrefix+'"');
     for(var i=anytest.cyclesteps_.length-1;i>=0;i--) {
       anytest.panel.debug.logAllSteps.splice(1,0,anytest.panel.debug.stepToLog(anytest.cyclesteps_[i]));
     }
@@ -512,4 +515,5 @@ goog.exportSymbol('anytest.exit', anytest.exit);
 goog.exportSymbol('anytest.externalStepsCallee', anytest.externalStepsCallee);
 goog.exportSymbol('anytest.loadManager', anytest.utils.loadManager);
 goog.exportSymbol('anytest.VERSION', anytest.VERSION);
+goog.exportSymbol('anytest.ACDVF', anytest.ACDVF);
 

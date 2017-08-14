@@ -39,6 +39,7 @@ anytest.styles.rules_ =
 
     'body {' +
     '  margin: 0;' +
+    '  background: #ffffff;' +
     '}' +
 
     '#sidePanel {' +
