@@ -40,12 +40,12 @@ anytest.panel.debug.getHTMLContent = function () {
   var link = document.createElement('link');
   link.rel = "stylesheet";
   link.type = "text/css";
-  link.href = "http://demos.anychart.dev/anytest-utils/shigh/styles/shCore.css";
+  link.href = "https://static.anychart.com/utility/shigh/styles/shCore.css";
   head.appendChild(link);
   link = document.createElement('link');
   link.rel = "stylesheet";
   link.type = "text/css";
-  link.href = "http://demos.anychart.dev/anytest-utils/shigh/styles/shThemeDefault.css";
+  link.href = "https://static.anychart.com/utility/shigh/styles/shThemeDefault.css";
   head.appendChild(link);
   var script = document.createElement('script');
   head.appendChild(script);
@@ -57,9 +57,9 @@ anytest.panel.debug.getHTMLContent = function () {
     script1.onload = function () {
       window.setTimeout(function(){window['SyntaxHighlighter']['highlight']();},1000);
     };
-    script1.src = "http://demos.anychart.dev/anytest-utils/shigh/scripts/shBrushJScript.js";
+    script1.src = "https://static.anychart.com/utility/shigh/scripts/shBrushJScript.js";
   };
-  script.src = "http://demos.anychart.dev/anytest-utils/shigh/scripts/shCore.js";
+  script.src = "https://static.anychart.com/utility/shigh/scripts/shCore.js";
   //anytest.panel.debug.logAllSteps.push('exit');
   var content = '<b>Debug Panel</b><input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()"><span style="float: right">' +
       '<input type="button" id="debuggerBtn" value="Next Step >" onclick="anytest.panel.debug.execStep()" style="margin-right: 20px; ">' +
