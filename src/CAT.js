@@ -20,6 +20,15 @@ anytest.CAT.exit = function () {
 
 
 /**
+ * Завершающая команда для САТ.
+ * @ignore
+ */
+anytest.CAT.skipTest = function () {
+    log('CAT: skip test');
+};
+
+
+/**
  * Флаг для проверки повторой записи в основной скрин.
  * @type {boolean}
  * @private
