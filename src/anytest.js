@@ -137,6 +137,7 @@ anytest.exitState = false;
  */
 anytest.exit = function () {
   anytest.step(function () {
+    console.log('tearDown')
     anytest.exitState = true;
     anytest.tearDown();
   }, false);

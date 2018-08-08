@@ -210,9 +210,10 @@ anytest.utils.isEmptyObj = function (obj) {
   return true;
 };
 
+var exceptionsProps_ = ['webkitStorageInfo'];
 anytest.utils.getKeyByValue = function (obj, value) {
   for (var prop in obj) {
-    if (obj[prop] === value)
+    if ( exceptionsProps_.indexOf(prop) == -1 && obj[prop] === value)
       return prop;
   }
 }
