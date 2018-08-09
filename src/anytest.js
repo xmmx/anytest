@@ -418,6 +418,9 @@ anytest.stepExec = function () {
     }
     anytest.currentStep_++;
   } else log('exit');
+  if (!anytest.utils.statusDiv.value) {
+    console.log(anytest.stepExec())
+  }
   return anytest.utils.statusDiv.value;
 };
 /**
