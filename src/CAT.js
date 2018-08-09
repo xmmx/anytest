@@ -129,16 +129,16 @@ anytest.CAT.actionKeyBoard = function (type, key_name) {
  * @param {string=} opt_type Enum: click|mousemove|mouseup|mousedown.
  * @param {string=} opt_theme all|v6|defaultTheme.
  * @param {string=} opt_button left|right|middle.
- * @param {number} opt_count count of click.
+ * @param {string=} opt_keys any combination of 'alt','ctrl','shift'. for ex 'altshift','ctrlalt'.
  */
-anytest.CAT.action = function (x, y, opt_type, opt_theme, opt_button, opt_count) {
+anytest.CAT.action = function (x, y, opt_type, opt_theme, opt_button, opt_keys) {
   opt_type = opt_type || 'click';
   opt_theme = opt_theme || 'all';
   opt_button = opt_button || 'left';
-  opt_count = opt_count || 1;
+  opt_keys = opt_keys || '';
   // log only in theme
   if (opt_theme == 'all' || window['anychart']['themes'][opt_theme])
-    log(['CAT: action:', opt_type, x, y, opt_button, opt_count].join(' '));
+    log(['CAT: action:', opt_type, x, y, opt_button, opt_keys].join(' '));
   // add point to base layer;
   anytest.panel.interactive.initPoint(x, y, true);
 };
