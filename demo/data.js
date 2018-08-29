@@ -1,8 +1,6 @@
 anychart.onDocumentLoad(function() {
     anytest.setUp(400,400);
-    // stage.listen('stagerendered', function(){
-    //     console.log('stagerender')
-    // })
+
 
     var dataTable = anychart.data.table();
     dataTable.addData(get_orcl_daily_short_data());
@@ -30,7 +28,6 @@ anychart.onDocumentLoad(function() {
     chart = anychart.stock();
 
     var Plot1 = chart.plot();
-       stage.image("https://static.anychart.com/images/oceanic-airlines.png", 50, 10, 150, 125);
     Plot1.jumpLine().data(mapping2);
     eventMarkers1 = Plot1.eventMarkers()
         .group([
@@ -42,11 +39,16 @@ anychart.onDocumentLoad(function() {
             mode: 'stretch'
         });
 
+    // stage.listen('stagerendered', function(){
+    //     console.log('stagerender')
+    //     // anytest.stepExec()
+    // });
+
     anytest.drawInStage(chart);
 
     anytest.stageListen(function () {
         // anytest.step(function(){
-            anytest.stepExec()
+        //      anytest.stepExec()
         // });
 
         anytest.step(function() {

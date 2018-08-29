@@ -259,7 +259,7 @@ anytest.listenerFuncMain_ = function (callbackFunction, e) {
   anytest.modes.checkModes();
   window.setTimeout(function () {
     if (anytest.DEBUG_MODE) anytest.panel.create('debug');
-    if (!anytest.DEBUG_MODE && !anytest.utils.getParameterByName('se')) {
+    if (!anytest.DEBUG_MODE) {
       anytest.stepRunner();
     }
   }, 500);
@@ -270,36 +270,48 @@ anytest.failStepsCount = 0;
 anytest.stepsTimeout = null;
 anytest.stepRunner = function () {
   if (anytest.stopRunner) return;
-  //console.log(anytest.steps_[anytest.steps_.length-1]);
-  if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
-    if (!anytest.utils.getParameterByName('se') && !anytest.utils.getParameterByName('ph'))
-      log('loadManager', anytest.utils.loadManager, anytest.stepsTimeout);
-    anytest.stepsTimeout = window.setInterval(anytest.stepRunner, 1000);
-    anytest.failStepsCount++;
-    if (anytest.failStepsCount > 10) {
-      log('failsteps');
-      log('CAT: exit');
-      anytest.stopRunner = true;
+  if (!anytest.utils.getParameterByName('se')){
+    //console.log(anytest.steps_[anytest.steps_.length-1]);
+    if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
+      if (!anytest.utils.getParameterByName('ph'))
+        log('loadManager', anytest.utils.loadManager, anytest.stepsTimeout);
+      anytest.stepsTimeout = window.setInterval(anytest.stepRunner, 1000);
+      anytest.failStepsCount++;
+      if (anytest.failStepsCount > 10) {
+        log('failsteps');
+        log('CAT: exit');
+        anytest.stopRunner = true;
+        window.clearInterval(anytest.stepsTimeout);
+      }
+      //console.log('setuped', anytest.stepsTimeout);
+      return null;
+    } else {
+      //console.log('cleared',anytest.stepsTimeout)
       window.clearInterval(anytest.stepsTimeout);
+      anytest.failStepsCount = 0;
+      var res = anytest.stepExec();
+      if (!anytest.utils.getParameterByName('ph') && res)
+        if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
+          console.log(anytest.currentStep_, res);
+      if (res != 'exit') {
+        var timout = 0;
+        if (anytest.currentStep_ < anytest.steps_.length && anytest.steps_[anytest.currentStep_])
+          timout = anytest.steps_[anytest.currentStep_]['timeout'];
+        setTimeout(anytest.stepRunner, timout);
+      }
+      else anytest.stopRunner = true;
     }
-    //console.log('setuped', anytest.stepsTimeout);
-    return null;
-  } else {
-    //console.log('cleared',anytest.stepsTimeout)
-    window.clearInterval(anytest.stepsTimeout);
-    anytest.failStepsCount = 0;
-    var res = anytest.stepExec();
-    if (!anytest.utils.getParameterByName('se') && !anytest.utils.getParameterByName('ph') && res)
-      if (window['console'] && window['console']['log'] && typeof window['console']['log'] != 'object')
-        console.log(anytest.currentStep_, res);
-    if (res != 'exit') {
-      var timout = 0;
-      if (anytest.currentStep_ < anytest.steps_.length && anytest.steps_[anytest.currentStep_])
-        timout = anytest.steps_[anytest.currentStep_]['timeout'];
-      setTimeout(anytest.stepRunner, timout);
-    }
-    else anytest.stopRunner = true;
   }
+  else log('Run')
+  // {
+    // if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
+    //   anytest.stepsTimeout = window.setInterval(log('Run'), 1000);
+    //   return null;
+    // } else {
+    //   log('Run')
+    //   return null;
+    // }
+  // }
 };
 
 
@@ -418,7 +430,7 @@ anytest.stepExec = function () {
     }
     anytest.currentStep_++;
   } else log('exit');
-  if (!anytest.utils.statusDiv.value) {
+  if (!anytest.utils.statusDiv.value && anytest.utils.getParameterByName('se')) {
     anytest.stepExec()
   }
   return anytest.utils.statusDiv.value;
