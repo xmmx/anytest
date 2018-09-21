@@ -317,47 +317,52 @@ anytest.modes.checkModes = function () {
       }, false);
 
       /// STAGE
+      if (!anytest.stage['at_exclude_R-STAGE'])
+      {
+        consoleMsgMultiplier++;
+        anytest.step(function () {
+          anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 150));
+          anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 150));
+          anytest.CAT.getScreen('R-STG-plus', -1);
+        }, false);
+        consoleMsgMultiplier++;
+        anytest.step(function () {
+          anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), -200));
+          anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), -200));
+          anytest.CAT.getScreen('R-STG-minus', -1);
+        }, false);
+        consoleMsgMultiplier++;
+        anytest.step(function () {
+          //restore
+          anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 50));
+          anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 50));
+          anytest.stepAppendCycle('R-STAGE-', true);
+        }, false);
+      }
+    }
+
+    /// container
+    if (!anytest.stage['at_exclude_R-DIV']) {
       consoleMsgMultiplier++;
       anytest.step(function () {
-        anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 150));
-        anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 150));
-        anytest.CAT.getScreen('R-STG-plus', -1);
+        document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
+        document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
+        anytest.CAT.getScreen('R-DIV-plus', -1);
       }, false);
       consoleMsgMultiplier++;
       anytest.step(function () {
-        anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), -200));
-        anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), -200));
-        anytest.CAT.getScreen('R-STG-minus', -1);
+        document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, -100);
+        document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, -100);
+        anytest.CAT.getScreen('R-DIV-minus', -1);
       }, false);
       consoleMsgMultiplier++;
       anytest.step(function () {
         //restore
-        anytest.stage['width'](anytest.modes.resizeCalc(anytest.stage['width'](), 50));
-        anytest.stage['height'](anytest.modes.resizeCalc(anytest.stage['height'](), 50));
-        anytest.stepAppendCycle('R-STAGE-', true);
+        document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
+        document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
+        anytest.stepAppendCycle('R-DIV-', true);
       }, false);
     }
-
-    /// container
-    consoleMsgMultiplier++;
-    anytest.step(function () {
-      document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
-      document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
-      anytest.CAT.getScreen('R-DIV-plus', -1);
-    }, false);
-    consoleMsgMultiplier++;
-    anytest.step(function () {
-      document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, -100);
-      document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, -100);
-      anytest.CAT.getScreen('R-DIV-minus', -1);
-    }, false);
-    consoleMsgMultiplier++;
-    anytest.step(function () {
-      //restore
-      document.getElementById('container').style.width = anytest.modes.resizeCalc(document.getElementById('container').style.width, 50);
-      document.getElementById('container').style.height = anytest.modes.resizeCalc(document.getElementById('container').style.height, 50);
-      anytest.stepAppendCycle('R-DIV-', true);
-    }, false);
   }
 
   if (anytest.modes.skipTest) anytest.CAT.skipTest();

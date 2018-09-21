@@ -6,6 +6,7 @@ goog.provide('anytest.panel.debug');
  @name anytest.panel.debug
  */
 
+if (anytest.modes.currentMode_ == "" && anytest.utils.getParameterByName('debug')) window.location.href = window.location.href+'&mode=0'
 
 anytest.panel.debug.execStep = function () {
   anytest.panel.debug.curentStep++;
@@ -25,6 +26,10 @@ anytest.panel.debug.stepToLog = function (step) {
   if (step.timeout)
     func = "// delay=" + step.timeout + "\n" + func;
   return func;
+};
+
+var calcAdress = function () {
+
 };
 
 /**
@@ -61,9 +66,24 @@ anytest.panel.debug.getHTMLContent = function () {
   };
   script.src = "https://static.anychart.com/utility/shigh/scripts/shCore.js";
   //anytest.panel.debug.logAllSteps.push('exit');
-  var content = '<b>Debug Panel</b><input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()"><span style="float: right">' +
+  var content =
+      '<b>Debug Panel</b>' +
+      '<input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()">' +
+      '<select id="selectMode" style="margin-left: 30px" onchange="' +
+            'window.location.href = window.location.href.replace(\'&mode=\'+anytest.modes.currentMode_, \'&mode=\'+this.value)">' +
+        '<option></option>' +
+        '<option value="0">Simple</option>' +
+        '<option value="1">Resize</option>' +
+        '<option value="4">Json</option>' +
+        '<option value="8">XML</option>' +
+        '<option value="16">HC1</option>' +
+        '<option value="32">HC2</option>' +
+      '</select>'+
+      '<span style="float: right">' +
       '<input type="button" id="debuggerBtn" value="Next Step >" onclick="anytest.panel.debug.execStep()" style="margin-right: 20px; ">' +
-      '<span id="debuggerCurrentStep">' + anytest.panel.debug.curentStep + '</span>/<span id="debuggerAllSteps">' + anytest.steps_.length + '</span></span>' +
+      '<span id="debuggerCurrentStep">' + anytest.panel.debug.curentStep + '</span>/' +
+      '<span id="debuggerAllSteps">' + anytest.steps_.length + '</span>' +
+      '</span>' +
       '<hr><b>Log Steps</b><br/>' +
       '<pre class="brush: js" id="logStepListDebugger">&nbsp;</pre><br/>' +
       '<b style="float: right">Full steps list&nbsp;&nbsp;</b><br/>'+
