@@ -1,4 +1,6 @@
 goog.provide('anytest.panel.debug');
+goog.require('anytest.modes');
+goog.require('anytest.utils');
 
 /**
  @namespace
@@ -66,18 +68,29 @@ anytest.panel.debug.getHTMLContent = function () {
   };
   script.src = "https://static.anychart.com/utility/shigh/scripts/shCore.js";
   //anytest.panel.debug.logAllSteps.push('exit');
+  var modeCodes = {
+    '0':'No Mode',
+    '1':'Resize',
+    '4':'Json',
+    '8':'XML',
+    '16':'HC1',
+    '32':'HC2'
+  };
+
+  function generateModesOptions(){
+    var res="";
+    for(var i in modeCodes){
+      res += '<option value="'+i+'" '+(i== anytest.modes.currentMode_ ? 'selected':' ') +' >'+modeCodes[i]+'</option>'
+    }
+    return res;
+  }
+
   var content =
       '<b>Debug Panel</b>' +
       '<input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()">' +
       '<select id="selectMode" style="margin-left: 30px" onchange="' +
-            'window.location.href = window.location.href.replace(\'&mode=\'+anytest.modes.currentMode_, \'&mode=\'+this.value)">' +
-        '<option></option>' +
-        '<option value="0">Simple</option>' +
-        '<option value="1">Resize</option>' +
-        '<option value="4">Json</option>' +
-        '<option value="8">XML</option>' +
-        '<option value="16">HC1</option>' +
-        '<option value="32">HC2</option>' +
+            'window.location.href = window.location.href.replace(\'&mode=' + anytest.modes.currentMode_ + '\', \'&mode=\'+this.value)">' +
+      generateModesOptions()+
       '</select>'+
       '<span style="float: right">' +
       '<input type="button" id="debuggerBtn" value="Next Step >" onclick="anytest.panel.debug.execStep()" style="margin-right: 20px; ">' +
