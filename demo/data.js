@@ -4,7 +4,9 @@ anytest.ACDVF = true;
 //anytest.time('scriptLoad'); // засекаем когда начался грузится скрипт anychart
 //anytest.timeEnd('scriptLoad'); // засекаем когда начался грузится скрипт anychart
 anychart.onDocumentLoad(function() {
+    // console.log(new Date().getTime())
     anytest.setUp();
+
     chart = anychart.cartesian();
     chart.area([1,3,4,-2,-7]);
 
@@ -12,6 +14,7 @@ anychart.onDocumentLoad(function() {
     chart['at_exclude_xml'] = 'yes;'
 
     anytest.stageListen(function () {
+        // console.log(new Date().getTime())
         anytest.step(function () {
             anytest.CAT.getScreen();
         });

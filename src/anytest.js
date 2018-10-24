@@ -76,6 +76,7 @@ anytest.init = function () {
       // wait for fucking
     },true,200);
   }
+  anytest.timer.set(anytest.timer.enm.TOTAL);
 };
 
 
@@ -235,6 +236,7 @@ anytest.stageListen = function (opt_callbackFunction, opt_isListenOnce) {
   opt_callbackFunction = opt_callbackFunction || anytest.defaultCallbackFunction;
   if (opt_isListenOnce === undefined) opt_isListenOnce = true;
   var key = window['acgraph']['events']['listen'](anytest.stage, 'stagerendered', function (e) {
+    anytest.timer.end(anytest.timer.enm.TOTAL);
     if (opt_isListenOnce) window['acgraph']['events']['unlistenByKey'](key);
     anytest.listenerFuncMain_(opt_callbackFunction, e);
     for (var i = 0; i < anytest.onStageDrawed_.length; i++)
