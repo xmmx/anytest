@@ -1,4 +1,6 @@
 goog.provide('anytest.panel.debug');
+goog.require('anytest.modes');
+goog.require('anytest.utils');
 
 /**
  @namespace
@@ -6,6 +8,7 @@ goog.provide('anytest.panel.debug');
  @name anytest.panel.debug
  */
 
+if (anytest.modes.currentMode_ == "" && anytest.utils.getParameterByName('debug')) window.location.href = window.location.href+'&mode=0'
 
 anytest.panel.debug.execStep = function () {
   anytest.panel.debug.curentStep++;
@@ -25,6 +28,10 @@ anytest.panel.debug.stepToLog = function (step) {
   if (step.timeout)
     func = "// delay=" + step.timeout + "\n" + func;
   return func;
+};
+
+var calcAdress = function () {
+
 };
 
 /**
@@ -61,9 +68,35 @@ anytest.panel.debug.getHTMLContent = function () {
   };
   script.src = "https://static.anychart.com/utility/shigh/scripts/shCore.js";
   //anytest.panel.debug.logAllSteps.push('exit');
-  var content = '<b>Debug Panel</b><input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()"><span style="float: right">' +
+  var modeCodes = {
+    '0':'No Mode',
+    '1':'Resize',
+    '4':'Json',
+    '8':'XML',
+    '16':'HC1',
+    '32':'HC2'
+  };
+
+  function generateModesOptions(){
+    var res="";
+    for(var i in modeCodes){
+      res += '<option value="'+i+'" '+(i== anytest.modes.currentMode_ ? 'selected':' ') +' >'+modeCodes[i]+'</option>'
+    }
+    return res;
+  }
+
+  var content =
+      '<b>Debug Panel</b>' +
+      '<input type="button" style="margin-left: 30px" value="toggle interactive" onclick="anytest.panel.debug.toggleInteractiveLayer()">' +
+      '<select id="selectMode" style="margin-left: 30px" onchange="' +
+            'window.location.href = window.location.href.replace(\'&mode=' + anytest.modes.currentMode_ + '\', \'&mode=\'+this.value)">' +
+      generateModesOptions()+
+      '</select>'+
+      '<span style="float: right">' +
       '<input type="button" id="debuggerBtn" value="Next Step >" onclick="anytest.panel.debug.execStep()" style="margin-right: 20px; ">' +
-      '<span id="debuggerCurrentStep">' + anytest.panel.debug.curentStep + '</span>/<span id="debuggerAllSteps">' + anytest.steps_.length + '</span></span>' +
+      '<span id="debuggerCurrentStep">' + anytest.panel.debug.curentStep + '</span>/' +
+      '<span id="debuggerAllSteps">' + anytest.steps_.length + '</span>' +
+      '</span>' +
       '<hr><b>Log Steps</b><br/>' +
       '<pre class="brush: js" id="logStepListDebugger">&nbsp;</pre><br/>' +
       '<b style="float: right">Full steps list&nbsp;&nbsp;</b><br/>'+
