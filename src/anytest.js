@@ -273,6 +273,7 @@ anytest.stepRunner = function () {
   if (!anytest.utils.getParameterByName('se')){
     //console.log(anytest.steps_[anytest.steps_.length-1]);
     if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
+      //если не пустой loadManager
       if (!anytest.utils.getParameterByName('ph'))
         log('loadManager', anytest.utils.loadManager, anytest.stepsTimeout);
       anytest.stepsTimeout = window.setInterval(anytest.stepRunner, 1000);
@@ -286,6 +287,7 @@ anytest.stepRunner = function () {
       //console.log('setuped', anytest.stepsTimeout);
       return null;
     } else {
+      //если пустой loadManager
       //console.log('cleared',anytest.stepsTimeout)
       window.clearInterval(anytest.stepsTimeout);
       anytest.failStepsCount = 0;
@@ -302,16 +304,13 @@ anytest.stepRunner = function () {
       else anytest.stopRunner = true;
     }
   }
-  else log('Run')
-  // {
-    // if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
-    //   anytest.stepsTimeout = window.setInterval(log('Run'), 1000);
-    //   return null;
-    // } else {
-    //   log('Run')
-    //   return null;
-    // }
-  // }
+  else
+    var run = setInterval(function () {
+      if (anytest.utils.isEmptyObj(anytest.utils.loadManager)) {
+        log('Run');
+        clearInterval(run)
+      }
+    }, 1000)
 };
 
 
@@ -405,6 +404,7 @@ anytest.step = function (stepFunc, isCycle, opt_timeOut) {
  *
  */
 anytest.stepExec = function () {
+  if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) return;
   anytest.utils.statusDiv.value = "";
   if (anytest.steps_.length > anytest.currentStep_) {
     if (anytest.steps_[anytest.currentStep_] && anytest.steps_[anytest.currentStep_]['func']) {
