@@ -140,6 +140,7 @@ anytest.exit = function () {
   anytest.step(function () {
     anytest.exitState = true;
     anytest.tearDown();
+    anytest.stepExec();
   }, false);
 };
 
@@ -407,10 +408,22 @@ anytest.step = function (stepFunc, isCycle, opt_timeOut) {
  */
 anytest.stepExec = function () {
   if (!anytest.utils.isEmptyObj(anytest.utils.loadManager)) return;
+  // console.log('current step '+anytest.currentStep_ )
+  // console.log('step length'+anytest.steps_.length)
   anytest.utils.statusDiv.value = "";
   if (anytest.steps_.length > anytest.currentStep_) {
     if (anytest.steps_[anytest.currentStep_] && anytest.steps_[anytest.currentStep_]['func']) {
-      anytest.steps_[anytest.currentStep_]['func']();
+      // anytest.steps_[anytest.currentStep_]['func']();
+      // console.log(anytest.steps_[anytest.currentStep_]['timeout'])
+      // console.log(anytest.steps_[anytest.currentStep_]['func'])
+      // console.log(anytest.steps_[anytest.currentStep_]['timeout'])
+      // var step = anytest.steps_[anytest.currentStep_];
+      // console.log(step);
+      var fn = anytest.steps_[anytest.currentStep_]['func'];
+      var delay = anytest.steps_[anytest.currentStep_]['timeout'];
+      setTimeout(fn, delay);
+      // console.log(anytest.steps_.length)
+      // console.log(anytest.currentStep_)
 
       if (anytest.DEBUG_MODE) {
         //console.log(anytest.steps_[anytest.currentStep_]['body'])
@@ -432,9 +445,10 @@ anytest.stepExec = function () {
     }
     anytest.currentStep_++;
   } else log('exit');
-  if (!anytest.utils.statusDiv.value && anytest.utils.getParameterByName('se')) {
-    anytest.stepExec()
-  }
+  // if (!anytest.utils.statusDiv.value && anytest.utils.getParameterByName('se') && (anytest.currentStep_ == anytest.steps_.length)) {
+  //   console.log('cu')
+  //   anytest.stepExec()
+  // }
   return anytest.utils.statusDiv.value;
 };
 /**
