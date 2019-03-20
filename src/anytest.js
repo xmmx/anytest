@@ -380,15 +380,36 @@ anytest.cyclesteps_ = [];
 
 /**
  * @param {Function} stepFunc .
- * @param {boolean} isCycle .
+ * @param {boolean=} opt_isCycle .
  * @param {number=} opt_timeOut .
  */
-anytest.step = function (stepFunc, isCycle, opt_timeOut) {
-  opt_timeOut = opt_timeOut || 0;
-  var step  = {'func': stepFunc, 'timeout':opt_timeOut,'body':stepFunc.toString()};
+anytest.step = function (stepFunc, opt_isCycle, opt_timeOut) {
+  var step  = {
+    'func': stepFunc,
+    'timeout': opt_timeOut || 0,
+    'body': stepFunc.toString()
+  };
   anytest.steps_.push(step);
-  if (anytest.DEBUG_MODE) anytest.panel.debug.logAllSteps.push(anytest.panel.debug.stepToLog(step));
-  if (isCycle != false) anytest.cyclesteps_.push(step);
+
+  if (anytest.DEBUG_MODE)
+    anytest.panel.debug.logAllSteps.push(anytest.panel.debug.stepToLog(step));
+
+  if (opt_isCycle)
+    anytest.cyclesteps_.push(step);
+};
+
+
+/**
+ * anytest.step() simplification. Allows to avoid multiple anytest.step() records.
+ * NOTE: Doesn't have another anytest.step() parameters like isCycle or opt_timeOut.
+ * @param {...Function} var_args - Step functions.
+ */
+anytest.stepsQueue = function(var_args) {
+  for (var i = 0; i < arguments.length; i++) {
+    var fn = arguments[i];
+    if (fn)
+      anytest.step(fn);
+  }
 };
 
 /**
@@ -506,6 +527,7 @@ goog.exportSymbol('anytest.setUp', anytest.setUp);
 goog.exportSymbol('anytest.drawInStage', anytest.drawInStage);
 goog.exportSymbol('anytest.stage', anytest.stage);
 goog.exportSymbol('anytest.step', anytest.step);
+goog.exportSymbol('anytest.stepsQueue', anytest.stepsQueue);
 goog.exportSymbol('anytest.charts4modes', anytest.charts4modes);
 goog.exportSymbol('anytest.stepExec', anytest.stepExec);
 goog.exportSymbol('anytest.description', anytest.description);
