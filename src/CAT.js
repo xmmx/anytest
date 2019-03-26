@@ -113,12 +113,57 @@ anytest.CAT.checkMsg = function () {
 
 
 /**
+ * @param {string|number} value - Value to turn to modifier.
+ * @return {number} - PhantomJS key modifier.
+ * @private
+ */
+anytest.CAT.stringToKeyModifier_ = function(value) {
+  if (goog.isString(value)) {
+    switch (value.toLowerCase()) {
+      case 'shift':
+        return 0x02000000;
+      case 'ctrl':
+        return 0x04000000;
+      case 'alt':
+        return 0x08000000;
+      case 'meta':
+      case 'command':
+      case 'cmd':
+        return 0x10000000;
+      case 'keypad': //TODO (A.Kudryavtsev) I really don't know what is it.
+        return 0x20000000;
+      default:
+        return 0;  
+    }
+  }
+  return Number(value) || 0;
+};
+
+
+/**
  * Послать событие клавиатуры
+ * @see http://phantomjs.org/api/webpage/method/send-event.html
  * @param {string} type Enum: keypress|keyup|keydown.
  * @param {string} key_name Escape|Backspace|A|B....
+ * @param {(string|Array.<string>|number)=} opt_modifier Enum: shift|ctrl|alt|meta|keypad.
+ *    0: No modifier key is pressed
+ *    0x02000000: A Shift key on the keyboard is pressed
+ *    0x04000000: A Ctrl key on the keyboard is pressed
+ *    0x08000000: An Alt key on the keyboard is pressed
+ *    0x10000000: A Meta key on the keyboard is pressed
+ *    0x20000000: A keypad button is pressed
  */
-anytest.CAT.actionKeyBoard = function (type, key_name) {
-    log('CAT: action: ' + type + ' ' + key_name);
+anytest.CAT.actionKeyBoard = function (type, key_name, opt_modifier) {
+    var mod = 0;
+    if (goog.isDef(opt_modifier)) {
+      if (goog.isArray(opt_modifier)) {
+        for (var i = 0; i < opt_modifier.length; i++) {
+          mod |= anytest.CAT.stringToKeyModifier_(opt_modifier[i]);
+        }
+      } else
+        mod |= anytest.CAT.stringToKeyModifier_(/** @type {number|string} */ (opt_modifier));
+    }
+    log('CAT: action: ' + type + ' ' + key_name + ' ' + mod);
 };
 
 
