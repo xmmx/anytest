@@ -8,36 +8,36 @@ anytest.modes = {
   currentMode_: anytest.utils.getParameterByName('mode')
 };
 
-anytest.modes.prepare = function () {
-  if (anytest.modes.currentMode_ == -1) anytest.modes.currentMode_ = 0;
+// anytest.modes.prepare = function () {
+//   if (anytest.modes.currentMode_ == -1) anytest.modes.currentMode_ = 0;
 
-  var pathToEngine, pathToSchemas;
-  if (anytest.VERSION) {
-    //pathToEngine = "https://raw.github.com/geraintluff/tv4/master/";
-    //pathToSchemas = anytest.utils.getPathToSchema()+"../../";
-    if (anytest.ACDVF) {
-      pathToEngine = "./utils/";
-      pathToSchemas = "../../dist/";
-    } else {
-      pathToEngine = anytest.utils.getPathToSchema() + "local-cdn/";
-      pathToSchemas = anytest.utils.getPathToSchema()+"scripts/";
-    }
-  } else {
-    pathToEngine = "../external/";
-    pathToSchemas = "../out/";
-  }
+//   var pathToEngine, pathToSchemas;
+//   if (anytest.VERSION) {
+//     //pathToEngine = "https://raw.github.com/geraintluff/tv4/master/";
+//     //pathToSchemas = anytest.utils.getPathToSchema()+"../../";
+//     if (anytest.ACDVF) {
+//       pathToEngine = "./utils/";
+//       pathToSchemas = "../../dist/";
+//     } else {
+//       pathToEngine = anytest.utils.getPathToSchema() + "local-cdn/";
+//       pathToSchemas = anytest.utils.getPathToSchema()+"scripts/";
+//     }
+//   } else {
+//     pathToEngine = "../external/";
+//     pathToSchemas = "../out/";
+//   }
 
 
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
-    anytest.utils.loadScript(pathToEngine + 'tv4.min.js');
-    anytest.modes.schemaJSON_ = goog.global.JSON.parse('' + anytest.utils.loadFile(pathToSchemas + 'json-schema.json'));
-  }
+//   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_JSON)) {
+//     anytest.utils.loadScript(pathToEngine + 'tv4.min.js');
+//     anytest.modes.schemaJSON_ = goog.global.JSON.parse('' + anytest.utils.loadFile(pathToSchemas + 'json-schema.json'));
+//   }
 
-  if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
-    anytest.utils.loadScript(pathToEngine + 'xmllint.js');
-    anytest.modes.schemaXML_ = anytest.utils.loadFile(pathToSchemas + 'xml-schema.xsd');
-  }
-};
+//   if (anytest.modes.hasMode(anytest.modes.Enum.SCHEMAS_XML)) {
+//     anytest.utils.loadScript(pathToEngine + 'xmllint.js');
+//     anytest.modes.schemaXML_ = anytest.utils.loadFile(pathToSchemas + 'xml-schema.xsd');
+//   }
+// };
 
 
 /**

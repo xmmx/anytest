@@ -54,7 +54,7 @@ anytest.init = function () {
   anytest.utils.statusDiv.id = 'status';
   document.body.appendChild(anytest.utils.statusDiv);
 
-  anytest.modes.prepare();
+  // anytest.modes.prepare();
 
   if (window['anychart']['DEVELOP']) anytest.CAT.isDevelop();
 
