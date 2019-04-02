@@ -380,22 +380,15 @@ anytest.cyclesteps_ = [];
 
 /**
  * @param {Function} stepFunc .
- * @param {boolean=} opt_isCycle .
+ * @param {boolean} isCycle .
  * @param {number=} opt_timeOut .
  */
-anytest.step = function (stepFunc, opt_isCycle, opt_timeOut) {
-  var step  = {
-    'func': stepFunc,
-    'timeout': opt_timeOut || 0,
-    'body': stepFunc.toString()
-  };
+anytest.step = function (stepFunc, isCycle, opt_timeOut) {
+  opt_timeOut = opt_timeOut || 0;
+  var step  = {'func': stepFunc, 'timeout':opt_timeOut,'body':stepFunc.toString()};
   anytest.steps_.push(step);
-
-  if (anytest.DEBUG_MODE)
-    anytest.panel.debug.logAllSteps.push(anytest.panel.debug.stepToLog(step));
-
-  if (opt_isCycle)
-    anytest.cyclesteps_.push(step);
+  if (anytest.DEBUG_MODE) anytest.panel.debug.logAllSteps.push(anytest.panel.debug.stepToLog(step));
+  if (isCycle != false) anytest.cyclesteps_.push(step);
 };
 
 
@@ -408,7 +401,7 @@ anytest.stepsQueue = function(var_args) {
   for (var i = 0; i < arguments.length; i++) {
     var fn = arguments[i];
     if (fn)
-      anytest.step(fn);
+      anytest.step(fn, false);
   }
 };
 
