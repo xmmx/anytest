@@ -102,9 +102,10 @@ anytest.modes.checkModes = function () {
         if (diff)
           log(anytest.charts[jsonSmI], 'Wrong JSON_small format (diff, toJson, stringify/parse)', diff, anytest.modes.JSON_small_[jsonSmI], restoreConfig);
         else {
-          var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_small_[jsonSmI], anytest.modes.schemaJSON_);
-          if (!validResp || !validResp.valid)
-            log(anytest.charts[jsonSmI], 'JSON_small not valid by schema', validResp);
+          //Проверка валидации Json, убрана по прозьбе девелоперов, когда вернётся не известно
+          // var validResp = window['tv4']['validateMultiple'](anytest.modes.JSON_small_[jsonSmI], anytest.modes.schemaJSON_);
+          // if (!validResp || !validResp.valid)
+          //   log(anytest.charts[jsonSmI], 'JSON_small not valid by schema', validResp);
           try {
             window[anytest.charts[jsonSmI]]['dispose']();
             delete window[anytest.charts[jsonSmI]];
@@ -192,13 +193,14 @@ anytest.modes.checkModes = function () {
         //if (anytest.modes.XML_small_[xmlSmI]==anytest.modes.XML_large_[xmlSmI])
         //  log(anytest.charts[xmlSmI], 'XML small & large are equal.');
 
-        var chartContainer = anytest.utils.isEmptyObj(anytest.stage) ? 'container' : anytest.stage
-        var Module = {};
-        Module['xml'] = anytest.modes.XML_small_[xmlSmI];
-        Module['schema'] = anytest.modes.schemaXML_;
-        Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
-        var result = window['validateXML'](Module);
-        if (result.trim() != 'file.xml validates') log(anytest.charts[xmlSmI], 'XML small', result);
+        var chartContainer = anytest.utils.isEmptyObj(anytest.stage) ? 'container' : anytest.stage;
+        //Валидация xml схемы, господа девелоперы попросили убрать, на неопределённый срок
+        // var Module = {};
+        // Module['xml'] = anytest.modes.XML_small_[xmlSmI];
+        // Module['schema'] = anytest.modes.schemaXML_;
+        // Module['arguments'] = ['--noout', '--schema', 'file.xsd', 'file.xml'];
+        // var result = window['validateXML'](Module);
+        // if (result.trim() != 'file.xml validates') log(anytest.charts[xmlSmI], 'XML small', result);
         try {
           window[anytest.charts[xmlSmI]]['dispose']();
           delete window[anytest.charts[xmlSmI]];

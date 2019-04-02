@@ -10,9 +10,6 @@ anychart.onDocumentLoad(function() {
     chart = anychart.cartesian();
     chart.area([1,3,4,-2,-7]);
 
-    chart['at_exclude_json'] = 'yes;'
-    chart['at_exclude_xml'] = 'yes;'
-
     anytest.stageListen(function () {
         // console.log(new Date().getTime())
         anytest.step(function () {
